@@ -1,17 +1,16 @@
+from pathlib import Path
+
 import pyautogui
 
-from pathlib import Path
 from gusyscore.workspace.workspace import Workspace
 
 
-def assert_valid_text(text: str, func: callable) -> None:
-    assert len(text) > 0, (
-        f"Trying to write text in {func.__name__} that has length 0"
-    )
+def assert_valid_text(text: str) -> None:
+    assert len(text) > 0, "Trying to write text that has length 0"
 
 
 def write(text: str) -> None:
-    assert_valid_text(text, func=write)
+    assert_valid_text(text)
     pyautogui.write(text)
 
 
@@ -21,7 +20,7 @@ def write_to_workspace(
         temp_file: bool = False,
         filename: str = None) -> Path:
 
-    assert_valid_text(text, func=write_to_workspace)
+    assert_valid_text(text)
     if temp_file:
         file = workspace.add_temp_file(filename=filename)
     else:

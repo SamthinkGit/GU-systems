@@ -1,12 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
--   repo: https://github.com/psf/black
-    rev: 21.9b0
-    hooks:
-    -   id: black
-        args: [--safe]
-
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
@@ -26,7 +20,7 @@ repos:
     rev: v2.6.0
     hooks:
     -   id: reorder-python-imports
-        args: [--application-directories=.:src, --py36-plus]
+        args: [--application-directories=.:gusyscore, --py36-plus]
 
 -   repo: https://github.com/asottile/pyupgrade
     rev: v2.29.0
@@ -38,5 +32,5 @@ repos:
     rev: v0.910
     hooks:
     -   id: mypy
-        files: ^src/
-        args: []
+        files: ^gusyscore/
+        args: [--ignore-missing-imports]
