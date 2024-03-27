@@ -1,4 +1,4 @@
-from pathlib import Path
+import time
 
 import pyautogui
 
@@ -9,40 +9,39 @@ def assert_valid_text(text: str) -> None:
     assert len(text) > 0, "Trying to write text that has length 0"
 
 
-def write(text: str) -> None:
-    assert_valid_text(text)
-    pyautogui.write(text)
+class IOMock():
+
+    @staticmethod
+    def write(text: str) -> None:
+        assert_valid_text(text)
+        pyautogui.write(text)
 
 
-def write_to_workspace(
-        text: str,
-        workspace: Workspace = Workspace(),
-        temp_file: bool = False,
-        filename: str = None) -> Path:
+class OneFileWorkspaceMock(Workspace):
 
-    assert_valid_text(text)
-    if temp_file:
-        file = workspace.add_temp_file(filename=filename)
-    else:
-        file = workspace.add_file(filename=filename)
+    def __init__(self, temporal: bool = False) -> None:
 
-    with open(file, 'w') as f:
-        f.write(text)
+        self.workspace = super().__init__(
+            name="ws_" + str(time.strftime("%Y%m%d_%H%M%S")),
+            temporal=temporal
+            )
 
-    return file
+        self.file = self.add_file(
+            filename=str(time.strftime("%Y%m%d_%H%M%S")) + ".txt"
+        )
+
+    def write(self, text: str):
+        with open(self.file, mode='a') as f:
+            f.write(text)
 
 
 if __name__ == '__main__':
 
-    with Workspace(temporal=True, name="My_Workspace") as ws:
+    with OneFileWorkspaceMock(temporal=True) as ws:
 
-        file = write_to_workspace("Hello World!\n", workspace=ws)
+        ws.write("Hello World!\n")
+        ws.write("Hello World!\n")
 
-        with open(file, mode='a') as f:
-            f.write("Hello World!\n")
-            f.write("Hello World!\n")
-
-        input(f"""A new temporal file has been built in {file}
-              Use Enter to close the workspace""")
+        input(f"Succesfully written to {ws.file}\nTap ENTER to clean workspace")
 
     print("Workspace cleaned, exit")

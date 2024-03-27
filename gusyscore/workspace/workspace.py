@@ -1,10 +1,10 @@
-import uuid
 import os
-
-from shutil import rmtree
+import uuid
 from pathlib import Path
-from gusyscore.core import get_core_path
+from shutil import rmtree
+
 from gusyscore.constants import TEMP_FILE_PREFIX
+from gusyscore.core import get_core_path
 
 
 class Workspace():
@@ -21,10 +21,21 @@ class Workspace():
 
         self.is_temporal = temporal
         self.path = path or get_core_path() / 'workspace' / 'current_workspace'
+        self.name = name
 
-        if name is not None:
-            name = name if not temporal else TEMP_FILE_PREFIX + name
-            self.path = self.path / name
+        # A temporal name for the directory is given if that name is not
+        # specified so the 'current_workspace' dir doesn't get deleted as
+        # a "temporal_directory"
+        if self.is_temporal and self.name is None:
+            self.name = f"ws_{uuid.uuid4()}"
+
+        # If self.name is None, the user would be using 'current_directory' by
+        # default
+        if self.name is not None:
+
+            self.name = self.name if not temporal else TEMP_FILE_PREFIX + self.name
+
+            self.path = self.path / self.name
 
         if not self.path.exists():
             os.mkdir(self.path)
@@ -43,7 +54,9 @@ class Workspace():
 
     def close_workspace(self):
 
-        if self.is_temporal:
+        if self.is_temporal \
+           and not str(self.path).endswith("current_workspace"):
+
             rmtree(self.path)
             return
 
