@@ -2,6 +2,7 @@ import time
 
 import pyautogui
 
+from gusyscore.ros2.tools.registry import ItemRegistry
 from gusyscore.workspace.workspace import Workspace
 
 
@@ -12,6 +13,7 @@ def assert_valid_text(text: str) -> None:
 class IOMock():
 
     @staticmethod
+    @ItemRegistry.register_function
     def write(text: str) -> None:
         assert_valid_text(text)
         pyautogui.write(text)
@@ -33,6 +35,11 @@ class OneFileWorkspaceMock(Workspace):
     def write(self, text: str):
         with open(self.file, mode='a') as f:
             f.write(text)
+
+    @staticmethod
+    @ItemRegistry.register_function
+    def write_with(workspace, text: str):
+        workspace.write(text)
 
 
 if __name__ == '__main__':

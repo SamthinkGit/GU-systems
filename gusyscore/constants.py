@@ -1,1 +1,2 @@
 TEMP_FILE_PREFIX = '.temp_'
+ITEM_ENCODED_PREFIX = 'icode_'
