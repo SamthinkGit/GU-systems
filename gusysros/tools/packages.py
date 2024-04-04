@@ -3,8 +3,8 @@ import pprint
 from enum import Enum
 
 import gusyscore.gateway.mocks.gateway as gateway
-from gusyscore.ros2.tools.registry import ItemEncoder
-from gusyscore.ros2.tools.registry import ItemRegistry
+from gusysros.tools.registry import ItemEncoder
+from gusysros.tools.registry import ItemRegistry
 
 
 class ActionType(Enum):

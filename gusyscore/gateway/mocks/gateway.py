@@ -2,8 +2,8 @@ import time
 
 import pyautogui
 
-from gusyscore.ros2.tools.registry import ItemRegistry
 from gusyscore.workspace.workspace import Workspace
+from gusysros.tools.registry import ItemRegistry
 
 
 def assert_valid_text(text: str) -> None:
