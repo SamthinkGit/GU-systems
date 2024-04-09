@@ -17,7 +17,6 @@ class SequenceActionClient(Node):
         return self._action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 
     def feedback_callback(self, feedback_msg):
-
         feedback: Sequence.Feedback = feedback_msg.feedback
         self.get_logger().info(f'Received feedback: {feedback.feedback}')
 

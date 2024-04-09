@@ -1,3 +1,5 @@
+import time
+
 import rclpy.action
 from rclpy.action import ActionServer
 from rclpy.node import Node
@@ -15,13 +17,14 @@ class SequenceActionServer(Node):
             self.execute_callback)
 
     def execute_callback(self, goal_handle: rclpy.action.server.ServerGoalHandle):
-        self.get_logger().info(f'Request Received: {goal_handle.request.goal}')
-        self.get_logger().info('Executing goal...')
-
         feedback_msg = Sequence.Feedback()
         feedback_msg.feedback = "Im a feedback!"
         goal_handle.publish_feedback(feedback_msg)
+        print("Started")
+        print("Sleeping...")
+        time.sleep(3)
         rclpy.spin_once(self, timeout_sec=0.1)
+        print("Hi!")
 
         goal_handle.succeed()
         result = Sequence.Result()

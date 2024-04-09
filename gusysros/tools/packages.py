@@ -1,6 +1,9 @@
 import json
 import pprint
 from enum import Enum
+from queue import Empty
+from queue import PriorityQueue
+from typing import Dict
 
 import gusyscore.gateway.mocks.gateway as gateway
 from gusysros.tools.registry import ItemEncoder
@@ -12,7 +15,23 @@ class ActionType(Enum):
     PARALLEL_SEQUENCE = 2
 
 
+class TaskStatus(Enum):
+    READY = 0
+    RUNNING = 1
+    BLOCKED = 2
+
+
+class SequencePriority(Enum):
+    AT_EXIT = 5
+    CUMMULATIVE = 4
+    NORMAL = 3
+    INFO = 2
+    INTERRUPTION = 1
+    URGENT = 0
+
+
 class ActionPackage():
+
     def __init__(self, type: ActionType, action_id: int, *args, **kwargs) -> None:
 
         if not isinstance(type, ActionType):
@@ -49,24 +68,32 @@ class ActionPackage():
         dict_data['args'] = [ItemEncoder.autodecode(val) for val in dict_data['args']]
         dict_data['kwargs'] = {name: ItemEncoder.autodecode(val) for name, val in dict_data['kwargs'].items()}
 
-        return cls(**dict_data)
+        return cls(
+            dict_data['type'],
+            dict_data['action_id'],
+            *dict_data['args'],
+            **dict_data['kwargs']
+        )
 
 
 class SequencePackage():
-    def __init__(self, id: str, priority: int, actions: list[ActionPackage]) -> None:
+    def __init__(self, task_id: str, priority: int, actions: list[ActionPackage]) -> None:
 
-        self.id = id
+        if isinstance(priority, SequencePriority):
+            priority = priority.value
+
+        self.task_id = task_id
         self.priority = priority
         self.actions = actions
 
-    def to_dict(self, autoencode: bool = True):
+    def to_dict(self, autoencode: bool = True) -> dict:
         return {
-            'id': self.id,
+            'task_id': self.task_id,
             'priority': self.priority,
             'actions': [action.to_dict(autoencode=autoencode) for action in self.actions]
         }
 
-    def to_json(self):
+    def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
     def __str__(self, pretty: bool = True) -> str:
@@ -80,7 +107,7 @@ class SequencePackage():
 
     @classmethod
     def from_dict(cls, dict_data: dict):
-        required_keys = ['id', 'priority', 'actions']
+        required_keys = ['task_id', 'priority', 'actions']
         if not all(key in dict_data for key in required_keys):
             raise ValueError(f"Dict passed to ActionPackage must contain {required_keys}")
 
@@ -90,6 +117,79 @@ class SequencePackage():
     @classmethod
     def from_json(cls, package: str):
         return SequencePackage.from_dict(json.loads(package))
+
+
+class Task():
+
+    def __init__(self, task_id: str) -> None:
+        self.task_id = task_id
+        self.status = TaskStatus.READY
+        self.priority_queue = PriorityQueue()
+
+    def push(self, sequence: SequencePackage) -> None:
+        self.priority_queue.put((sequence.priority, sequence))
+
+    def pop(self, sequence) -> SequencePackage:
+        if len(self.priority_queue) <= 0:
+            raise Empty
+        return self.priority_queue.get()[1]
+
+    def __len__(self) -> int:
+        return len(self.priority_queue)
+
+    def to_list(self, only_priorities: bool = True) -> list:
+        temp_list = []
+        while not self.priority_queue.empty():
+            item: SequencePackage = self.priority_queue.get()[1]
+
+            if only_priorities:
+                temp_list.append(item.priority)
+            else:
+                temp_list.append(item)
+
+        for item in temp_list:
+            self.priority_queue.put(item)
+        return temp_list
+
+
+class TaskRegistry():
+
+    def __init__(self) -> None:
+        self.tasks: Dict[str, Task] = {}
+
+    def append(self, sequence: SequencePackage) -> None:
+        self.update(sequence)
+
+    def update(self, sequence: SequencePackage) -> None:
+
+        id = sequence.task_id
+        if id not in self.tasks:
+            self.tasks[id] = Task(id)
+
+        self.tasks[id].push(sequence)
+
+    def get(self, task_id: str) -> SequencePackage | None:
+        if task_id not in self.tasks:
+            return None
+
+        assert len(self.tasks) <= 0, "Trying to pop an empty task (No sequences avaliable)"
+        sequence = self.tasks[task_id].pop()
+
+        if len(self.tasks[task_id]) == 0:
+            del self.tasks[task_id]
+
+        return sequence
+
+    def get_log(self) -> None:
+        return {
+            'concurrent_tasks': len(self.tasks),
+            'tasks': {
+                id: {
+                    'status': task.status.name,
+                    'queue': [SequencePriority(prio).name for prio in task.to_list()]
+                } for id, task in self.tasks.items()
+            },
+        }
 
 
 if __name__ == '__main__':
@@ -114,10 +214,15 @@ if __name__ == '__main__':
         )
 
         seq = SequencePackage(
-            id='my_sequence',
-            priority=4,
+            task_id='my_sequence',
+            priority=SequencePriority.NORMAL,
             actions=[action_1, action_2]
         )
+
+        tr = TaskRegistry()
+        tr.append(seq)
+        tr.append(seq)
+        tr.append(seq)
 
         pkg = seq.to_json()
         print(" JSON Package Format ".center(60, "-"))
@@ -126,3 +231,6 @@ if __name__ == '__main__':
         decoded_seq = SequencePackage.from_json(pkg)
         print(" Decoded Package ".center(60, "-"))
         print(decoded_seq)
+
+        print(" TaskRegistry ".center(60, "-"))
+        print(json.dumps(tr.get_log(), indent=4))
