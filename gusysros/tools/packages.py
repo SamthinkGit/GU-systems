@@ -1,8 +1,9 @@
+import heapq
+import itertools
 import json
 import pprint
 from enum import Enum
 from queue import Empty
-from queue import PriorityQueue
 from typing import Dict
 
 import gusyscore.gateway.mocks.gateway as gateway
@@ -119,37 +120,48 @@ class SequencePackage():
         return SequencePackage.from_dict(json.loads(package))
 
 
+class SimplePriorityQueue:
+
+    def __init__(self):
+        self._queue = []
+        self._counter = itertools.count()
+
+    def push(self, item, priority):
+        count = next(self._counter)
+        heapq.heappush(self._queue, (priority, count, item))
+
+    def pop(self):
+        return heapq.heappop(self._queue)[-1]
+
+    def size(self):
+        return len(self._queue)
+
+    def to_list(self, only_priorities: bool = False):
+        if only_priorities:
+            return [priority for priority, _, _ in sorted(self._queue)]
+        return [item for _, _, item in sorted(self._queue)]
+
+
 class Task():
 
     def __init__(self, task_id: str) -> None:
         self.task_id = task_id
         self.status = TaskStatus.READY
-        self.priority_queue = PriorityQueue()
+        self.priority_queue = SimplePriorityQueue()
 
     def push(self, sequence: SequencePackage) -> None:
-        self.priority_queue.put((sequence.priority, sequence))
+        self.priority_queue.push(sequence, priority=sequence.priority)
 
     def pop(self, sequence) -> SequencePackage:
-        if len(self.priority_queue) <= 0:
+        if self.priority_queue.size() <= 0:
             raise Empty
-        return self.priority_queue.get()[1]
+        return self.priority_queue.pop()
 
     def __len__(self) -> int:
-        return len(self.priority_queue)
+        return self.priority_queue.size()
 
     def to_list(self, only_priorities: bool = True) -> list:
-        temp_list = []
-        while not self.priority_queue.empty():
-            item: SequencePackage = self.priority_queue.get()[1]
-
-            if only_priorities:
-                temp_list.append(item.priority)
-            else:
-                temp_list.append(item)
-
-        for item in temp_list:
-            self.priority_queue.put(item)
-        return temp_list
+        return self.priority_queue.to_list(only_priorities=only_priorities)
 
 
 class TaskRegistry():
