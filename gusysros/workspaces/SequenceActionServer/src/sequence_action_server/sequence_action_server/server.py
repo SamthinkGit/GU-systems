@@ -1,9 +1,13 @@
-import time
+import traceback
 
 import rclpy.action
 from rclpy.action import ActionServer
 from rclpy.node import Node
 from sys_actions.action import Sequence
+
+from gusysros.mocks.send_sequence import test_function # noqa
+from gusysros.tools.packages import SequencePackage
+from gusysros.tools.registry import ItemRegistry
 
 
 class SequenceActionServer(Node):
@@ -17,18 +21,22 @@ class SequenceActionServer(Node):
             self.execute_callback)
 
     def execute_callback(self, goal_handle: rclpy.action.server.ServerGoalHandle):
-        feedback_msg = Sequence.Feedback()
-        feedback_msg.feedback = "Im a feedback!"
-        goal_handle.publish_feedback(feedback_msg)
-        print("Started")
-        print("Sleeping...")
-        time.sleep(3)
-        rclpy.spin_once(self, timeout_sec=0.1)
-        print("Hi!")
+        # feedback_msg = Sequence.Feedback()
+        # feedback_msg.feedback = "Function Executed"
+        # goal_handle.publish_feedback(feedback_msg)
+        try:
+            sequence = SequencePackage.from_json(goal_handle.request.goal)
+        except Exception:
+            trback = traceback.format_exc()
+            self.get_logger().warn(f"Invalid package received in Sequence Action client. {trback}")
+            return
+
+        func = ItemRegistry.get_function(sequence.actions[0].action_id)
+        func(num=sequence.actions[0].kwargs['num'])
 
         goal_handle.succeed()
         result = Sequence.Result()
-        result.result = feedback_msg.feedback
+        result.result = "SUCCESS"
 
         return result
 

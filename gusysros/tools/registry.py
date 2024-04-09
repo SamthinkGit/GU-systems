@@ -1,3 +1,4 @@
+import hashlib
 import json
 import uuid
 from typing import Any
@@ -39,7 +40,9 @@ class ItemRegistry:
     @classmethod
     def add_function(cls, func: Callable) -> None:
         """Add an item to the registry with a unique ID."""
-        cls._functions[cls.get_id(func)] = func
+        id = cls.get_id(func)
+        if id not in cls._functions:
+            cls._functions[id] = func
 
     @classmethod
     def add_item(cls, item: Any) -> None:
@@ -53,7 +56,14 @@ class ItemRegistry:
     @staticmethod
     def get_id(obj: Any) -> Hashable:
         """Generate a unique ID for the given object."""
-        return hash(obj)
+        if callable(obj):
+            obj_repr = f"{obj.__qualname__}.{obj.__name__}"
+        else:
+            obj_repr = str(obj)
+
+        obj_bytes = obj_repr.encode('utf-8')
+        hash_object = hashlib.sha256(obj_bytes)
+        return int(hash_object.hexdigest(), 16)
 
     @classmethod
     def call(cls, id: Hashable, *args, **kwargs) -> Any:

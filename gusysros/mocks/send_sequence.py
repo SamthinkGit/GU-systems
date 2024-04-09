@@ -1,6 +1,7 @@
 import random
 
 import rclpy
+from icecream import ic # noqa
 from rclpy.node import Node
 from std_msgs.msg import String
 
@@ -27,8 +28,7 @@ class MyPublisherNode(Node):
         action = ActionPackage(
             type=ActionType.SIMPLE_SEQUENCE,
             action_id=my_func_id,
-            num=random.randint(0, 100)
-        )
+            num=random.randint(0, 100))
 
         seq = SequencePackage(
             task_id='my_task',
@@ -41,7 +41,7 @@ class MyPublisherNode(Node):
         self.get_logger().info('Task Published')
 
 
-@ItemRegistry.add_function
+@ItemRegistry.register_function
 def test_function(num: int):
     print("Succesfully executed function with argument: ", num)
 
