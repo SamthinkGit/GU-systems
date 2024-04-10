@@ -1,3 +1,18 @@
+"""
+Task Management and Sequencing
+==============================
+
+This module provides a comprehensive set of classes and enums to manage tasks,
+actions, and their sequencing with priorities. It includes the definition of
+action types, task statuses, and sequence priorities, along with the core classes
+for packaging actions and sequences, managing priority queues, and task registries.
+
+Its main purpouse is to define the main behavior of the protocols used in
+SequenceActionServer and SequenceActionClient.
+
+Most important functions in line with package building, sending or ordering are in
+this module
+"""
 import heapq
 import itertools
 import json
@@ -11,18 +26,41 @@ from gusysros.tools.registry import ItemEncoder
 from gusysros.tools.registry import ItemRegistry
 
 
-class ActionType(Enum):
-    SIMPLE_SEQUENCE = 1
-    PARALLEL_SEQUENCE = 2
+class SequenceType(Enum):
+    """
+    Enumerates types of actions in a task sequence.
+
+    - SIMPLE_SEQUENCE: A linear sequence of actions.
+    - PARALLEL_SEQUENCE: Actions that can be executed in parallel.
+    """
+    SIMPLE_SEQUENCE = 0
+    PARALLEL_SEQUENCE = 1
 
 
 class TaskStatus(Enum):
+    """
+    Represents the current status of a task.
+
+    - READY: Task is ready to be executed.
+    - RUNNING: Task is currently in execution.
+    - BLOCKED: Task is blocked and cannot proceed.
+    """
     READY = 0
     RUNNING = 1
     BLOCKED = 2
 
 
 class SequencePriority(Enum):
+    """
+    Defines the execution priority for task sequences.
+
+    - URGENT: Highest priority, typically for emergency tasks.
+    - INTERRUPTION: Immediate execution, interrupting current tasks.
+    - INFO: For informational purposes, lower than normal priority.
+    - NORMAL: Default priority for regular tasks (recommended and default).
+    - CUMMULATIVE: For background tasks that can be deferred.
+    - AT_EXIT: Executed just before a process or task exits.
+    """
     AT_EXIT = 5
     CUMMULATIVE = 4
     NORMAL = 3
@@ -32,25 +70,54 @@ class SequencePriority(Enum):
 
 
 class ActionPackage():
+    """
+    Packages an action with its type, identifier, and parameters for execution within a task sequence.
 
-    def __init__(self, type: ActionType, action_id: int, *args, **kwargs) -> None:
+    :param action_id: Unique identifier for the action (encoded function with ItemRegistry).
+    :param args: Positional arguments for the action.
+    :param kwargs: Keyword arguments for the action.
 
-        if not isinstance(type, ActionType):
-            type = ActionType(type)
+    .. code-block:: python
+        from gusysros.tools.packages import ActionPackage
 
-        self.type = type
+        # Build a function, if you want to send it in a package, you
+        # should encode it with the ItemRegistry
+
+        # WARNING: The ItemRegistry encoder and the client that executes
+        # the function must be in the same memory space if they need to share variables.
+        # If they do not share variables, it is enough to ensure the function is imported
+        # for BOTH sender and client
+        # TODO: Add a autoimport tool for simplifying this process
+
+        @ItemRegistry.register_function
+        def my_function(num, keyword_1, keyword_2):
+            print("My num is ", num)
+            print("My keyword_1 is ", keyword_1)
+            print("My keyword_2 is ", keyword_2)
+
+        my_num = 4
+        action = ActionPackage(
+            ItemRegistry.get_id(my_function),
+            my_num,
+            **{
+                'keyword_1': 'Hello',
+                'text': 'Action Package!'
+            }
+        )
+    """
+
+    def __init__(self, action_id: int, *args, **kwargs) -> None:
+
         self.action_id = action_id
         self.args = args
         self.kwargs = kwargs
 
     def to_dict(self, autoencode: bool = True):
 
-        type = self.type.value if autoencode else self.type.name
         args = [ItemEncoder.autoencode(arg) for arg in self.args] if autoencode else self.args
         kwargs = {key: ItemEncoder.autoencode(val) for key, val in self.kwargs.items()} if autoencode else self.kwargs
 
         return {
-            'type': type,
             'action_id': self.action_id,
             'args': args,
             'kwargs': kwargs
@@ -62,7 +129,7 @@ class ActionPackage():
     @classmethod
     def from_dict(cls, dict_data: dict):
 
-        required_keys = ['type', 'action_id', 'args', 'kwargs']
+        required_keys = ['action_id', 'args', 'kwargs']
         if not all(key in dict_data for key in required_keys):
             raise ValueError(f"Dict passed to ActionPackage must contain {required_keys}")
 
@@ -70,7 +137,6 @@ class ActionPackage():
         dict_data['kwargs'] = {name: ItemEncoder.autodecode(val) for name, val in dict_data['kwargs'].items()}
 
         return cls(
-            dict_data['type'],
             dict_data['action_id'],
             *dict_data['args'],
             **dict_data['kwargs']
@@ -78,11 +144,23 @@ class ActionPackage():
 
 
 class SequencePackage():
-    def __init__(self, task_id: str, priority: int, actions: list[ActionPackage]) -> None:
+    """
+    Represents a sequence of actions (ActionPackages) with a specified priority within a task.
+
+    :param task_id: Identifier for the task this sequence belongs to.
+    :param type: The type/behavior of set of actions, defined by SequenceType.
+    :param priority: Execution priority of this sequence, defined by SequencePriority.
+    :param actions: A list of ActionPackage instances to be executed in this sequence.
+    """
+    def __init__(self, task_id: str, type: SequenceType, priority: int, actions: list[ActionPackage]) -> None:
 
         if isinstance(priority, SequencePriority):
             priority = priority.value
 
+        if isinstance(type, SequenceType):
+            type = type.value
+
+        self.type = type
         self.task_id = task_id
         self.priority = priority
         self.actions = actions
@@ -90,6 +168,7 @@ class SequencePackage():
     def to_dict(self, autoencode: bool = True) -> dict:
         return {
             'task_id': self.task_id,
+            'type': self.type if autoencode else SequenceType(self.type).name,
             'priority': self.priority,
             'actions': [action.to_dict(autoencode=autoencode) for action in self.actions]
         }
@@ -121,6 +200,13 @@ class SequencePackage():
 
 
 class SimplePriorityQueue:
+    """
+    A simple priority queue implementation to manage tasks based on their priority.
+    Utilizes a heap queue to ensure tasks are processed in the order of their priority.
+
+    :note: We do not use standard PriorityQueue since we don't need thread-safe property
+    and we need the exact size of the queue for ordering computations
+    """
 
     def __init__(self):
         self._queue = []
@@ -143,6 +229,13 @@ class SimplePriorityQueue:
 
 
 class Task():
+    """
+    Manages a single task, holding a queue of sequences to be executed.
+    It implements the ordering protocol stablished in the SequencePriority definitions
+    by ordering the sequences by priority
+
+    :param task_id: Unique identifier for the task.
+    """
 
     def __init__(self, task_id: str) -> None:
         self.task_id = task_id
@@ -165,6 +258,13 @@ class Task():
 
 
 class TaskRegistry():
+    """
+    A registry to manage multiple tasks, allowing for task updates, retrieval, and logging.
+
+    Maintains a dictionary of tasks, facilitating the addition of new sequences to tasks and
+    providing logging capabilities. It maintains priority protocols when using get(), update()
+    or append()
+    """
 
     def __init__(self) -> None:
         self.tasks: Dict[str, Task] = {}
@@ -208,7 +308,6 @@ if __name__ == '__main__':
     with gateway.OneFileWorkspaceMock(temporal=True) as ws:
 
         action_1 = ActionPackage(
-            type=ActionType.SIMPLE_SEQUENCE,
             action_id=ItemRegistry.get_id(gateway.OneFileWorkspaceMock.write_with),
             **{
                 'workspace': ws,
@@ -217,7 +316,6 @@ if __name__ == '__main__':
         )
 
         action_2 = ActionPackage(
-            type=ActionType.SIMPLE_SEQUENCE,
             action_id=ItemRegistry.get_id(gateway.OneFileWorkspaceMock.write_with),
             **{
                 'workspace': ws,
@@ -227,6 +325,7 @@ if __name__ == '__main__':
 
         seq = SequencePackage(
             task_id='my_sequence',
+            type=SequenceType.SIMPLE_SEQUENCE,
             priority=SequencePriority.NORMAL,
             actions=[action_1, action_2]
         )

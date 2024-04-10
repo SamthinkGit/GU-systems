@@ -1,3 +1,18 @@
+"""
+Item and Function Registry Module
+=================================
+
+This module defines a singleton class `ItemRegistry` for registering and retrieving
+functions and items by a unique identifier. It also includes `ItemEncoder` for encoding
+and decoding items, supporting automatic encoding for non-JSON serializable objects.
+
+Note: ItemRegistry saves all variables in a dictionary so BOTH sender and client must
+be in the same memory space. Thus, the ItemEncoder must be shared in the same process.
+
+If the encoding does only use functions (not object-variables) the ItemRegistry can be
+used between distinct processes but the full compatibility is not ensured, and both
+client and sender must have imported the function target.
+"""
 import hashlib
 import json
 import uuid
@@ -10,6 +25,13 @@ from gusyscore.constants import ITEM_ENCODED_PREFIX
 
 
 class ItemRegistry:
+    """
+    A singleton registry for storing functions and items with unique identifiers.
+
+    This class provides methods to add, retrieve, and invoke functions and items stored
+    in the registry. It ensures that each function and item can be accessed through a
+    unique hashable key generated based on the object itself.
+    """
 
     _instance = None
     _functions: Dict[Hashable, Callable] = {}
@@ -75,6 +97,13 @@ class ItemRegistry:
 
 
 class ItemEncoder():
+    """
+    Provides static methods for encoding and decoding items to and from unique identifiers.
+
+    This encoder is used to handle objects that are not natively serializable by JSON, such
+    as complex Python objects. Encoded items are stored in the `ItemRegistry` until decoded,
+    then they are freed from Registry.
+    """
 
     @staticmethod
     def encode(item: Any) -> Hashable:
@@ -90,6 +119,13 @@ class ItemEncoder():
 
     @classmethod
     def autoencode(cls, item: Any):
+        """
+        Encodes an item into a unique identifier and stores it in the registry only if
+        the item is not JSON serializable
+
+        :param item: The item to be encoded.
+        :return: A unique identifier associated with the encoded item.
+        """
         try:
             json.dumps(item)
             return item
@@ -100,6 +136,13 @@ class ItemEncoder():
 
     @classmethod
     def autodecode(cls, code: str):
+        """
+        Automatically encodes an item, using direct JSON serialization if possible,
+        or encoding through `ItemEncoder` otherwise.
+
+        :param item: The item to be decoded.
+        :return: The original item if it's JSON serializable, or an encoded identifier string otherwise.
+        """
 
         if not isinstance(code, str):
             return code

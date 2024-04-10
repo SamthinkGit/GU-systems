@@ -4,7 +4,7 @@ from sequence_action_server.server import SequenceActionServer
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
 
-from gusysros.mocks.send_sequence import test_function # noqa
+from gusysros.tests.send_sequence import test_function # noqa
 # Imports for adding some mock functions
 
 

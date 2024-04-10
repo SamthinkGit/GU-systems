@@ -221,3 +221,9 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+
+# Sphinx
+_build/
+_static/
+_templates/

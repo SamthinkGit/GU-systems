@@ -1,3 +1,27 @@
+"""
+Workspace Management Module
+===========================
+
+This module provides the Workspace class for managing workspace directories, both persistent and temporary.
+It includes capabilities for adding files, managing temporary files, and safely closing the workspace with cleanup.
+
+.. code-block:: python
+
+    from gusyscore.workspace.workspace import Workspace
+    from pathlib import Path
+
+    # Use the workspace in a context manager
+    with Workspace(name="my_workspace", temporal=True) as ws:
+
+        temp_file_path = ws.add_temp_file('example.txt')
+        print(f'Temporary file added at: {temp_file_path}')
+
+        with open(temp_file_path, 'w') as f:
+            f.write("Hello Workspace!")
+
+        input("Press Enter to close workspace")
+
+"""
 import os
 import uuid
 from pathlib import Path
@@ -8,6 +32,19 @@ from gusyscore.core import get_core_path
 
 
 class Workspace():
+    """
+    Manages workspace directories, supporting both persistent and temporary workspaces.
+
+    :param path: The file path to the workspace directory. Defaults to a standard path if not provided.
+    :param name: The name of the workspace. A unique name is generated for temporary workspaces if not provided.
+    :param temporal: Indicates if the workspace is temporary (removed at closing). Defaults to False.
+
+    :note: A temporal workspace will start with TEMP_FILE_PREFIX prefix
+
+    :type path: Path, optional
+    :type name: str, optional
+    :type temporal: bool, optional
+    """
 
     def __init__(self,
                  path: Path = None,
@@ -41,18 +78,41 @@ class Workspace():
             os.mkdir(self.path)
 
     def add_file(self, filename: str = None) -> Path:
+        """
+        Adds a new file to the workspace.
+
+        :param filename: The name of the file to add. A unique name is generated if not provided.
+        :type filename: str, optional
+        :return: The path to the newly added file.
+        :rtype: Path
+        """
+
         filename = filename or f"{uuid.uuid4()}.txt"
         filepath = self.path / filename
         open(filepath, 'w').close()
         return filepath
 
     def add_temp_file(self, filename: str = None) -> Path:
+        """
+        Adds a new temporary file to the workspace.
+        :note: All temporal files will be removed when the workspace is closed
+
+        :param filename: The name of the temporary file to add. A unique name is generated if not provided.
+        :type filename: str, optional
+        :return: The path to the newly added temporary file.
+        :rtype: Path
+        """
+
         filename = filename or f"{uuid.uuid4()}.txt"
         filepath = self.path / str(TEMP_FILE_PREFIX + filename)
         open(filepath, mode='w').close()
         return filepath
 
     def close_workspace(self):
+        """
+        Closes the workspace. Deletes the workspace if it is temporary, otherwise only removes
+        temporary files within.
+        """
 
         if self.is_temporal \
            and not str(self.path).endswith("current_workspace"):

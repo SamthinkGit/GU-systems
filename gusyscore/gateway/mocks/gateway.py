@@ -1,3 +1,16 @@
+"""
+Gateway Module (Mock)
+===========================
+
+This file contains functionalities for simulating functions to interact with the machine (Adding
+some files, writing text...)
+It is used to emulate connection with the gateway and is designed to be called mostly by higher
+layers in syscore.
+
+:note: Note that functions are registered with @ItemRegistry.register_function so the AI can call
+
+them by using only the function id (More Information at :class:`gusystos.tools.registry.ItemRegistry`)
+"""
 import time
 
 import pyautogui
@@ -7,10 +20,16 @@ from gusysros.tools.registry import ItemRegistry
 
 
 def assert_valid_text(text: str) -> None:
+    """
+    [Refactoring] Simple text sanitization
+    """
     assert len(text) > 0, "Trying to write text that has length 0"
 
 
 class IOMock():
+    """
+    Provides a mock interface for emulating I/O input to the machine.
+    """
 
     @staticmethod
     @ItemRegistry.register_function
@@ -20,6 +39,10 @@ class IOMock():
 
 
 class OneFileWorkspaceMock(Workspace):
+    """
+    Simulates a workspace with a single file for writing. Easy interaction,
+    can be used with <temporal> keyword for autoremoving changes in workspace
+    """
 
     def __init__(self, temporal: bool = False) -> None:
 
