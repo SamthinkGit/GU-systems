@@ -64,7 +64,7 @@ Directory	Content Description
 
 GU Systems is architecturally a symphony of software and hardware layers, where each note is a purpose-driven component that harmoniously interacts to create a seamless user experience. A general component architecture used for the design of the repository is the following:
 <div align="center">
-    <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/4a8b163d-6654-44bd-acc7-d82ff742984c" alt="Software Architecture Diagram">
+    <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/4a8b163d-6654-44bd-acc7-d82ff742984c" alt="Software Architecture Diagram" width=600>
 </div>
 
 ## 📘 Documentation
