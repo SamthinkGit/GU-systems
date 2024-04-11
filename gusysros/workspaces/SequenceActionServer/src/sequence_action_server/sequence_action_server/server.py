@@ -5,7 +5,7 @@ from rclpy.action import ActionServer
 from rclpy.node import Node
 from sys_actions.action import Sequence
 
-from gusysros.mocks.send_sequence import test_function # noqa
+from gusysros.tests.send_sequence import test_function # noqa
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.registry import ItemRegistry
 

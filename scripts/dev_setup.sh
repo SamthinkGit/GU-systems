@@ -15,3 +15,6 @@ for dir in "$workspaces_dir"/*; do
         source "$dir/install/setup.sh"
     fi
 done
+
+# Some dev-aliases
+alias gutree='tree -I build -I install -I log -I __pycache__ -I docs'

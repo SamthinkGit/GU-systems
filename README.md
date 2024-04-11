@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![GitHub](https://img.shields.io/badge/License-BSD3_(new)-blue)
+![GitHub](https://img.shields.io/badge/License-Propietary-blue)
 ![GitHub](https://img.shields.io/badge/Version-0.0.1-blue)
 ![GitHub](https://img.shields.io/badge/build-passing-green)
 ![GitHub](https://img.shields.io/badge/style-flake8-green)
