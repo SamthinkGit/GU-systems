@@ -227,3 +227,6 @@ CATKIN_IGNORE
 _build/
 _static/
 _templates/
+
+# Doxygen
+docs/
