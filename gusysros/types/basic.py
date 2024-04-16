@@ -75,15 +75,18 @@ class SimpleSequence(SequenceType):
             func(*args, **kwargs)
 
 
+# ----- ADD HERE THE TYPES TO AUTOREGISTER WHEN IMPORTING THIS FILE --------
+SequenceType.auto_register_type(SimpleSequence)
+
+# --------------------------------------------------------------------------
+
+
 if __name__ == '__main__':
 
     @ItemRegistry.register_function
     def my_function(keyword_1, keyword_2):
         print("My keyword_1 is", keyword_1)
         print("My keyword_2 is", keyword_2)
-
-    # Every Type has to be registered in order to be accesible
-    SequenceType.auto_register_type(SimpleSequence)
 
     action = ActionPackage(
         ItemRegistry.get_id(my_function),

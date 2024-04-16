@@ -10,3 +10,14 @@ def print_two_keywords(keyword_1, keyword_2):
 @ItemRegistry.register_function
 def hello_world():
     print("Hello World!")
+
+
+@ItemRegistry.register_function
+def append_to_list(list: list, value):
+    list.append(value)
+    print(f"Appended {value} to the list")
+
+
+@ItemRegistry.register_function
+def test_function(num: int):
+    print("Succesfully executed function with argument: ", num)

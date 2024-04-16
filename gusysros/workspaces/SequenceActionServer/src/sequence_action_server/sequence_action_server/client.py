@@ -9,7 +9,6 @@ from std_msgs.msg import String
 from sys_actions.action import Sequence
 
 from gusyscore.constants import REQUEST_TOPIC
-from gusysros.tests.send_sequence import test_function # noqa
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.packages import TaskRegistry
 from gusysros.tools.packages import TaskStatus

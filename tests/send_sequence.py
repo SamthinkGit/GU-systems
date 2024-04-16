@@ -6,6 +6,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from gusyscore.constants import REQUEST_TOPIC
+from gusyscore.gateway.mocks.debug import test_function
 from gusysros.tools.packages import ActionPackage
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.packages import SequencePriority
@@ -39,11 +40,6 @@ class MyPublisherNode(Node):
         self.msg.data = seq.to_json()
         self.publisher_.publish(self.msg)
         self.get_logger().info('Task Published')
-
-
-@ItemRegistry.register_function
-def test_function(num: int):
-    print("Succesfully executed function with argument: ", num)
 
 
 def main(args=None):
