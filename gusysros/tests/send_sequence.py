@@ -7,10 +7,10 @@ from std_msgs.msg import String
 
 from gusyscore.constants import REQUEST_TOPIC
 from gusysros.tools.packages import ActionPackage
-from gusysros.tools.packages import ActionType
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.packages import SequencePriority
 from gusysros.tools.registry import ItemRegistry
+from gusysros.types.basic import SimpleSequence
 
 
 class MyPublisherNode(Node):
@@ -26,7 +26,7 @@ class MyPublisherNode(Node):
         my_func_id = ItemRegistry.get_id(test_function)
 
         action = ActionPackage(
-            type=ActionType.SIMPLE_SEQUENCE,
+            type=SimpleSequence.get_type(),
             action_id=my_func_id,
             num=random.randint(0, 100))
 

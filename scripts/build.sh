@@ -19,6 +19,7 @@ workspaces_dir=$SOURCE/gusysros/workspaces
 for dir in "$workspaces_dir"/*; do
     if [ -d "$dir" ]; then
         step "Building $dir"
+        cd $dir
         colcon build --symlink-install
         source './install/setup.sh'
     fi
