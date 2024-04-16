@@ -6,7 +6,7 @@ from rclpy.node import Node
 from sys_actions.action import Sequence
 
 from gusysros.tools.packages import SequencePackage
-from gusysros.tools.registry import ItemRegistry
+from gusysros.types.basic import SequenceType
 
 
 class SequenceActionServer(Node):
@@ -24,14 +24,14 @@ class SequenceActionServer(Node):
         # feedback_msg.feedback = "Function Executed"
         # goal_handle.publish_feedback(feedback_msg)
         try:
-            sequence = SequencePackage.from_json(goal_handle.request.goal)
+            sequence_pkg = SequencePackage.from_json(goal_handle.request.goal)
         except Exception:
             trback = traceback.format_exc()
             self.get_logger().warn(f"Invalid package received in Sequence Action client. {trback}")
             return
 
-        func = ItemRegistry.get_function(sequence.actions[0].action_id)
-        func(num=sequence.actions[0].kwargs['num'])
+        seq_type = SequenceType.from_pkg(sequence_pkg)
+        seq_type.run()
 
         goal_handle.succeed()
         result = Sequence.Result()
