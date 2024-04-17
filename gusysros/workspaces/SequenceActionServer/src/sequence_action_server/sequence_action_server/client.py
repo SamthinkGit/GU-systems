@@ -1,4 +1,6 @@
 import traceback
+from sequence_action_server.observer import Publisher
+from sequence_action_server.observer import Subscriber
 
 import rclpy.action
 import rclpy.logging
@@ -18,42 +20,55 @@ class SequenceActionClient(Node):
 
     def __init__(self):
 
-        super().__init__('sequence_action_client')
+        super().__init__("sequence_action_client")
 
-        self._action_client = ActionClient(self, Sequence, 'sequence')
-        self.subscription = self.create_subscription(
-            String,
-            REQUEST_TOPIC,
-            self.request_callback,
-            qos_profile_system_default
-        )
         self.registry = TaskRegistry()
+        self.subscriber = Subscriber(target=self.goal_completed_callback)
+        Publisher().add_subscriber(self.subscriber)
+
+        self._action_client = ActionClient(self, Sequence, "sequence")
+        self.subscription = self.create_subscription(
+            String, REQUEST_TOPIC, self.request_callback, qos_profile_system_default
+        )
 
     def send_goal(self, text):
         goal_msg = Sequence.Goal()
         goal_msg.goal = text
-        self._action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 
-    def feedback_callback(self, feedback_msg):
-        feedback: Sequence.Feedback = feedback_msg.feedback
-        self.get_logger().info(f'Received feedback: {feedback.feedback}')
+        self._send_goal_future = self._action_client.send_goal_async(goal_msg)
 
     def request_callback(self, msg):
-
         try:
             sequence = SequencePackage.from_json(msg.data)
+            task_id = sequence.task_id
         except Exception:
             trback = traceback.format_exc()
-            self.get_logger().warn(f"Invalid package received in Sequence Action client. {trback}")
+            self.get_logger().warn(
+                f"Invalid package received in Sequence Action client. {trback}"
+            )
             return
 
         self.registry.update(sequence)
 
-        id = sequence.task_id
-        if self.registry.tasks[id].status == TaskStatus.READY:
-            self.get_logger().info("Task Received and preprocessed, sending to action server")
-            self.registry.tasks[id].status = TaskStatus.RUNNING
-            self.send_goal(msg.data)
+        if self.registry.tasks[task_id].status == TaskStatus.READY:
+            self.get_logger().info(
+                "Task Received and preprocessed, sending to action server"
+            )
+            self.registry.tasks[task_id].status = TaskStatus.RUNNING
+            sequence = self.registry.get(task_id)
+
+            self.send_goal(sequence.to_json())
+
+    def goal_completed_callback(self, task_id):
+        self.get_logger().info("Task Completed")
+        next_sequence = self.registry.get(task_id)
+
+        if next_sequence is not None:
+            self.get_logger().info("Starting Next Sequence")
+            self.send_goal(next_sequence.to_json())
+        else:
+            self.get_logger().info("Task Empty, Waiting...")
+            self.registry.tasks[task_id] = TaskStatus.READY
 
 
 def main(args=None):
@@ -67,5 +82,5 @@ def main(args=None):
     rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

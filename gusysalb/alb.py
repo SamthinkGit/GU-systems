@@ -10,6 +10,7 @@ from sequence_action_server.server import SequenceActionServer
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
 
+from gusysalb.nodes import NodeRegistry
 from gusyscore.core import get_root_path
 
 
@@ -19,11 +20,10 @@ class ALB:
     mocks = ["/gusyscore/gateway/mocks"]
     types = ["/gusysros/types"]
     nodes = {
-        'sequence_client': SequenceActionClient,
         'sequence_server': SequenceActionServer,
+        'sequence_client': SequenceActionClient,
         'feedback_client': FeedbackPublisher
     }
-    inited_nodes = {}
 
     _instance = None
     _built = False
@@ -53,10 +53,10 @@ class ALB:
 
     def load_nodes(self):
         rclpy.init()
-        self.inited_nodes = {name: node() for name, node in self.nodes.items()}
+        NodeRegistry.inited_nodes = {name: node() for name, node in self.nodes.items()}
 
         self.executor = MultiThreadedExecutor()
-        for node in self.inited_nodes.values():
+        for node in NodeRegistry.inited_nodes.values():
             self.executor.add_node(node)
 
         thread = threading.Thread(target=self.executor.spin)
@@ -72,7 +72,7 @@ class ALB:
             if self.executor:
                 self.executor.shutdown()
 
-            for node in self.inited_nodes.values():
+            for node in NodeRegistry.inited_nodes.values():
                 node.destroy_node()
 
     def import_path(self, directories: list):

@@ -264,7 +264,7 @@ class Task:
     def push(self, sequence: SequencePackage) -> None:
         self.priority_queue.push(sequence, priority=sequence.priority)
 
-    def pop(self, sequence) -> SequencePackage:
+    def pop(self) -> SequencePackage:
         if self.priority_queue.size() <= 0:
             raise Empty
         return self.priority_queue.pop()
@@ -304,12 +304,9 @@ class TaskRegistry:
             return None
 
         assert (
-            len(self.tasks) <= 0
+            self.tasks[task_id].priority_queue.size() > 0
         ), "Trying to pop an empty task (No sequences avaliable)"
         sequence = self.tasks[task_id].pop()
-
-        if len(self.tasks[task_id]) == 0:
-            del self.tasks[task_id]
 
         return sequence
 

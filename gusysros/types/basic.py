@@ -1,8 +1,22 @@
+import logging
+import time
+import traceback
+from enum import Enum
+from typing import Callable
 from typing import Dict
 from typing import Type
 
+from gusysros.tools.feedback import ExecutionStatus
+from gusysros.tools.feedback import Feedback
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.registry import ItemRegistry
+
+
+class SequenceTypeStatus(Enum):
+    RUNNING = 0
+    SUCCESS = 1
+    FAILURE = 2
+    ABORT = 3
 
 
 class SequenceType:
@@ -20,6 +34,8 @@ class SequenceType:
         ), "Package type does not match the expected type"
 
         self.pkg = pkg
+        self.callback = None
+        self.exit: Callable = None
 
     @classmethod
     def register_type(
@@ -56,15 +72,8 @@ class SequenceType:
             "SequenceType cannot be instantiated directly, please use a subclass"
         )
 
-    def step(self):
-        raise NotImplementedError(
-            "SequenceType cannot be instantiated directly, please use a subclass"
-        )
-
-    def finish(self):
-        raise NotImplementedError(
-            "SequenceType cannot be instantiated directly, please use a subclass"
-        )
+    def at_exit(self, func: Callable):
+        self.exit = func
 
 
 class SimpleSequence(SequenceType):
@@ -76,13 +85,28 @@ class SimpleSequence(SequenceType):
 
     def run(self):
         for action in self.pkg.actions:
-            func = ItemRegistry.get_function(action.action_id)
-            args = action.args
-            kwargs = action.kwargs
-            func(*args, **kwargs)
+            try:
+                func = ItemRegistry.get_function(action.action_id)
+                args = action.args
+                kwargs = action.kwargs
+                func(*args, **kwargs)
+                self.step()
+                time.sleep(1)
+
+            except Exception as e:
+                logging.error(
+                    f"Exception when running {action} in  task: {self.pkg.task_id}."
+                    + f"Traceback: {traceback.format_exc(e)}"
+                )
+
+        self.exit(self.pkg.task_id)
+
+    def step(self):
+        feedback = Feedback()
+        feedback.publish("", _status=ExecutionStatus.STEP)
 
 
-# ----- ADD HERE THE TYPES TO AUTOREGISTER WHEN IMPORTING THIS FILE --------
+# ----- ADD HERE THE TYPES THAT SHOULD AUTOREGISTER WHEN IMPORTING THIS FILE --------
 SequenceType.auto_register_type(SimpleSequence)
 
-# --------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------
