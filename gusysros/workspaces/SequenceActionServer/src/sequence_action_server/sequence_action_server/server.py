@@ -20,9 +20,6 @@ class SequenceActionServer(Node):
             self.execute_callback)
 
     def execute_callback(self, goal_handle: rclpy.action.server.ServerGoalHandle):
-        # feedback_msg = Sequence.Feedback()
-        # feedback_msg.feedback = "Function Executed"
-        # goal_handle.publish_feedback(feedback_msg)
         try:
             sequence_pkg = SequencePackage.from_json(goal_handle.request.goal)
         except Exception:

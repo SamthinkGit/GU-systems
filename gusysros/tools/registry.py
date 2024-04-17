@@ -15,6 +15,7 @@ client and sender must have imported the function target.
 """
 import hashlib
 import json
+import threading
 import uuid
 from typing import Any
 from typing import Callable
@@ -83,7 +84,7 @@ class ItemRegistry:
         else:
             obj_repr = str(obj)
 
-        obj_bytes = obj_repr.encode('utf-8')
+        obj_bytes = obj_repr.encode("utf-8")
         hash_object = hashlib.sha256(obj_bytes)
         return int(hash_object.hexdigest(), 16)
 
@@ -96,7 +97,7 @@ class ItemRegistry:
             raise KeyError(f"No function registered under ID {id}")
 
 
-class ItemEncoder():
+class ItemEncoder:
     """
     Provides static methods for encoding and decoding items to and from unique identifiers.
 
@@ -154,34 +155,29 @@ class ItemEncoder():
         return code
 
 
-if __name__ == '__main__':
+class ThreadRegistry:
 
-    print("----- Testing ItemRegistry -----")
-    registry = ItemRegistry()
+    _threads: Dict[Hashable, threading.Thread] = {}
+    _threading_local_data = threading.local()
+    _instance = None
 
-    @ItemRegistry.register_function
-    def myfunc(message):
-        print("Hello Item Registry!")
-        print(f"I will print a message: {message}")
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
-    id = ItemRegistry.get_id(myfunc)
-    print(f"The new function myfunc has id: {id}")
-    print("Executing action...")
+    def watch(self, task_id: str, target: Callable, **kwargs):
+        thread = threading.Thread(target=ThreadRegistry._run_with_id, args=(task_id, target, kwargs))
+        self._threads[task_id] = thread
+        thread.start()
 
-    registry.call(id, message="Hi! It looks like it is working ^^")
+    def _run_with_id(task_id: str, func: Callable, kwargs):
+        ThreadRegistry._threading_local_data.task_id = task_id
+        func(**kwargs)
 
-    print("\n\n----- Testing Encoder -----")
-    num = 4
-    item = object()
+    def wait(self, task_id):
+        self._threads[task_id].join()
 
-    num_code = ItemEncoder.autoencode(num)
-    item_code = ItemEncoder.autoencode(item)
-
-    print(f"An integer autoencoded is: {num_code}")
-    print(f"The object autoencoded is: {item_code}")
-
-    num = ItemEncoder.autodecode(num_code)
-    item = ItemEncoder.autodecode(item_code)
-
-    print(f"Decodification of num: {num}")
-    print(f"Decodification of object: {item}")
+    @classmethod
+    def get_task_id(cls):
+        return getattr(cls._threading_local_data, "task_id", None)

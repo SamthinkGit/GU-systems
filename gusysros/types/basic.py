@@ -1,9 +1,7 @@
 from typing import Dict
 from typing import Type
 
-from gusysros.tools.packages import ActionPackage
 from gusysros.tools.packages import SequencePackage
-from gusysros.tools.packages import SequencePriority
 from gusysros.tools.registry import ItemRegistry
 
 
@@ -39,10 +37,7 @@ class SequenceType:
 
     @classmethod
     def auto_register_type(cls, type: Type["SequenceType"]):
-        cls.register_type(
-            type_code=type.get_type(),
-            type_class=type
-        )
+        cls.register_type(type_code=type.get_type(), type_class=type)
 
     @classmethod
     def from_pkg(cls, pkg: SequencePackage) -> "SequenceType":
@@ -57,7 +52,19 @@ class SequenceType:
         return cls.type_code
 
     def run(self):
-        raise NotImplementedError("SequenceType cannot be instantiated directly, please use a subclass")
+        raise NotImplementedError(
+            "SequenceType cannot be instantiated directly, please use a subclass"
+        )
+
+    def step(self):
+        raise NotImplementedError(
+            "SequenceType cannot be instantiated directly, please use a subclass"
+        )
+
+    def finish(self):
+        raise NotImplementedError(
+            "SequenceType cannot be instantiated directly, please use a subclass"
+        )
 
 
 class SimpleSequence(SequenceType):
@@ -79,28 +86,3 @@ class SimpleSequence(SequenceType):
 SequenceType.auto_register_type(SimpleSequence)
 
 # --------------------------------------------------------------------------
-
-
-if __name__ == '__main__':
-
-    @ItemRegistry.register_function
-    def my_function(keyword_1, keyword_2):
-        print("My keyword_1 is", keyword_1)
-        print("My keyword_2 is", keyword_2)
-
-    action = ActionPackage(
-        ItemRegistry.get_id(my_function),
-        **{
-            'keyword_1': '1',
-            'keyword_2': '2'
-        }
-    )
-    seq_pkg = SequencePackage(
-        task_id="my_task",
-        type=SimpleSequence.get_type(),
-        priority=SequencePriority.NORMAL,
-        actions=[action]*3
-    )
-
-    stype = SequenceType.from_pkg(seq_pkg)
-    stype.run()

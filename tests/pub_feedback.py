@@ -5,7 +5,7 @@ from gusysros.tools.feedback import Feedback
 def main():
     alb = ALB()
     alb.build_all()
-    feedback = Feedback("my_task")
+    feedback = Feedback()
     msg = "Hello Feedback!"
 
     for _ in range(3):
@@ -17,5 +17,5 @@ def main():
     # Actually you can use 'ros2 topic echo /feedback'
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

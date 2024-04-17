@@ -21,9 +21,7 @@ from enum import Enum
 from queue import Empty
 from typing import Dict
 
-import gusyscore.gateway.mocks.gateway as gateway
 from gusysros.tools.registry import ItemEncoder
-from gusysros.tools.registry import ItemRegistry
 
 
 class SequenceType(Enum):
@@ -33,6 +31,7 @@ class SequenceType(Enum):
     - SIMPLE_SEQUENCE: A linear sequence of actions.
     - PARALLEL_SEQUENCE: Actions that can be executed in parallel.
     """
+
     SIMPLE_SEQUENCE = 0
     PARALLEL_SEQUENCE = 1
 
@@ -45,6 +44,7 @@ class TaskStatus(Enum):
     - RUNNING: Task is currently in execution.
     - BLOCKED: Task is blocked and cannot proceed.
     """
+
     READY = 0
     RUNNING = 1
     BLOCKED = 2
@@ -61,6 +61,7 @@ class SequencePriority(Enum):
     - CUMMULATIVE: For background tasks that can be deferred.
     - AT_EXIT: Executed just before a process or task exits.
     """
+
     AT_EXIT = 5
     CUMMULATIVE = 4
     NORMAL = 3
@@ -69,7 +70,7 @@ class SequencePriority(Enum):
     URGENT = 0
 
 
-class ActionPackage():
+class ActionPackage:
     """
     Packages an action with its type, identifier, and parameters for execution within a task sequence.
 
@@ -114,14 +115,18 @@ class ActionPackage():
 
     def to_dict(self, autoencode: bool = True):
 
-        args = [ItemEncoder.autoencode(arg) for arg in self.args] if autoencode else self.args
-        kwargs = {key: ItemEncoder.autoencode(val) for key, val in self.kwargs.items()} if autoencode else self.kwargs
+        args = (
+            [ItemEncoder.autoencode(arg) for arg in self.args]
+            if autoencode
+            else self.args
+        )
+        kwargs = (
+            {key: ItemEncoder.autoencode(val) for key, val in self.kwargs.items()}
+            if autoencode
+            else self.kwargs
+        )
 
-        return {
-            'action_id': self.action_id,
-            'args': args,
-            'kwargs': kwargs
-        }
+        return {"action_id": self.action_id, "args": args, "kwargs": kwargs}
 
     def __str__(self) -> str:
         return str(self.to_dict(autoencode=False))
@@ -129,21 +134,22 @@ class ActionPackage():
     @classmethod
     def from_dict(cls, dict_data: dict):
 
-        required_keys = ['action_id', 'args', 'kwargs']
+        required_keys = ["action_id", "args", "kwargs"]
         if not all(key in dict_data for key in required_keys):
-            raise ValueError(f"Dict passed to ActionPackage must contain {required_keys}")
+            raise ValueError(
+                f"Dict passed to ActionPackage must contain {required_keys}"
+            )
 
-        dict_data['args'] = [ItemEncoder.autodecode(val) for val in dict_data['args']]
-        dict_data['kwargs'] = {name: ItemEncoder.autodecode(val) for name, val in dict_data['kwargs'].items()}
+        dict_data["args"] = [ItemEncoder.autodecode(val) for val in dict_data["args"]]
+        dict_data["kwargs"] = {
+            name: ItemEncoder.autodecode(val)
+            for name, val in dict_data["kwargs"].items()
+        }
 
-        return cls(
-            dict_data['action_id'],
-            *dict_data['args'],
-            **dict_data['kwargs']
-        )
+        return cls(dict_data["action_id"], *dict_data["args"], **dict_data["kwargs"])
 
 
-class SequencePackage():
+class SequencePackage:
     """
     Represents a sequence of actions (ActionPackages) with a specified priority within a task.
 
@@ -152,7 +158,14 @@ class SequencePackage():
     :param priority: Execution priority of this sequence, defined by SequencePriority.
     :param actions: A list of ActionPackage instances to be executed in this sequence.
     """
-    def __init__(self, task_id: str, type: SequenceType, priority: int, actions: list[ActionPackage]) -> None:
+
+    def __init__(
+        self,
+        task_id: str,
+        type: SequenceType,
+        priority: int,
+        actions: list[ActionPackage],
+    ) -> None:
 
         if isinstance(priority, SequencePriority):
             priority = priority.value
@@ -167,10 +180,12 @@ class SequencePackage():
 
     def to_dict(self, autoencode: bool = True) -> dict:
         return {
-            'task_id': self.task_id,
-            'type': self.type if autoencode else SequenceType(self.type).name,
-            'priority': self.priority,
-            'actions': [action.to_dict(autoencode=autoencode) for action in self.actions]
+            "task_id": self.task_id,
+            "type": self.type if autoencode else SequenceType(self.type).name,
+            "priority": self.priority,
+            "actions": [
+                action.to_dict(autoencode=autoencode) for action in self.actions
+            ],
         }
 
     def to_json(self) -> str:
@@ -178,7 +193,7 @@ class SequencePackage():
 
     def __str__(self, pretty: bool = True) -> str:
         info = self.to_dict()
-        info['actions'] = [action.to_dict(autoencode=False) for action in self.actions]
+        info["actions"] = [action.to_dict(autoencode=False) for action in self.actions]
 
         if pretty:
             return pprint.pformat(info)
@@ -187,11 +202,15 @@ class SequencePackage():
 
     @classmethod
     def from_dict(cls, dict_data: dict):
-        required_keys = ['task_id', 'priority', 'actions']
+        required_keys = ["task_id", "priority", "actions"]
         if not all(key in dict_data for key in required_keys):
-            raise ValueError(f"Dict passed to ActionPackage must contain {required_keys}")
+            raise ValueError(
+                f"Dict passed to ActionPackage must contain {required_keys}"
+            )
 
-        dict_data['actions'] = [ActionPackage.from_dict(action) for action in dict_data['actions']]
+        dict_data["actions"] = [
+            ActionPackage.from_dict(action) for action in dict_data["actions"]
+        ]
         return cls(**dict_data)
 
     @classmethod
@@ -228,7 +247,7 @@ class SimplePriorityQueue:
         return [item for _, _, item in sorted(self._queue)]
 
 
-class Task():
+class Task:
     """
     Manages a single task, holding a queue of sequences to be executed.
     It implements the ordering protocol stablished in the SequencePriority definitions
@@ -257,7 +276,7 @@ class Task():
         return self.priority_queue.to_list(only_priorities=only_priorities)
 
 
-class TaskRegistry():
+class TaskRegistry:
     """
     A registry to manage multiple tasks, allowing for task updates, retrieval, and logging.
 
@@ -284,7 +303,9 @@ class TaskRegistry():
         if task_id not in self.tasks:
             return None
 
-        assert len(self.tasks) <= 0, "Trying to pop an empty task (No sequences avaliable)"
+        assert (
+            len(self.tasks) <= 0
+        ), "Trying to pop an empty task (No sequences avaliable)"
         sequence = self.tasks[task_id].pop()
 
         if len(self.tasks[task_id]) == 0:
@@ -294,54 +315,12 @@ class TaskRegistry():
 
     def get_log(self) -> None:
         return {
-            'concurrent_tasks': len(self.tasks),
-            'tasks': {
+            "concurrent_tasks": len(self.tasks),
+            "tasks": {
                 id: {
-                    'status': task.status.name,
-                    'queue': [SequencePriority(prio).name for prio in task.to_list()]
-                } for id, task in self.tasks.items()
+                    "status": task.status.name,
+                    "queue": [SequencePriority(prio).name for prio in task.to_list()],
+                }
+                for id, task in self.tasks.items()
             },
         }
-
-
-if __name__ == '__main__':
-    with gateway.OneFileWorkspaceMock(temporal=True) as ws:
-
-        action_1 = ActionPackage(
-            action_id=ItemRegistry.get_id(gateway.OneFileWorkspaceMock.write_with),
-            **{
-                'workspace': ws,
-                'text': 'Hello World!'
-            }
-        )
-
-        action_2 = ActionPackage(
-            action_id=ItemRegistry.get_id(gateway.OneFileWorkspaceMock.write_with),
-            **{
-                'workspace': ws,
-                'text': 'Hello Action Package!'
-            }
-        )
-
-        seq = SequencePackage(
-            task_id='my_sequence',
-            type=SequenceType.SIMPLE_SEQUENCE,
-            priority=SequencePriority.NORMAL,
-            actions=[action_1, action_2]
-        )
-
-        tr = TaskRegistry()
-        tr.append(seq)
-        tr.append(seq)
-        tr.append(seq)
-
-        pkg = seq.to_json()
-        print(" JSON Package Format ".center(60, "-"))
-        print(pkg)
-
-        decoded_seq = SequencePackage.from_json(pkg)
-        print(" Decoded Package ".center(60, "-"))
-        print(decoded_seq)
-
-        print(" TaskRegistry ".center(60, "-"))
-        print(json.dumps(tr.get_log(), indent=4))
