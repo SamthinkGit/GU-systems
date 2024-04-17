@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'action_server = sequence_action_server.server:main',
             'action_client = sequence_action_server.client:main',
+            'feedback = sequence_action_server.feedback:main',
         ],
     },
 )

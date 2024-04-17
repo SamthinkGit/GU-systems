@@ -4,6 +4,7 @@ import logging
 import os
 import threading
 from sequence_action_server.client import SequenceActionClient
+from sequence_action_server.feedback import FeedbackPublisher
 from sequence_action_server.server import SequenceActionServer
 
 import rclpy
@@ -17,10 +18,12 @@ class ALB:
     root_path = get_root_path()
     mocks = ["/gusyscore/gateway/mocks"]
     types = ["/gusysros/types"]
-    nodes = [
-        SequenceActionClient,
-        SequenceActionServer,
-    ]
+    nodes = {
+        'sequence_client': SequenceActionClient,
+        'sequence_server': SequenceActionServer,
+        'feedback_client': FeedbackPublisher
+    }
+    inited_nodes = {}
 
     _instance = None
     _built = False
@@ -50,10 +53,10 @@ class ALB:
 
     def load_nodes(self):
         rclpy.init()
-        self.inited_nodes = [node() for node in self.nodes]
+        self.inited_nodes = {name: node() for name, node in self.nodes.items()}
 
         self.executor = MultiThreadedExecutor()
-        for node in self.inited_nodes:
+        for node in self.inited_nodes.values():
             self.executor.add_node(node)
 
         thread = threading.Thread(target=self.executor.spin)
@@ -69,7 +72,7 @@ class ALB:
             if self.executor:
                 self.executor.shutdown()
 
-            for node in self.inited_nodes:
+            for node in self.inited_nodes.values():
                 node.destroy_node()
 
     def import_path(self, directories: list):
