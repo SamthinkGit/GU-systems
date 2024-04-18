@@ -17,7 +17,6 @@ setup(
     maintainer_email='sebastianmayorquin@gmail.com',
     description='Sequence Action Server for managing executions of packages in gusyscore',
     license='MIT',
-    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'action_server = sequence_action_server.server:main',

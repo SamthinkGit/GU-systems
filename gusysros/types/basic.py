@@ -99,7 +99,8 @@ class SimpleSequence(SequenceType):
                     + f"Traceback: {traceback.format_exc(e)}"
                 )
 
-        self.exit(self.pkg.task_id)
+        if self.exit is not None:
+            self.exit(self.pkg.task_id)
 
     def step(self):
         feedback = Feedback()

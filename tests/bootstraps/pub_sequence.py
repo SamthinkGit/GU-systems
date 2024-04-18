@@ -28,7 +28,7 @@ class MyPublisherNode(Node):
             ActionPackage(
                 action_id=ItemRegistry.get_id(test_function),
                 num=num
-            ) for num in range(5)
+            ) for num in range(4)
         ]
 
         seq = SequencePackage(

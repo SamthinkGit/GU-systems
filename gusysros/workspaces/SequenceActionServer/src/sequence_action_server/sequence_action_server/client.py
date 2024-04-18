@@ -48,27 +48,30 @@ class SequenceActionClient(Node):
             )
             return
 
+        # Add the sequence to the registry
         self.registry.update(sequence)
 
+        # Look if the task is currently working
         if self.registry.tasks[task_id].status == TaskStatus.READY:
             self.get_logger().info(
                 "Task Received and preprocessed, sending to action server"
             )
+
+            # Execute the next task according to STP
             self.registry.tasks[task_id].status = TaskStatus.RUNNING
             sequence = self.registry.get(task_id)
-
             self.send_goal(sequence.to_json())
 
     def goal_completed_callback(self, task_id):
         self.get_logger().info("Task Completed")
         next_sequence = self.registry.get(task_id)
 
-        if next_sequence is not None:
-            self.get_logger().info("Starting Next Sequence")
-            self.send_goal(next_sequence.to_json())
-        else:
+        if next_sequence is None:
             self.get_logger().info("Task Empty, Waiting...")
             self.registry.tasks[task_id] = TaskStatus.READY
+        else:
+            self.get_logger().info("Starting Next Sequence")
+            self.send_goal(next_sequence.to_json())
 
 
 def main(args=None):

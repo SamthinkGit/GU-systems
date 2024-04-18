@@ -177,6 +177,7 @@ class ThreadRegistry:
 
     def wait(self, task_id):
         self._threads[task_id].join()
+        del self._threads[task_id]
 
     @classmethod
     def get_task_id(cls):
