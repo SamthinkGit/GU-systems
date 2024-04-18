@@ -1,5 +1,5 @@
 pyautogui >= 0.9
-rclpy
+pytest
 
 # Recommended debugger used in GU
 icecream
