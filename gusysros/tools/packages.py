@@ -4,10 +4,10 @@ Task Management and Sequencing
 
 This module provides a comprehensive set of classes and enums to manage tasks,
 actions, and their sequencing with priorities. It includes the definition of
-action types, task statuses, and sequence priorities, along with the core classes
+action types, task statuses, and sequence priorities, along with the CORE classes
 for packaging actions and sequences, managing priority queues, and task registries.
 
-Its main purpouse is to define the main behavior of the protocols used in
+Its main purpouse is to define the main structure of the packages used in
 SequenceActionServer and SequenceActionClient.
 
 Most important functions in line with package building, sending or ordering are in
@@ -300,12 +300,9 @@ class TaskRegistry:
         self.tasks[id].push(sequence)
 
     def get(self, task_id: str) -> SequencePackage | None:
-        if task_id not in self.tasks:
+        if task_id not in self.tasks or self.tasks[task_id].priority_queue.size() == 0:
             return None
 
-        assert (
-            self.tasks[task_id].priority_queue.size() > 0
-        ), "Trying to pop an empty task (No sequences avaliable)"
         sequence = self.tasks[task_id].pop()
 
         return sequence

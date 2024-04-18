@@ -1,5 +1,5 @@
 """
-Item and Function Registry Module
+Registry Module
 =================================
 
 This module defines a singleton class `ItemRegistry` for registering and retrieving
@@ -12,6 +12,11 @@ be in the same memory space. Thus, the ItemEncoder must be shared in the same pr
 If the encoding does only use functions (not object-variables) the ItemRegistry can be
 used between distinct processes but the full compatibility is not ensured, and both
 client and sender must have imported the function target.
+
+[Update] It also contains TaskRegistry, focused on threading and task execution, managing individual
+threads associated with specific tasks. It uses a singleton pattern to ensure a consistent
+global registry of threads throughout the application lifecycle.  Key functionalities include
+watching tasks, running tasks with specific identifiers, and waiting for task completion.
 """
 import hashlib
 import json
@@ -27,7 +32,7 @@ from gusyscore.constants import ITEM_ENCODED_PREFIX
 
 class ItemRegistry:
     """
-    A singleton registry for storing functions and items with unique identifiers.
+    [SINGLETON] A registry for storing functions and items with unique identifiers.
 
     This class provides methods to add, retrieve, and invoke functions and items stored
     in the registry. It ensures that each function and item can be accessed through a
@@ -156,29 +161,64 @@ class ItemEncoder:
 
 
 class ThreadRegistry:
+    """
+    [SINGLETON] Manages the registry of threads for different tasks, providing a centralized point of control for task
+    execution threads.
+
+    :param None: This class is implemented as a singleton and does not require parameters for instantiation.
+    """
 
     _threads: Dict[Hashable, threading.Thread] = {}
     _threading_local_data = threading.local()
     _instance = None
 
     def __new__(cls):
+        """
+        Ensures that only one instance of ThreadRegistry is created (singleton pattern).
+        :return: Returns the singleton instance of the ThreadRegistry.
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def watch(self, task_id: str, target: Callable, **kwargs):
-        thread = threading.Thread(target=ThreadRegistry._run_with_id, args=(task_id, target, kwargs))
+        """
+        Starts a new thread associated with a task ID and executes the given target callable.
+
+        :param task_id: Identifier for the task this thread is associated with.
+        :param target: The callable object to be executed in the thread.
+        :param kwargs: Additional keyword arguments to be passed to the target callable.
+        """
+        thread = threading.Thread(
+            target=ThreadRegistry._run_with_id, args=(task_id, target, kwargs)
+        )
         self._threads[task_id] = thread
         thread.start()
 
     def _run_with_id(task_id: str, func: Callable, kwargs):
+        """
+        Sets the task ID to the local thread data and executes the function with provided arguments.
+        Used to wrap kwargs into the function
+
+        :param task_id: Identifier for the task.
+        :param func: Function to execute in the thread.
+        :param kwargs: Arguments to pass to the function.
+        """
         ThreadRegistry._threading_local_data.task_id = task_id
         func(**kwargs)
 
     def wait(self, task_id):
+        """
+        Waits for the specified task's thread to complete and removes it from the registry.
+        :param task_id: Identifier for the task to wait for.
+        """
         self._threads[task_id].join()
         del self._threads[task_id]
 
     @classmethod
     def get_task_id(cls):
+        """
+        Retrieves the task ID associated with the current thread from the thread-local data.
+        :return: The task ID if available, otherwise None.
+        """
         return getattr(cls._threading_local_data, "task_id", None)
