@@ -8,12 +8,12 @@ new protocols for ordering a sequence of actions, expanding the Action Space B (
 It supports dynamic registration of sequence types, and enforces a structure where each sequence type can
 manage its execution and error handling.
 """
-import logging
 import traceback
 from typing import Callable
 from typing import Dict
 from typing import Type
 
+from gusyscore.core import get_logger
 from gusysros.tools.feedback import ExecutionStatus
 from gusysros.tools.feedback import Feedback
 from gusysros.tools.packages import SequencePackage
@@ -113,6 +113,7 @@ class SimpleSequence(SequenceType):
     :param pkg: The SequencePackage associated with this sequence.
     """
 
+    _logger = get_logger("SimpleSequence")
     type_code = 5
 
     def __init__(self, pkg: SequencePackage) -> None:
@@ -129,7 +130,7 @@ class SimpleSequence(SequenceType):
                 self.step()
 
             except Exception as e:
-                logging.error(
+                self._logger.error(
                     f"Exception when running {action} in  task: {self.pkg.task_id}."
                     + f"Traceback: {traceback.format_exc(e)}"
                 )

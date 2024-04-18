@@ -28,6 +28,7 @@ from typing import Dict
 from typing import Hashable
 
 from gusyscore.constants import ITEM_ENCODED_PREFIX
+from gusyscore.core import get_logger
 
 
 class ItemRegistry:
@@ -39,6 +40,7 @@ class ItemRegistry:
     unique hashable key generated based on the object itself.
     """
 
+    _logger = get_logger("ItemRegistry")
     _instance = None
     _functions: Dict[Hashable, Callable] = {}
     _items: Dict[Hashable, Any] = {}
@@ -63,11 +65,13 @@ class ItemRegistry:
         """Decorator to register a function with a unique action ID."""
         id = cls.get_id(func)
         cls._functions[id] = func
+        cls._logger.debug(f"Function {func} registered")
         return func
 
     @classmethod
     def add_function(cls, func: Callable) -> None:
         """Add an item to the registry with a unique ID."""
+        cls._logger.debug(f"Function {func} has been manually added")
         id = cls.get_id(func)
         if id not in cls._functions:
             cls._functions[id] = func
@@ -168,6 +172,7 @@ class ThreadRegistry:
     :param None: This class is implemented as a singleton and does not require parameters for instantiation.
     """
 
+    _logger = get_logger("ThreadRegistry")
     _threads: Dict[Hashable, threading.Thread] = {}
     _threading_local_data = threading.local()
     _instance = None
@@ -192,6 +197,7 @@ class ThreadRegistry:
         thread = threading.Thread(
             target=ThreadRegistry._run_with_id, args=(task_id, target, kwargs)
         )
+        self._logger.debug(f"New thread built with task_id '{task_id}' for executing '{target.__name__}'")
         self._threads[task_id] = thread
         thread.start()
 
@@ -213,6 +219,7 @@ class ThreadRegistry:
         :param task_id: Identifier for the task to wait for.
         """
         self._threads[task_id].join()
+        self._logger.debug(f"Thread with task_id {task_id} has succesfully exited")
         del self._threads[task_id]
 
     @classmethod

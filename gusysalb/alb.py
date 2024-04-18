@@ -14,7 +14,6 @@ example, TaskRegistry)
 """
 import atexit
 import importlib
-import logging
 import os
 import threading
 from sequence_action_server.client import SequenceActionClient
@@ -25,6 +24,7 @@ import rclpy
 from rclpy.executors import MultiThreadedExecutor
 
 from gusysalb.nodes import NodeRegistry
+from gusyscore.core import get_logger
 from gusyscore.core import get_root_path
 
 
@@ -44,6 +44,7 @@ class ALB:
         'feedback_client': FeedbackPublisher
     }
 
+    _logger = get_logger("ALB")
     _instance = None
     _built = False
     _clean = False
@@ -74,12 +75,14 @@ class ALB:
         """
         Dynamically imports Python modules for mocks (also registering them).
         """
+        self._logger.debug("Building Mocks...")
         self.import_path(self.mocks)
 
     def load_types(self):
         """
         Dynamically imports Python modules for types (also registering them).
         """
+        self._logger.debug("Building Types...")
         self.import_path(self.types)
 
     def load_nodes(self):
@@ -87,6 +90,7 @@ class ALB:
         Initializes and registers all ROS 2 nodes and starts the multi-threaded
         executor to handle these nodes.
         """
+        self._logger.debug("Launching Nodes...")
         rclpy.init()
         NodeRegistry.inited_nodes = {name: node() for name, node in self.nodes.items()}
 
@@ -95,8 +99,8 @@ class ALB:
             self.executor.add_node(node)
 
         thread = threading.Thread(target=self.executor.spin)
-        logging.debug("Launching Nodes")
         thread.start()
+        self._logger.debug("All nodes have been launched in a new thread")
 
         atexit.register(self.cleanup)
 
@@ -107,12 +111,14 @@ class ALB:
         """
         if not self._clean:
             self._clean = True
-            logging.debug("Closing Nodes")
+            self._logger.debug("Closing Nodes")
             if self.executor:
                 self.executor.shutdown()
 
             for node in NodeRegistry.inited_nodes.values():
                 node.destroy_node()
+
+        self._logger.debug("Cleanup Completed")
 
     def import_path(self, directories: list):
         """
@@ -125,12 +131,11 @@ class ALB:
             for filename in os.listdir(path):
                 if filename.endswith(".py") and filename != "__init__.py":
                     module = dir[1:].replace("/", ".") + "." + filename[:-3]
-                    logging.debug(f"Loading module {filename}")
+                    self._logger.debug(f"Loading module {filename}")
                     importlib.import_module(module)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG, format="[%(levelname)s] %(message)s")
     alb = ALB()
     alb.build_all()
     print("Building Completed")

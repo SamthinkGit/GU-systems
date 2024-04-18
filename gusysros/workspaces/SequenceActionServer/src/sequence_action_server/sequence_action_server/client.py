@@ -22,6 +22,7 @@ from std_msgs.msg import String
 from sys_actions.action import Sequence
 
 from gusyscore.constants import REQUEST_TOPIC
+from gusyscore.core import get_logger
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.packages import TaskRegistry
 from gusysros.tools.packages import TaskStatus
@@ -44,6 +45,7 @@ class SequenceActionClient(Node):
         Publisher().add_subscriber(self.subscriber)
 
         self._action_client = ActionClient(self, Sequence, "sequence")
+        self._logger = get_logger("ActionClient")
         self.subscription = self.create_subscription(
             String, REQUEST_TOPIC, self.request_callback, qos_profile_system_default
         )
@@ -68,7 +70,7 @@ class SequenceActionClient(Node):
             task_id = sequence.task_id
         except Exception:
             trback = traceback.format_exc()
-            self.get_logger().warn(
+            self._logger.warn(
                 f"Invalid package received in Sequence Action client. {trback}"
             )
             return
@@ -78,8 +80,8 @@ class SequenceActionClient(Node):
 
         # Look if the task is currently working
         if self.registry.tasks[task_id].status == TaskStatus.READY:
-            self.get_logger().info(
-                "Task Received and preprocessed, sending to action server"
+            self._logger.debug(
+                "Package received and Preprocessed, sending to Action server"
             )
 
             # Execute the next task according to STP
@@ -93,14 +95,14 @@ class SequenceActionClient(Node):
         or setting the task status to READY.
         :param task_id: The identifier of the task that has completed.
         """
-        self.get_logger().info("Task Completed")
+        self._logger.info("Task Completed")
         next_sequence = self.registry.get(task_id)
 
         if next_sequence is None:
-            self.get_logger().info("Task Empty, Waiting...")
+            self._logger.debug("Task Empty, Waiting...")
             self.registry.tasks[task_id].status = TaskStatus.READY
         else:
-            self.get_logger().info("Starting Next Sequence")
+            self._logger.debug("Starting Next Sequence")
             self.send_goal(next_sequence.to_json())
 
 

@@ -15,6 +15,7 @@ from rclpy.action import ActionServer
 from rclpy.node import Node
 from sys_actions.action import Sequence
 
+from gusyscore.core import get_logger
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.registry import ThreadRegistry
 from gusysros.types.basic import SequenceType
@@ -34,6 +35,7 @@ class SequenceActionServer(Node):
         Initializes the SequenceActionServer node and sets up the action server.
         """
         super().__init__("sequence_action_server")
+        self._logger = get_logger("ActionServer")
         self._action_server = ActionServer(
             self, Sequence, "sequence", self.execute_callback
         )
@@ -50,7 +52,7 @@ class SequenceActionServer(Node):
             sequence_pkg = SequencePackage.from_json(goal_handle.request.goal)
         except Exception:
             trback = traceback.format_exc()
-            self.get_logger().warn(
+            self._logger.warn(
                 f"Invalid package received in Sequence Action client. {trback}"
             )
             return

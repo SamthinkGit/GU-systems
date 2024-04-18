@@ -1,5 +1,9 @@
 from pathlib import Path
 
+import colorlog
+
+from gusyscore.constants import LOG_LEVEL
+
 
 def get_core_path() -> Path:
     """
@@ -27,3 +31,26 @@ def get_root_path() -> Path:
 
     path = Path(__file__).parent.parent.resolve()
     return path
+
+
+def get_logger(name: str):
+
+    handler = colorlog.StreamHandler()
+    formatter = colorlog.ColoredFormatter(
+        "[%(log_color)s%(levelname)s%(reset)s]\t[%(yellow)s%(name)s%(reset)s]: %(message)s",
+        log_colors={
+            "DEBUG": "cyan",
+            "INFO": "green",
+            "WARNING": "yellow",
+            "ERROR": "red",
+            "CRITICAL": "red,bg_white",
+        },
+        secondary_log_colors={},
+        style="%",
+    )
+
+    handler.setFormatter(formatter)
+    logger = colorlog.getLogger(name)
+    logger.setLevel(LOG_LEVEL)
+    logger.addHandler(handler)
+    return logger
