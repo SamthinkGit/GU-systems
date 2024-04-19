@@ -7,55 +7,58 @@ from std_msgs.msg import String
 from gusysalb.alb import ALB
 from gusyscore.constants import REQUEST_TOPIC
 from gusyscore.core import get_logger
-from gusyscore.gateway.mocks.debug import test_function
+from gusyscore.gateway.mocks.debug import empty_function
 from gusysros.tools.packages import ActionPackage
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.packages import SequencePriority
 from gusysros.tools.registry import ItemRegistry
-from gusysros.types.basic import SimpleSequence
+from gusysros.types.basic import ReservedTypeCode
 
 
 class MyPublisherNode(Node):
 
     def __init__(self):
-        super().__init__("test_sequence_publisher")
+        super().__init__("test_stop_publisher")
         self.publisher_ = self.create_publisher(String, REQUEST_TOPIC, 10)
         self.msg = String()
-        self._logger = get_logger("test_sequence_publisher")
-        self._logger.info("Timer built, wating 3s for starting")
+        self._logger = get_logger("test_stop_publisher")
 
     def send_package(self):
 
-        actions = [
-            ActionPackage(action_id=ItemRegistry.get_id(test_function), num=num, sleep=1)
-            for num in range(4)
-        ]
+        action = ActionPackage(
+            action_id=ItemRegistry.get_id(empty_function)
+        )
 
+        priority = SequencePriority.INTERRUPTION
         seq = SequencePackage(
             task_id="my_task",
-            type=SimpleSequence.get_type(),
-            priority=SequencePriority.NORMAL,
-            actions=actions,
+            type=ReservedTypeCode.SOFT_STOP.value,
+            priority=priority,
+            actions=[action],
         )
 
         self.msg.data = seq.to_json()
         self.publisher_.publish(self.msg)
-        self._logger.info("Task Published")
+        self._logger.info(f"Stop Published with priority {priority.name}")
 
 
 def main():
+
     alb = ALB()
-    alb.build_all()
+    alb.load_mocks()
+    alb.load_types()
+    rclpy.init()
+
     print("Starting node...")
+    print("Use ENTER to send stop packages")
 
     node = MyPublisherNode()
     executor = SingleThreadedExecutor()
     executor.add_node(node)
-    print("Starting node...")
-    print("Use ENTER to send mock packages")
     while True:
         input()
         node.send_package()
+
     rclpy.shutdown()
 
 

@@ -18,6 +18,7 @@ from sys_actions.action import Sequence
 from gusyscore.core import get_logger
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.registry import ThreadRegistry
+from gusysros.types.basic import ReservedTypeCode
 from gusysros.types.basic import SequenceType
 
 
@@ -57,20 +58,46 @@ class SequenceActionServer(Node):
             )
             return
 
+        try:
+            reserved_code = ReservedTypeCode(sequence_pkg.type)
+        except ValueError:
+            reserved_code = None
+
+        task_id = sequence_pkg.task_id
+
+        # Check if it is a TaskManagement package
+        if reserved_code == ReservedTypeCode.SOFT_STOP:
+            thread = self._thread_registry.get_thread(sequence_pkg.task_id)
+            self._logger.debug(f"SOFT-STOP Detected for task {sequence_pkg.task_id}")
+
+            if thread is None:
+                self._logger.warn("Trying to cancel a task that is not running")
+                Publisher.notify_subscribers(task_id)
+                return self._success(goal_handle, sequence_pkg)
+
+            seq_type: SequenceType = thread._seq_type
+            seq_type.soft_stop()
+            return self._success(goal_handle, sequence_pkg)
+
         # Define the behavior of the pkg
         seq_type = SequenceType.from_pkg(sequence_pkg)
         seq_type.at_exit(SequenceActionServer.close_task)
 
         # Throw a thread to complete the task, it will return to close_task()
         self._thread_registry.watch(
-            task_id=sequence_pkg.task_id, target=execute_sequence_type, seq_type=seq_type
+            task_id=task_id,
+            target=execute_sequence_type,
+            seq_type=seq_type,
         )
 
         self.check_for_clean()
+        return self._success(goal_handle, sequence_pkg)
 
-        goal_handle.succeed()
+    @staticmethod
+    def _success(goal_handle, sequence_pkg):
         result = Sequence.Result()
         result.result = sequence_pkg.task_id
+        goal_handle.succeed()
         return result
 
     @classmethod

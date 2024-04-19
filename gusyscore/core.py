@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 import colorlog
@@ -37,11 +38,11 @@ def get_logger(name: str):
 
     handler = colorlog.StreamHandler()
     formatter = colorlog.ColoredFormatter(
-        "[%(log_color)s%(levelname)s%(reset)s]\t[%(yellow)s%(name)s%(reset)s]: %(message)s",
+        "[%(log_color)s%(levelname)s%(reset)s] [%(yellow)s%(name)s%(reset)s]: %(message)s",
         log_colors={
             "DEBUG": "cyan",
             "INFO": "green",
-            "WARNING": "yellow",
+            "WARNING": "purple",
             "ERROR": "red",
             "CRITICAL": "red,bg_white",
         },
@@ -54,3 +55,11 @@ def get_logger(name: str):
     logger.setLevel(LOG_LEVEL)
     logger.addHandler(handler)
     return logger
+
+
+def ignore_invalid_warnings():
+    invalid_msgs = [
+        'Two goals were accepted with the same ID'
+    ]
+    for msg in invalid_msgs:
+        warnings.filterwarnings("ignore", message=msg)

@@ -9,6 +9,7 @@ It supports dynamic registration of sequence types, and enforces a structure whe
 manage its execution and error handling.
 """
 import traceback
+from enum import Enum
 from typing import Callable
 from typing import Dict
 from typing import Type
@@ -18,6 +19,13 @@ from gusysros.tools.feedback import ExecutionStatus
 from gusysros.tools.feedback import Feedback
 from gusysros.tools.packages import SequencePackage
 from gusysros.tools.registry import ItemRegistry
+
+
+class ReservedTypeCode(Enum):
+
+    UNDEFINED = -1
+    SOFT_STOP = -2
+    HARD_STOP = -3
 
 
 class SequenceType:
@@ -43,6 +51,7 @@ class SequenceType:
         ), "Package type does not match the expected type"
 
         self.pkg = pkg
+        self._soft_stop = False
         self.callback = None
         self.exit: Callable = None
 
@@ -60,7 +69,7 @@ class SequenceType:
 
         if type_code in cls._registry:
 
-            if not force and cls._registry[type_code] == type_class:
+            if not force and cls._registry[type_code] != type_class:
                 raise TypeError(
                     f"SequenceType with type_code {type_code} has already been registered"
                 )
@@ -98,6 +107,12 @@ class SequenceType:
         """
         return cls.type_code
 
+    def soft_stop(self):
+        self._soft_stop = True
+
+    def soft_stop_called(self):
+        return self._soft_stop
+
     def run(self):
         raise NotImplementedError(
             "SequenceType cannot be instantiated directly, please use a subclass"
@@ -123,6 +138,10 @@ class SimpleSequence(SequenceType):
         """Runs all the functions in the package sequentially"""
         for action in self.pkg.actions:
             try:
+
+                if self.soft_stop_called():
+                    break
+
                 func = ItemRegistry.get_function(action.action_id)
                 args = action.args
                 kwargs = action.kwargs

@@ -186,7 +186,7 @@ class ThreadRegistry:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def watch(self, task_id: str, target: Callable, **kwargs):
+    def watch(self, task_id: str, target: Callable, **kwargs) -> None:
         """
         Starts a new thread associated with a task ID and executes the given target callable.
 
@@ -197,11 +197,19 @@ class ThreadRegistry:
         thread = threading.Thread(
             target=ThreadRegistry._run_with_id, args=(task_id, target, kwargs)
         )
-        self._logger.debug(f"New thread built with task_id '{task_id}' for executing '{target.__name__}'")
-        self._threads[task_id] = thread
-        thread.start()
+        # Save the function to be accesible outwards
+        thread._target_func = target  # type: ignore
+        if 'seq_type' in kwargs:
+            thread._seq_type = kwargs['seq_type']  # type: ignore
 
-    def _run_with_id(task_id: str, func: Callable, kwargs):
+        self._logger.debug(
+            f"New thread built with task_id '{task_id}' for executing '{target.__name__}'"
+        )
+        thread.start()
+        self._threads[task_id] = thread
+
+    @staticmethod
+    def _run_with_id(task_id: str, func: Callable, kwargs) -> None:
         """
         Sets the task ID to the local thread data and executes the function with provided arguments.
         Used to wrap kwargs into the function
@@ -213,14 +221,24 @@ class ThreadRegistry:
         ThreadRegistry._threading_local_data.task_id = task_id
         func(**kwargs)
 
+    def get_thread(self, task_id: str) -> threading.Thread | None:
+        """Returns the thread with the task_id requested"""
+        return self._threads.get(task_id, None)
+
+    def pop_thread(self, task_id: str) -> threading.Thread:
+        """Pops (removes from the registry) the thread with the task_id requested"""
+        return self._threads.pop(task_id)
+
     def wait(self, task_id):
         """
         Waits for the specified task's thread to complete and removes it from the registry.
         :param task_id: Identifier for the task to wait for.
         """
-        self._threads[task_id].join()
-        self._logger.debug(f"Thread with task_id {task_id} has succesfully exited")
-        del self._threads[task_id]
+        thread = self._threads.get(task_id, None)
+        if thread is not None:
+            thread.join()
+            self._logger.debug(f"Thread with task_id {task_id} has succesfully exited")
+            del self._threads[task_id]
 
     @classmethod
     def get_task_id(cls):

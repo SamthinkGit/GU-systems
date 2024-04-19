@@ -26,6 +26,7 @@ from rclpy.executors import MultiThreadedExecutor
 from gusysalb.nodes import NodeRegistry
 from gusyscore.core import get_logger
 from gusyscore.core import get_root_path
+from gusyscore.core import ignore_invalid_warnings as ignore_warns
 
 
 class ALB:
@@ -57,8 +58,9 @@ class ALB:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, ignore_invalid_warnings: bool = True) -> None:
+        if ignore_invalid_warnings:
+            ignore_warns()
 
     def build_all(self):
         """

@@ -24,18 +24,6 @@ from typing import Dict
 from gusysros.tools.registry import ItemEncoder
 
 
-class SequenceType(Enum):
-    """
-    Enumerates types of actions in a task sequence.
-
-    - SIMPLE_SEQUENCE: A linear sequence of actions.
-    - PARALLEL_SEQUENCE: Actions that can be executed in parallel.
-    """
-
-    SIMPLE_SEQUENCE = 0
-    PARALLEL_SEQUENCE = 1
-
-
 class TaskStatus(Enum):
     """
     Represents the current status of a task.
@@ -162,16 +150,13 @@ class SequencePackage:
     def __init__(
         self,
         task_id: str,
-        type: SequenceType,
+        type: int,
         priority: int,
         actions: list[ActionPackage],
     ) -> None:
 
         if isinstance(priority, SequencePriority):
             priority = priority.value
-
-        if isinstance(type, SequenceType):
-            type = type.value
 
         self.type = type
         self.task_id = task_id
@@ -181,7 +166,7 @@ class SequencePackage:
     def to_dict(self, autoencode: bool = True) -> dict:
         return {
             "task_id": self.task_id,
-            "type": self.type if autoencode else SequenceType(self.type).name,
+            "type": self.type,
             "priority": self.priority,
             "actions": [
                 action.to_dict(autoencode=autoencode) for action in self.actions
@@ -253,6 +238,8 @@ class Task:
     It implements the ordering protocol stablished in the SequencePriority definitions
     by ordering the sequences by priority
 
+    :note: If a new sequence is pushed with lower priority (more important) then the
+    task will automatically update to READY
     :param task_id: Unique identifier for the task.
     """
 
@@ -260,14 +247,22 @@ class Task:
         self.task_id = task_id
         self.status = TaskStatus.READY
         self.priority_queue = SimplePriorityQueue()
+        self.current_sequence: SequencePackage | None = None
 
     def push(self, sequence: SequencePackage) -> None:
+        try:
+            if self.current_sequence is not None and sequence.priority < self.current_sequence.priority:
+                self.status = TaskStatus.READY
+        except Empty:
+            pass
+
         self.priority_queue.push(sequence, priority=sequence.priority)
 
     def pop(self) -> SequencePackage:
         if self.priority_queue.size() <= 0:
             raise Empty
-        return self.priority_queue.pop()
+        self.current_sequence = self.priority_queue.pop()
+        return self.current_sequence
 
     def __len__(self) -> int:
         return self.priority_queue.size()
@@ -307,7 +302,7 @@ class TaskRegistry:
 
         return sequence
 
-    def get_log(self) -> None:
+    def get_log(self) -> dict:
         return {
             "concurrent_tasks": len(self.tasks),
             "tasks": {
