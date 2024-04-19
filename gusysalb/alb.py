@@ -18,6 +18,7 @@ import os
 import threading
 from sequence_action_server.client import SequenceActionClient
 from sequence_action_server.feedback import FeedbackPublisher
+from sequence_action_server.registry_logger import RegistryLogger
 from sequence_action_server.server import SequenceActionServer
 
 import rclpy
@@ -42,7 +43,8 @@ class ALB:
     nodes = {
         'sequence_server': SequenceActionServer,
         'sequence_client': SequenceActionClient,
-        'feedback_client': FeedbackPublisher
+        'feedback_client': FeedbackPublisher,
+        'registry_logger': RegistryLogger
     }
 
     _logger = get_logger("ALB")

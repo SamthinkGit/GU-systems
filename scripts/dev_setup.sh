@@ -16,5 +16,16 @@ for dir in "$workspaces_dir"/*; do
     fi
 done
 
-# Some dev-aliases
+# -------------------------- Some dev-aliases ---------------------------------
+
+# [gutree]: Show the tree of the proyect without redundant files
 alias gutree='tree -I build -I install -I log -I __pycache__ -I docs'
+
+# [jsed]: Prints json files formatted (used in combination with ros2 topic echo)
+# Example: ros2 topic echo /tast_registry | jsed
+alias jsed="sed -E -e 's/\\\n/\n/g' -e 's/\\\//g' -e 's/\\\"//g'"
+
+# [gureg]: Shows the status of the TaskRegistry in live
+alias gureg="watch -c -n 0.25 $SOURCE/scripts/show_registry.sh"
+
+# -----------------------------------------------------------------------------

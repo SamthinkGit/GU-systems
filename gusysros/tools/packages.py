@@ -22,6 +22,7 @@ from queue import Empty
 from typing import Dict
 
 from gusysros.tools.registry import ItemEncoder
+from gusysros.tools.registry import ItemRegistry
 
 
 class TaskStatus(Enum):
@@ -100,6 +101,7 @@ class ActionPackage:
         self.action_id = action_id
         self.args = args
         self.kwargs = kwargs
+        self._func_name = ItemRegistry.get_function(action_id).__name__
 
     def to_dict(self, autoencode: bool = True):
 
@@ -176,6 +178,11 @@ class SequencePackage:
     def to_json(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
 
+    def summary(self) -> str:
+        prio = SequencePriority(self.priority).name
+        id = self.task_id
+        return f"<[{id}][{prio}]: {[action._func_name for action in self.actions]}>"
+
     def __str__(self, pretty: bool = True) -> str:
         info = self.to_dict()
         info["actions"] = [action.to_dict(autoencode=False) for action in self.actions]
@@ -251,7 +258,10 @@ class Task:
 
     def push(self, sequence: SequencePackage) -> None:
         try:
-            if self.current_sequence is not None and sequence.priority < self.current_sequence.priority:
+            if (
+                self.current_sequence is not None
+                and sequence.priority < self.current_sequence.priority
+            ):
                 self.status = TaskStatus.READY
         except Empty:
             pass
@@ -268,7 +278,9 @@ class Task:
         return self.priority_queue.size()
 
     def to_list(self, only_priorities: bool = True) -> list:
-        return self.priority_queue.to_list(only_priorities=only_priorities)
+        if only_priorities:
+            return self.priority_queue.to_list(only_priorities=only_priorities)
+        return self.priority_queue.to_list()
 
 
 class TaskRegistry:
@@ -302,13 +314,20 @@ class TaskRegistry:
 
         return sequence
 
-    def get_log(self) -> dict:
+    def get_log(self, only_priorities: bool = True) -> dict:
         return {
             "concurrent_tasks": len(self.tasks),
             "tasks": {
                 id: {
                     "status": task.status.name,
-                    "queue": [SequencePriority(prio).name for prio in task.to_list()],
+                    "queue": [
+                        (
+                            SequencePriority(item).name
+                            if only_priorities
+                            else item.summary()
+                        )
+                        for item in task.to_list(only_priorities=only_priorities)
+                    ],
                 }
                 for id, task in self.tasks.items()
             },
