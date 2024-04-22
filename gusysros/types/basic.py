@@ -54,6 +54,7 @@ class SequenceType:
         self._soft_stop = False
         self.callback = None
         self.exit: Callable = None
+        self.feedback = Feedback()
 
     @classmethod
     def register_type(
@@ -136,31 +137,35 @@ class SimpleSequence(SequenceType):
 
     def run(self):
         """Runs all the functions in the package sequentially"""
+        success = True
         for action in self.pkg.actions:
             try:
 
                 if self.soft_stop_called():
+                    self.feedback.publish("", _status=ExecutionStatus.ABORT)
                     break
 
                 func = ItemRegistry.get_function(action.action_id)
                 args = action.args
                 kwargs = action.kwargs
                 func(*args, **kwargs)
-                self.step()
+                self.feedback.publish("", _status=ExecutionStatus.STEP)
 
             except Exception as e:
                 self._logger.error(
                     f"Exception when running {action} in  task: {self.pkg.task_id}."
                     + f"Traceback: {traceback.format_exc(e)}"
                 )
+                success = False
+                break
+
+        if success:
+            self.feedback.publish("", _status=ExecutionStatus.SUCCESS)
+        else:
+            self.feedback.publish("", _status=ExecutionStatus.ABORT)
 
         if self.exit is not None:
             self.exit(self.pkg.task_id)
-
-    def step(self):
-        """Gives a feedback publication each step (when a function completes)"""
-        feedback = Feedback()
-        feedback.publish("", _status=ExecutionStatus.STEP)
 
 
 # ----- ADD HERE THE TYPES THAT SHOULD AUTOREGISTER WHEN IMPORTING THIS FILE --------

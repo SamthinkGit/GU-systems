@@ -8,4 +8,4 @@ ITEM_ENCODED_PREFIX = 'icode_'
 FEEDBACK_TOPIC = 'feedback'
 REQUEST_TOPIC = 'request'
 REGISTRY_TOPIC = 'task_registry'
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.INFO

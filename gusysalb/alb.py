@@ -17,10 +17,12 @@ import importlib
 import os
 import threading
 from sequence_action_server.client import SequenceActionClient
+from sequence_action_server.feedback import FeedbackListener
 from sequence_action_server.feedback import FeedbackPublisher
 from sequence_action_server.registry_logger import RegistryLogger
 from sequence_action_server.sequence_publisher import SequencePublisher
 from sequence_action_server.server import SequenceActionServer
+from typing import Callable
 
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
@@ -44,7 +46,7 @@ class ALB:
     nodes = {
         'sequence_server': SequenceActionServer,
         'sequence_client': SequenceActionClient,
-        'feedback_client': FeedbackPublisher,
+        'feedback_publisher': FeedbackPublisher,
         'sequence_publisher': SequencePublisher,
         'registry_logger': RegistryLogger
     }
@@ -53,6 +55,7 @@ class ALB:
     _instance = None
     _built = False
     _clean = False
+    _feedback_listener = None
 
     def __new__(cls):
         """
@@ -66,16 +69,20 @@ class ALB:
         if ignore_invalid_warnings:
             ignore_warns()
 
-    def build_all(self):
+    def build_all(self, feedback_listener: Callable = None):
         """
         Constructs and initializes all components necessary for the application.
         """
         if not self._built:
             self._built = True
 
+            if feedback_listener is not None:
+                self._feedback_listener = feedback_listener
             self.load_mocks()
             self.load_types()
             self.load_nodes()
+        else:
+            self._logger.warn("Trying to build ALB after it has already been built. Skipping")
 
     def load_mocks(self):
         """
@@ -103,6 +110,11 @@ class ALB:
         self.executor = MultiThreadedExecutor()
         for node in NodeRegistry.inited_nodes.values():
             self.executor.add_node(node)
+
+        if self._feedback_listener is not None:
+            feedback_node = FeedbackListener(self._feedback_listener)
+            self.executor.add_node(feedback_node)
+            NodeRegistry.inited_nodes['feedback_listener'] = feedback_node
 
         thread = threading.Thread(target=self.executor.spin)
         thread.start()

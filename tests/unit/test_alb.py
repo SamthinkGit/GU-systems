@@ -1,6 +1,6 @@
 import sys
 
-import pytest # noqa
+import pytest  # noqa
 import rclpy.node  # noqa
 from rclpy.node import Node
 
@@ -31,5 +31,4 @@ class TestALB:
 
         subscribers_info = node.get_subscriptions_info_by_topic(REQUEST_TOPIC)
         assert len(subscribers_info) > 0
-
         rclpy.shutdown()

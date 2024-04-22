@@ -9,7 +9,6 @@ feedback from various components of a system through ROS messaging.
 Do not confuse with gusysros.tools.feedback, which enwraps this node
 into a simplified interface
 """
-import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
@@ -20,6 +19,7 @@ class FeedbackPublisher(Node):
     """
     A ROS 2 node for publishing feedback messages to a specific topic.
     """
+
     def __init__(self):
         """
         Initializes the FeedbackPublisher node and sets up the publisher for sending messages.
@@ -37,18 +37,18 @@ class FeedbackPublisher(Node):
         self.publisher_.publish(msg)
 
 
-def main():
-    rclpy.init()
-    feedback_publisher = FeedbackPublisher()
-    try:
-        while True:
-            message = input("Enter a feedback message to publish: ")
-            feedback_publisher.publish_feedback(message)
-    except KeyboardInterrupt:
-        pass
-    feedback_publisher.destroy_node()
-    rclpy.shutdown()
+class FeedbackListener(Node):
 
+    def __init__(self, target_callback):
+        super().__init__("feedback_listener")
 
-if __name__ == "__main__":
-    main()
+        def msg_wrapper(msg):
+            target_callback(msg.data)
+
+        # Note:
+        # target_callback will be called with a str as argument
+        # So this, the function should be defined as:
+        # def target_callback(msg: str): ...
+        self.subscription = self.create_subscription(
+            String, FEEDBACK_TOPIC, msg_wrapper, 100
+        )

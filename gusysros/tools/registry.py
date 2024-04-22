@@ -137,6 +137,9 @@ class ItemEncoder:
         :return: A unique identifier associated with the encoded item.
         """
         try:
+            if isinstance(item, list) or isinstance(item, dict):
+                raise TypeError
+
             json.dumps(item)
             return item
 

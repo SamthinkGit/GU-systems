@@ -24,7 +24,7 @@ def test_sequence_building():
             action_id=ItemRegistry.get_id(gateway.OneFileWorkspaceMock.write_with),
             **{"workspace": ws, "text": "Hello World!"}
         )
-        encoded_ws: str = action_1.to_dict()['kwargs']["workspace"]
+        encoded_ws: str = action_1.to_dict()["kwargs"]["workspace"]
         assert encoded_ws.startswith(ITEM_ENCODED_PREFIX)
 
         action_2 = ActionPackage(
@@ -79,5 +79,4 @@ def test_sequence_types():
 
     seq_type.run()
     assert mock.list_properly_modified()
-
     rclpy.shutdown()

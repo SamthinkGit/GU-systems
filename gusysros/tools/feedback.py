@@ -17,6 +17,7 @@ from sequence_action_server.feedback import FeedbackPublisher
 from typing import Any
 
 from gusysalb.nodes import NodeRegistry
+from gusyscore.core import get_logger
 from gusysros.tools.registry import ItemEncoder
 from gusysros.tools.registry import ThreadRegistry
 
@@ -29,7 +30,9 @@ class ExecutionStatus(Enum):
 
     RUNNING = 0
     STEP = 1
-    SWITCH = 2
+    SUCCESS = 2
+    ABORT = 3
+    SWITCH = 3
 
 
 class Feedback:
@@ -38,8 +41,15 @@ class Feedback:
     :param None: This class does not require parameters upon instantiation, it auto-initializes its attributes.
     """
 
+    _logger = get_logger("Feedback")
+
     def __init__(self) -> None:
-        self.publisher: FeedbackPublisher = NodeRegistry.inited_nodes["feedback_client"]
+        self.publisher: FeedbackPublisher = NodeRegistry.inited_nodes[
+            "feedback_publisher"
+        ]
+        self.task_id = None
+        self.object = None
+        self._exec_status = None
 
     def publish(self, object: Any, _status: ExecutionStatus = ExecutionStatus.RUNNING):
         """
@@ -55,3 +65,24 @@ class Feedback:
         }
         json_pkg = json.dumps(message, indent=4)
         self.publisher.publish_feedback(json_pkg)
+
+    @classmethod
+    def from_pkg(cls, pkg: str):
+        return Feedback.from_json(pkg)
+
+    @classmethod
+    def from_json(cls, package: str):
+        dict_pkg = json.loads(package)
+
+        required_keys = ["task_id", "object", "_exec_status"]
+        if not all(key in dict_pkg for key in required_keys):
+            cls._logger.error(
+                f"Dict received in Feedback() must contain {required_keys}"
+            )
+            return None
+
+        feedback = Feedback()
+        feedback.task_id = dict_pkg["task_id"]
+        feedback.object = ItemEncoder.autodecode(dict_pkg["object"])
+        feedback._exec_status = ItemEncoder.autodecode(dict_pkg["_exec_status"])
+        return feedback
