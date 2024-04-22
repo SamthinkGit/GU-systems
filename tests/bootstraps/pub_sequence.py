@@ -1,12 +1,9 @@
-import rclpy
+from sequence_action_server.sequence_publisher import SequencePublisher
+
 from icecream import ic  # noqa
-from rclpy.executors import SingleThreadedExecutor
-from rclpy.node import Node
-from std_msgs.msg import String
 
 from gusysalb.alb import ALB
-from gusyscore.constants import REQUEST_TOPIC
-from gusyscore.core import get_logger
+from gusysalb.nodes import NodeRegistry
 from gusyscore.gateway.mocks.debug import test_function
 from gusysros.tools.packages import ActionPackage
 from gusysros.tools.packages import SequencePackage
@@ -15,48 +12,29 @@ from gusysros.tools.registry import ItemRegistry
 from gusysros.types.basic import SimpleSequence
 
 
-class MyPublisherNode(Node):
-
-    def __init__(self):
-        super().__init__("test_sequence_publisher")
-        self.publisher_ = self.create_publisher(String, REQUEST_TOPIC, 10)
-        self.msg = String()
-        self._logger = get_logger("test_sequence_publisher")
-        self._logger.info("Timer built, wating 3s for starting")
-
-    def send_package(self):
-
-        actions = [
-            ActionPackage(action_id=ItemRegistry.get_id(test_function), num=num, sleep=1)
-            for num in range(4)
-        ]
-
-        seq = SequencePackage(
-            task_id="my_task",
-            type=SimpleSequence.get_type(),
-            priority=SequencePriority.NORMAL,
-            actions=actions,
-        )
-
-        self.msg.data = seq.to_json()
-        self.publisher_.publish(self.msg)
-        self._logger.info("Task Published")
-
-
 def main():
     alb = ALB()
     alb.build_all()
     print("Starting node...")
+    publisher: SequencePublisher = NodeRegistry.inited_nodes["sequence_publisher"]
 
-    node = MyPublisherNode()
-    executor = SingleThreadedExecutor()
-    executor.add_node(node)
+    actions = [
+        ActionPackage(action_id=ItemRegistry.get_id(test_function), num=num, sleep=1)
+        for num in range(4)
+    ]
+
+    seq = SequencePackage(
+        task_id="my_task",
+        type=SimpleSequence.get_type(),
+        priority=SequencePriority.NORMAL,
+        actions=actions,
+    )
+
     print("Starting node...")
     print("Use ENTER to send mock packages")
     while True:
         input()
-        node.send_package()
-    rclpy.shutdown()
+        publisher.send_package(seq)
 
 
 if __name__ == "__main__":

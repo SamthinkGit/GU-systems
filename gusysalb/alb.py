@@ -19,6 +19,7 @@ import threading
 from sequence_action_server.client import SequenceActionClient
 from sequence_action_server.feedback import FeedbackPublisher
 from sequence_action_server.registry_logger import RegistryLogger
+from sequence_action_server.sequence_publisher import SequencePublisher
 from sequence_action_server.server import SequenceActionServer
 
 import rclpy
@@ -44,6 +45,7 @@ class ALB:
         'sequence_server': SequenceActionServer,
         'sequence_client': SequenceActionClient,
         'feedback_client': FeedbackPublisher,
+        'sequence_publisher': SequencePublisher,
         'registry_logger': RegistryLogger
     }
 
