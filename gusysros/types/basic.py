@@ -142,14 +142,17 @@ class SimpleSequence(SequenceType):
             try:
 
                 if self.soft_stop_called():
-                    self.feedback.publish("", _status=ExecutionStatus.ABORT)
+                    self.feedback.publish(
+                        "Abort (By Soft-Stop)", _status=ExecutionStatus.ABORT
+                    )
+                    success = False
                     break
 
                 func = ItemRegistry.get_function(action.action_id)
                 args = action.args
                 kwargs = action.kwargs
                 func(*args, **kwargs)
-                self.feedback.publish("", _status=ExecutionStatus.STEP)
+                self.feedback.publish("Step", _status=ExecutionStatus.STEP)
 
             except Exception as e:
                 self._logger.error(
@@ -157,13 +160,13 @@ class SimpleSequence(SequenceType):
                     + f"Traceback: {traceback.format_exc(e)}"
                 )
                 success = False
-                break
 
         if success:
-            self.feedback.publish("", _status=ExecutionStatus.SUCCESS)
+            self.feedback.publish("Success", _status=ExecutionStatus.SUCCESS)
         else:
-            self.feedback.publish("", _status=ExecutionStatus.ABORT)
+            self.feedback.publish("Abort (Failed)", _status=ExecutionStatus.ABORT)
 
+        self.feedback.publish("Abort (Failed)", _status=ExecutionStatus.FINISH)
         if self.exit is not None:
             self.exit(self.pkg.task_id)
 

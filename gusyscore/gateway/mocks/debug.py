@@ -22,7 +22,7 @@ def append_to_list(list: list, value):
 
 @ItemRegistry.register_function
 def sleep_and_print(text: str):
-    time.sleep(2)
+    time.sleep(1)
     print(text)
 
 

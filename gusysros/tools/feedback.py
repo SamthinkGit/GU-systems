@@ -32,7 +32,8 @@ class ExecutionStatus(Enum):
     STEP = 1
     SUCCESS = 2
     ABORT = 3
-    SWITCH = 3
+    FINISH = 4
+    SWITCH = 5
 
 
 class Feedback:
