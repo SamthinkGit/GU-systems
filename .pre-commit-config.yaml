@@ -32,7 +32,7 @@ repos:
     hooks:
     -   id: pytest
         name: Run pytest
-        entry: python -m pytest -n auto
+        entry: python -m pytest -n0
         language: system
         always_run: true
         pass_filenames: false

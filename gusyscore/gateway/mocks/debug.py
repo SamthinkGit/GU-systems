@@ -21,6 +21,12 @@ def append_to_list(list: list, value):
 
 
 @ItemRegistry.register_function
+def sleep_and_print(text: str):
+    time.sleep(2)
+    print(text)
+
+
+@ItemRegistry.register_function
 def test_function(num: int, sleep: int = 0):
     print("Succesfully executed function with argument: ", num)
     time.sleep(sleep)

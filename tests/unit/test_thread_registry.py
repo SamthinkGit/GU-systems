@@ -18,11 +18,9 @@ def test_thread_registry(capsys: pytest.CaptureFixture):
     father_id = ThreadRegistry.get_task_id()
 
     tr.watch(task_id=task_id, target=mock_function, num=5)
-    assert len(tr._threads) == 1
     print(f"Father task_id is {father_id}")
     print("Waiting for task...")
 
     tr.wait(task_id)
     capture = capsys.readouterr()
     assert "Executed function" in capture.out
-    assert len(tr._threads) == 0

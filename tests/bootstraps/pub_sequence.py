@@ -15,6 +15,7 @@ from gusysros.types.basic import SimpleSequence
 def main():
     alb = ALB()
     alb.build_all()
+
     print("Starting node...")
     publisher: SequencePublisher = NodeRegistry.inited_nodes["sequence_publisher"]
 
