@@ -42,13 +42,13 @@ class ROSA:
         if not cls._built:
             cls._built = True
             alb = ALB()
-            alb.build_all(feedback_listener=ROSA.callback_manager)
+            alb.build_all(feedback_listener=ROSA._callback_manager)
             cls._sequence_publisher = NodeRegistry.inited_nodes["sequence_publisher"]
             cls._task_callback = defaultdict(ROSA.empty_callback)
             cls._logger.debug("Building completed")
 
     @staticmethod
-    def callback_manager(msg: str) -> None:
+    def _callback_manager(msg: str) -> None:
         feedback = Feedback.from_pkg(msg)
         with ROSA._lock:
             threads_to_notify = ROSA._conditions.get(feedback.task_id, None)
@@ -68,6 +68,10 @@ class ROSA:
             f"A feedback package has not been processed <[{feedback.task_id}]: {feedback.object}>"
         )
 
+    @staticmethod
+    def muted_callback(feedback: Feedback) -> None:
+        pass
+
     def new_task(
         self, task_id: str = "default", feedback_callback: Callable = empty_callback
     ) -> None:
@@ -82,14 +86,28 @@ class ROSA:
     def soft_stop(self, task_id: str = "default") -> None:
         action = ActionPackage(action_id=ItemRegistry.get_id(empty_function))
 
-        priority = SequencePriority.INTERRUPTION
         seq = SequencePackage(
             task_id=task_id,
             type=ReservedTypeCode.SOFT_STOP.value,
-            priority=priority,
+            priority=SequencePriority.INTERRUPTION,
             actions=[action],
         )
         self.execute(seq)
+
+    # -----------------------    CAUTION    ------------------------
+    # Should only be used as the last resource to stop a task
+    # Could end up in corruption or failures to the main system
+    def _hard_stop(self, task_id: str) -> None:
+        action = ActionPackage(action_id=ItemRegistry.get_id(empty_function))
+
+        seq = SequencePackage(
+            task_id=task_id,
+            type=ReservedTypeCode.HARD_STOP.value,
+            priority=SequencePriority.INTERRUPTION,
+            actions=[action],
+        )
+        self.execute(seq)
+    # --------------------------------------------------------------
 
     def wait_for(self, task_id: str, code: ReservedTypeCode):
         condition = threading.Condition()

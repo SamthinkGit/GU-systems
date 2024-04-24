@@ -95,7 +95,7 @@ class SequenceActionClient(Node):
         or setting the task status to READY.
         :param task_id: The identifier of the task that has completed.
         """
-        self._logger.info("Task Completed")
+        self._logger.debug("Task Completed")
         next_sequence = self.registry.get(task_id)
 
         if next_sequence is None:

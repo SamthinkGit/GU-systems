@@ -7,6 +7,8 @@ it must execute it without permission to cancel unless it receives a package
 to do so. It launches a thread for each task execution that will be controlled
 using the TaskManager until completion.
 """
+import ctypes
+import signal
 import traceback
 from sequence_action_server.observer import Publisher
 
@@ -27,6 +29,10 @@ class SequenceActionServer(Node):
     A ROS 2 Node acting as an action server that handles sequence tasks,
     delegating their execution to separate threads managed by a ThreadRegistry.
     """
+
+    _libc = ctypes.CDLL("libc.so.6")
+    _pthread_kill = _libc.pthread_kill
+    _pthread_kill.argtypes = [ctypes.c_ulong, ctypes.c_int]
 
     _dead_tasks = []
     _thread_registry = ThreadRegistry()
@@ -78,6 +84,25 @@ class SequenceActionServer(Node):
             seq_type: SequenceType = thread._seq_type
             seq_type.soft_stop()
             return self._success(goal_handle, sequence_pkg)
+
+        # --------------------------------------------------------------------------
+        # Caution, this code should only be used for security reasons, could end
+        # in a segmentation fault
+        if reserved_code == ReservedTypeCode.HARD_STOP:
+            thread = self._thread_registry.get_thread(sequence_pkg.task_id)
+            self._logger.warn(f"HARD-STOP Detected for task {sequence_pkg.task_id}")
+            self._logger.warn(
+                "HARD-STOP Should only be used for security reasons, could end up in corrupted files/values"
+            )
+
+            if thread is None:
+                self._logger.warn("Trying to kill a task that is not running")
+                Publisher.notify_subscribers(task_id)
+                return self._success(goal_handle, sequence_pkg)
+
+            self._pthread_kill(thread.ident, signal.SIGTERM)
+            return self._success(goal_handle, sequence_pkg)
+        # --------------------------------------------------------------------------
 
         # Define the behavior of the pkg
         seq_type = SequenceType.from_pkg(sequence_pkg)

@@ -1,3 +1,5 @@
+import time
+
 import pytest  # noqa
 
 from gusysalb.rosa import ROSA
@@ -34,7 +36,7 @@ class TestRosa:
             priority=SequencePriority.NORMAL,
             actions=[wait_for_text, end_text],
         )
-        self.rosa.new_task("test_wait_for")
+        self.rosa.new_task("test_wait_for", feedback_callback=ROSA.muted_callback)
         self.rosa.execute(seq)
         self.rosa.wait_for("test_wait_for", ExecutionStatus.SUCCESS)
 
@@ -68,13 +70,37 @@ class TestRosa:
             priority=SequencePriority.NORMAL,
             actions=[text_wait] * 10 + [text_finish],
         )
-        rosa = ROSA()
-
-        rosa.new_task(task_id=task_id)
-        rosa.execute(seq)
+        self.rosa.new_task(task_id=task_id, feedback_callback=ROSA.muted_callback)
+        self.rosa.execute(seq)
         self.rosa.wait_for(task_id=task_id, code=ExecutionStatus.STEP)
-        rosa.soft_stop(task_id=task_id)
+        self.rosa.soft_stop(task_id=task_id)
         self.rosa.wait_for(task_id=task_id, code=ExecutionStatus.FINISH)
 
         capture = capsys.readouterr()
         assert "FINISH" not in capture.out
+
+    # ---- This test can be checked manually, although it is dangerous and should be cleaned
+    # if python processes keep alive
+    def hard_stop(self, capsys: pytest.CaptureFixture):
+        task_id = "test_hard_stop"
+        text_wait = ActionPackage(
+            action_id=ItemRegistry.get_id(sleep_and_print), text="WAIT_HARD"
+        )
+        text_finish = ActionPackage(
+            action_id=ItemRegistry.get_id(sleep_and_print), text="FINISH_HARD"
+        )
+        seq = SequencePackage(
+            task_id=task_id,
+            type=SimpleSequence.get_type(),
+            priority=SequencePriority.NORMAL,
+            actions=[text_wait] * 10 + [text_finish],
+        )
+
+        self.rosa.new_task(task_id=task_id)
+        self.rosa.execute(seq)
+        self.rosa.wait_for(task_id=task_id, code=ExecutionStatus.STEP)
+        self.rosa._hard_stop(task_id=task_id)
+        time.sleep(1)
+
+        capture = capsys.readouterr()
+        assert "FINISH_HARD" not in capture.out
