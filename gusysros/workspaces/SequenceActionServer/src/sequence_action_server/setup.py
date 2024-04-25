@@ -17,11 +17,4 @@ setup(
     maintainer_email='sebastianmayorquin@gmail.com',
     description='Sequence Action Server for managing executions of packages in gusyscore',
     license='MIT',
-    entry_points={
-        'console_scripts': [
-            'action_server = sequence_action_server.server:main',
-            'action_client = sequence_action_server.client:main',
-            'feedback = sequence_action_server.feedback:main',
-        ],
-    },
 )

@@ -113,10 +113,20 @@ class SequenceActionServer(Node):
         # --------------------------------------------------------------------------
 
         # Define the behavior of the pkg
-        seq_type = SequenceType.from_pkg(sequence_pkg)
+        try:
+            seq_type = SequenceType.from_pkg(sequence_pkg)
+        except ValueError:
+            SequenceActionServer._logger.error(
+                f"Sequence Type for {task_id} cannot be obtained "
+                "(It is not registered or the type value is invalid). Skip"
+            )
+            self.check_for_clean()
+            return self._success(goal_handle, sequence_pkg)
+
         seq_type.at_exit(SequenceActionServer.close_task)
 
         # Throw a thread to complete the task, it will return to close_task()
+        # This means, the server is directly up to continue answering calls
         self._thread_registry.watch(
             task_id=task_id,
             target=execute_sequence_type,
@@ -128,6 +138,7 @@ class SequenceActionServer(Node):
 
     @staticmethod
     def _success(goal_handle, sequence_pkg):
+        """Simple refactorization for returning success to the client"""
         result = Sequence.Result()
         result.result = sequence_pkg.task_id
         goal_handle.succeed()

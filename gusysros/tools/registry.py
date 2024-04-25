@@ -53,12 +53,25 @@ class ItemRegistry:
     @classmethod
     def get_function(cls, key: Hashable) -> Callable:
         """Retrieve a registered function by its unique key."""
-        return cls._functions[key]
+        func = cls._functions.get(key, None)
+        if func is None:
+            raise KeyError(
+                "The key received does not correspond to a registered function."
+                "Please ensure you have used the decorator @register_function first"
+            )
+        return func
 
     @classmethod
     def get_item(cls, key: Hashable) -> Any:
         """Retrieve a registered item by its unique key."""
-        return cls._items[key]
+        item = cls._items.get(key, None)
+        if item is None:
+            raise KeyError(
+                "The key received does not correspond to any saved item."
+                "Please ensure you have used add_item() befor using this function."
+                "If you are using ItemEncoder ensure you have used encoder.autoencode(item)"
+            )
+        return item
 
     @classmethod
     def register_function(cls, func: Callable):
@@ -117,16 +130,29 @@ class ItemEncoder:
 
     @staticmethod
     def encode(item: Any) -> Hashable:
+        """
+        Encodes an item into a unique identifier and stores it in the registry.
+        :warning: The Item can collide with SequencePackages if it is not serializable
+        :param item: The item to be encoded.
+        :return: A unique identifier associated with the encoded item.
+        """
         id = uuid.uuid4()
         ItemRegistry._force_add(id, item)
         return id
 
     @staticmethod
     def decode(id: Hashable) -> Any:
+        """
+        Decodes an item, given a previous ItemEncoder hash of the item
+
+        :param item: The item to be decoded.
+        :return: The original item
+        """
         item = ItemRegistry.get_item(id)
         del ItemRegistry._items[id]
         return item
 
+    # ----------------------- RECOMMENDED METHODS -----------------------------
     @classmethod
     def autoencode(cls, item: Any):
         """
@@ -165,6 +191,7 @@ class ItemEncoder:
             return cls.decode(id)
 
         return code
+    # ---------------------------------------------------------------------------
 
 
 class ThreadRegistry:
@@ -191,7 +218,8 @@ class ThreadRegistry:
 
     def watch(self, task_id: str, target: Callable, **kwargs) -> None:
         """
-        Starts a new thread associated with a task ID and executes the given target callable.
+        Executes the target function with a thread whose task_id will be the given in the
+        arguments. When returning,
 
         :param task_id: Identifier for the task this thread is associated with.
         :param target: The callable object to be executed in the thread.
@@ -200,14 +228,18 @@ class ThreadRegistry:
         thread = threading.Thread(
             target=ThreadRegistry._run_with_id, args=(task_id, target, kwargs)
         )
-        # Save the function to be accesible outwards
+
+        # Save some data to be accesible outwards if necessary
         thread._target_func = target  # type: ignore
+        thread._task_id = task_id  # type: ignore
+
         if 'seq_type' in kwargs:
             thread._seq_type = kwargs['seq_type']  # type: ignore
 
         self._logger.debug(
-            f"New thread built with task_id '{task_id}' for executing '{target.__name__}'"
+            f"New thread built with task_id '{task_id}'"
         )
+
         thread.start()
         self._threads[task_id] = thread
 
@@ -222,6 +254,7 @@ class ThreadRegistry:
         :param kwargs: Arguments to pass to the function.
         """
         ThreadRegistry._threading_local_data.task_id = task_id
+        ThreadRegistry._threading_local_data.target_func = func
         func(**kwargs)
 
     def get_thread(self, task_id: str) -> threading.Thread | None:
@@ -235,6 +268,7 @@ class ThreadRegistry:
     def wait(self, task_id):
         """
         Waits for the specified task's thread to complete and removes it from the registry.
+        If there is no thread, it returns inmediatly
         :param task_id: Identifier for the task to wait for.
         """
         thread = self._threads.get(task_id, None)

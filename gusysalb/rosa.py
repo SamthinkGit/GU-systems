@@ -69,9 +69,11 @@ class ROSA:
             cls._built = True
             alb = ALB()
             alb.build_all(feedback_listener=ROSA._callback_manager)
-            cls._sequence_publisher = NodeRegistry.inited_nodes["sequence_publisher"]
+            cls._sequence_publisher = NodeRegistry.inited_nodes.get("sequence_publisher", None)
             cls._task_callback = defaultdict(ROSA.empty_callback)
             cls._logger.debug("Building completed")
+
+            assert cls._sequence_publisher is not None, "Sequence Publisher failed to be inited in ROSA"
 
     @staticmethod
     def _callback_manager(msg: str) -> None:
@@ -197,13 +199,11 @@ class ROSA:
         code: ExecutionStatus,
     ):
         """
-        Blocks the current thread until a ExecutionStatus such as STEP or SUCCESS
-        is received.
-
+        Blocks the current thread until the ExecutionStatus such is received from
+        the specified task.
+        :note: If the task has already finished it will return without waiting.
         :param task_id: The task identifier.
         :param code: The code to wait for.
-        :param safe_wait: Enables parallel waiting for FINISH status, so if the task
-        ends without throwing the expected value, the thread returns.
         """
         condition = threading.Condition()
         entry = [code, condition]

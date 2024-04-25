@@ -20,6 +20,7 @@ import pprint
 from enum import Enum
 from queue import Empty
 from typing import Dict
+from typing import Type
 
 from gusysros.tools.registry import ItemEncoder
 from gusysros.tools.registry import ItemRegistry
@@ -98,12 +99,13 @@ class ActionPackage:
 
     def __init__(self, action_id: int, *args, **kwargs) -> None:
 
+        func = ItemRegistry.get_function(action_id)
         self.action_id = action_id
         self.args = args
         self.kwargs = kwargs
-        self._func_name = ItemRegistry.get_function(action_id).__name__
+        self._func_name = func.__name__
 
-    def to_dict(self, autoencode: bool = True):
+    def to_dict(self, autoencode: bool = True) -> dict:
 
         args = (
             [ItemEncoder.autoencode(arg) for arg in self.args]
@@ -122,7 +124,7 @@ class ActionPackage:
         return str(self.to_dict(autoencode=False))
 
     @classmethod
-    def from_dict(cls, dict_data: dict):
+    def from_dict(cls, dict_data: dict) -> Type["SequencePackage"]:
 
         required_keys = ["action_id", "args", "kwargs"]
         if not all(key in dict_data for key in required_keys):
@@ -159,6 +161,10 @@ class SequencePackage:
 
         if isinstance(priority, SequencePriority):
             priority = priority.value
+        assert SequencePriority(priority)
+
+        if len(actions) == 0:
+            raise ValueError("A sequence package must contain at least one action")
 
         self.type = type
         self.task_id = task_id
@@ -200,6 +206,9 @@ class SequencePackage:
                 f"Dict passed to ActionPackage must contain {required_keys}"
             )
 
+        if len(dict_data["actions"]) == 0:
+            raise ValueError("A sequence package must contain at least one action")
+
         dict_data["actions"] = [
             ActionPackage.from_dict(action) for action in dict_data["actions"]
         ]
@@ -216,7 +225,7 @@ class SimplePriorityQueue:
     Utilizes a heap queue to ensure tasks are processed in the order of their priority.
 
     :note: We do not use standard PriorityQueue since we don't need thread-safe property
-    and we need the exact size of the queue for ordering computations
+    and we need the exact size of the queue for task management
     """
 
     def __init__(self):
@@ -296,9 +305,11 @@ class TaskRegistry:
         self.tasks: Dict[str, Task] = {}
 
     def append(self, sequence: SequencePackage) -> None:
+        """Adds a new task to the TaskRegistry, receives a sequence and builds it if necessary"""
         self.update(sequence)
 
     def update(self, sequence: SequencePackage) -> None:
+        """Adds a new task to the TaskRegistry, receives a sequence and builds it if necessary"""
 
         id = sequence.task_id
         if id not in self.tasks:
@@ -307,14 +318,28 @@ class TaskRegistry:
         self.tasks[id].push(sequence)
 
     def get(self, task_id: str) -> SequencePackage | None:
+        """
+        Returns the following SequencePackage given a task, if there is no more sequences
+        remaining, returns None.
+        :note: It returns by in the order given by SequencePriority + FIFO
+        """
         if task_id not in self.tasks or self.tasks[task_id].priority_queue.size() == 0:
             return None
 
         sequence = self.tasks[task_id].pop()
+        assert isinstance(
+            sequence, SequencePackage
+        ), "¿Invalid package returned in TaskRegistry?"
 
         return sequence
 
     def get_log(self, only_priorities: bool = True) -> dict:
+        """
+        Returns the status of the registry as a dictionary. Can return the
+        priorities of the items for summarizing or the action summary itself.
+
+        It is used with RegistryLogger for publishing logs in /task_registry
+        """
         return {
             "concurrent_tasks": len(self.tasks),
             "tasks": {

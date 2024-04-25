@@ -13,8 +13,6 @@ import traceback
 from sequence_action_server.observer import Publisher
 from sequence_action_server.observer import Subscriber
 
-import rclpy.action
-import rclpy.logging
 from rclpy.action import ActionClient
 from rclpy.node import Node
 from rclpy.qos import qos_profile_system_default
@@ -58,7 +56,6 @@ class SequenceActionClient(Node):
         """
         goal_msg = Sequence.Goal()
         goal_msg.goal = text
-
         self._send_goal_future = self._action_client.send_goal_async(goal_msg)
 
     def request_callback(self, msg):
@@ -75,20 +72,25 @@ class SequenceActionClient(Node):
                 f"Invalid package received in Sequence Action client. {trback}"
             )
             return
+        SequenceActionClient._logger.debug(f"Sequence <{task_id}> received")
 
         # Add the sequence to the registry
         self.registry.update(sequence)
 
         # Look if the task is currently working
         if self.registry.tasks[task_id].status == TaskStatus.READY:
-            SequenceActionClient._logger.debug(
-                "Package received and Preprocessed, sending to Action server"
-            )
+            SequenceActionClient._logger.debug(f"Sending <{task_id}> to the server")
 
             # Execute the next task according to STP
             self.registry.tasks[task_id].status = TaskStatus.RUNNING
             sequence = self.registry.get(task_id)
-            self.send_goal(sequence.to_json())
+            if sequence is None:
+                SequenceActionClient._logger.warn(
+                    f"It looks like <{task_id} >has been removed from the TaskRegistry, Skip."
+                )
+                self.registry.tasks[task_id].status = TaskStatus.READY
+            else:
+                self.send_goal(sequence.to_json())
 
     def goal_completed_callback(self, task_id):
         """
@@ -100,23 +102,10 @@ class SequenceActionClient(Node):
         next_sequence = self.registry.get(task_id)
 
         if next_sequence is None:
-            SequenceActionClient._logger.debug("Task Empty, Waiting...")
+            SequenceActionClient._logger.debug(
+                f"All Sequences for {task_id} have been completed"
+            )
             self.registry.tasks[task_id].status = TaskStatus.READY
         else:
             SequenceActionClient._logger.debug("Starting Next Sequence")
             self.send_goal(next_sequence.to_json())
-
-
-def main(args=None):
-
-    rclpy.init(args=args)
-    action_client = SequenceActionClient()
-    # future = action_client.send_goal("Miaw")
-    # future = action_client.send_goal("Mow")
-    # future.result()
-    rclpy.spin(action_client)
-    rclpy.shutdown()
-
-
-if __name__ == "__main__":
-    main()

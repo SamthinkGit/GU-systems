@@ -52,7 +52,6 @@ class SequenceType:
 
         self.pkg = pkg
         self._soft_stop = False
-        self.callback = None
         self.exit: Callable = None
         self.feedback = Feedback()
 
@@ -62,6 +61,8 @@ class SequenceType:
     ):
         """
         Registers a sequence type class under a specific type code.
+        :note: Each new SequenceType should use this function to be avaliable for the user. Generally
+        this is automatically made by the ALB if the file is in the appropiate paths
 
         :param type_code: The unique code identifying the sequence type.
         :param type_class: The class to register as handling this type code.
@@ -98,28 +99,32 @@ class SequenceType:
 
         type_class = cls._registry.get(pkg.type)
         if type_class is None:
-            raise ValueError(f"No registered class for package type: {pkg.type}")
+            raise ValueError(
+                f"No registered class for package type: {pkg.type}. Have you used auto_register_type()?"
+            )
         return type_class(pkg)
 
     @classmethod
-    def get_type(cls):
+    def get_type(cls) -> int:
         """
         Returns the type code associated with this SequenceType.
         """
         return cls.type_code
 
-    def soft_stop(self):
+    def soft_stop(self) -> None:
+        """Sets the SOFT-STOP variable to true. It will stop whenever is possible and clean"""
         self._soft_stop = True
 
-    def soft_stop_called(self):
+    def soft_stop_called(self) -> None:
         return self._soft_stop
 
-    def run(self):
+    def run(self) -> None:
         raise NotImplementedError(
             "SequenceType cannot be instantiated directly, please use a subclass"
         )
 
-    def at_exit(self, func: Callable):
+    def at_exit(self, func: Callable) -> None:
+        """Define a function to be executed after the SequenceType has finished all the execution"""
         self.exit = func
 
 
@@ -138,7 +143,7 @@ class SimpleSequence(SequenceType):
     def run(self):
         """Runs all the functions in the package sequentially"""
         success = True
-        self._logger.debug(f"Starting to execute SimpleSequence: {self.pkg.task_id}")
+        self._logger.debug(f"Starting to run: {self.pkg.task_id}")
         for action in self.pkg.actions:
             try:
 
@@ -162,18 +167,18 @@ class SimpleSequence(SequenceType):
                 )
                 success = False
 
-        self.feedback.publish("Finish", _status=ExecutionStatus.FINISH)
-
         if success:
             self.feedback.publish("Success", _status=ExecutionStatus.SUCCESS)
         else:
             self.feedback.publish("Abort (Failed)", _status=ExecutionStatus.ABORT)
+        self._logger.debug(f"Execution Finished: {self.pkg.task_id}")
+        self.feedback.publish("Finish", _status=ExecutionStatus.FINISH)
 
         if self.exit is not None:
             self.exit(self.pkg.task_id)
 
 
-# ----- ADD HERE THE TYPES THAT SHOULD AUTOREGISTER WHEN IMPORTING THIS FILE --------
+# ----- YOU CAN ADD HERE THE TYPES THAT SHOULD AUTOREGISTER WHEN IMPORTING THIS FILE (ALB) --------
 SequenceType.auto_register_type(SimpleSequence)
 
-# -----------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
