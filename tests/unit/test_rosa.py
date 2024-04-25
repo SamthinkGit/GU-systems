@@ -38,14 +38,14 @@ class TestRosa:
         )
         self.rosa.new_task("test_wait_for", feedback_callback=ROSA.muted_callback)
         self.rosa.execute(seq)
-        self.rosa.wait_for("test_wait_for", ExecutionStatus.SUCCESS)
+        self.rosa.wait_for("test_wait_for", ExecutionStatus.FINISH)
 
         capture = capsys.readouterr()
         assert "end_text" in capture.out
 
     @staticmethod
     def feedback_callback(feedback: Feedback):
-        if feedback._exec_status == ExecutionStatus.SUCCESS:
+        if feedback._exec_status == ExecutionStatus.FINISH:
             assert TestRosa.mock.list_properly_modified()
 
     def test_execute_mock(self):
@@ -53,8 +53,9 @@ class TestRosa:
             task_id=TestRosa.mock.task_id, feedback_callback=TestRosa.feedback_callback
         )
         pkg = TestRosa.mock.get_package()
+        pkg.task_id = "test_execute_mock"
         self.rosa.execute(pkg)
-        self.rosa.wait_for(pkg.task_id, code=ExecutionStatus.SUCCESS)
+        self.rosa.wait_for(pkg.task_id, code=ExecutionStatus.FINISH)
 
     def test_soft_stop(self, capsys: pytest.CaptureFixture):
         task_id = "test_soft_stop"

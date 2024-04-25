@@ -33,6 +33,8 @@ class SequenceActionClient(Node):
     ROS 2 Node acting as an action client for managing sequences of tasks.
     """
 
+    _logger = get_logger("ActionClient")
+
     def __init__(self):
         """
         Initializes the SequenceActionClient node, setting up subscribers and action clients.
@@ -45,7 +47,6 @@ class SequenceActionClient(Node):
         Publisher().add_subscriber(self.subscriber)
 
         self._action_client = ActionClient(self, Sequence, "sequence")
-        self._logger = get_logger("ActionClient")
         self.subscription = self.create_subscription(
             String, REQUEST_TOPIC, self.request_callback, qos_profile_system_default
         )
@@ -70,7 +71,7 @@ class SequenceActionClient(Node):
             task_id = sequence.task_id
         except Exception:
             trback = traceback.format_exc()
-            self._logger.warn(
+            SequenceActionClient._logger.warn(
                 f"Invalid package received in Sequence Action client. {trback}"
             )
             return
@@ -80,7 +81,7 @@ class SequenceActionClient(Node):
 
         # Look if the task is currently working
         if self.registry.tasks[task_id].status == TaskStatus.READY:
-            self._logger.debug(
+            SequenceActionClient._logger.debug(
                 "Package received and Preprocessed, sending to Action server"
             )
 
@@ -95,14 +96,14 @@ class SequenceActionClient(Node):
         or setting the task status to READY.
         :param task_id: The identifier of the task that has completed.
         """
-        self._logger.debug("Task Completed")
+        SequenceActionClient._logger.debug("Task Completed")
         next_sequence = self.registry.get(task_id)
 
         if next_sequence is None:
-            self._logger.debug("Task Empty, Waiting...")
+            SequenceActionClient._logger.debug("Task Empty, Waiting...")
             self.registry.tasks[task_id].status = TaskStatus.READY
         else:
-            self._logger.debug("Starting Next Sequence")
+            SequenceActionClient._logger.debug("Starting Next Sequence")
             self.send_goal(next_sequence.to_json())
 
 

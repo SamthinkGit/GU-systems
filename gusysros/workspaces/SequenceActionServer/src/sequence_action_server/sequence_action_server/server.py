@@ -36,13 +36,13 @@ class SequenceActionServer(Node):
 
     _dead_tasks = []
     _thread_registry = ThreadRegistry()
+    _logger = get_logger("ActionServer")
 
     def __init__(self):
         """
         Initializes the SequenceActionServer node and sets up the action server.
         """
         super().__init__("sequence_action_server")
-        self._logger = get_logger("ActionServer")
         self._action_server = ActionServer(
             self, Sequence, "sequence", self.execute_callback
         )
@@ -59,7 +59,7 @@ class SequenceActionServer(Node):
             sequence_pkg = SequencePackage.from_json(goal_handle.request.goal)
         except Exception:
             trback = traceback.format_exc()
-            self._logger.warn(
+            SequenceActionServer._logger.warn(
                 f"Invalid package received in Sequence Action client. {trback}"
             )
             return
@@ -74,10 +74,14 @@ class SequenceActionServer(Node):
         # Check if it is a TaskManagement package
         if reserved_code == ReservedTypeCode.SOFT_STOP:
             thread = self._thread_registry.get_thread(sequence_pkg.task_id)
-            self._logger.debug(f"SOFT-STOP Detected for task {sequence_pkg.task_id}")
+            SequenceActionServer._logger.debug(
+                f"SOFT-STOP Detected for task {sequence_pkg.task_id}"
+            )
 
             if thread is None:
-                self._logger.warn("Trying to cancel a task that is not running")
+                SequenceActionServer._logger.warn(
+                    "Trying to cancel a task that is not running"
+                )
                 Publisher.notify_subscribers(task_id)
                 return self._success(goal_handle, sequence_pkg)
 
@@ -90,13 +94,17 @@ class SequenceActionServer(Node):
         # in a segmentation fault
         if reserved_code == ReservedTypeCode.HARD_STOP:
             thread = self._thread_registry.get_thread(sequence_pkg.task_id)
-            self._logger.warn(f"HARD-STOP Detected for task {sequence_pkg.task_id}")
-            self._logger.warn(
+            SequenceActionServer._logger.warn(
+                f"HARD-STOP Detected for task {sequence_pkg.task_id}"
+            )
+            SequenceActionServer._logger.warn(
                 "HARD-STOP Should only be used for security reasons, could end up in corrupted files/values"
             )
 
             if thread is None:
-                self._logger.warn("Trying to kill a task that is not running")
+                SequenceActionServer._logger.warn(
+                    "Trying to kill a task that is not running"
+                )
                 Publisher.notify_subscribers(task_id)
                 return self._success(goal_handle, sequence_pkg)
 
@@ -152,14 +160,3 @@ def execute_sequence_type(seq_type: SequenceType):
     :param seq_type: The sequence type instance to execute.
     """
     seq_type.run()
-
-
-def main(args=None):
-    rclpy.init(args=args)
-    sequence_action_server = SequenceActionServer()
-    rclpy.spin(sequence_action_server)
-    rclpy.shutdown()
-
-
-if __name__ == "__main__":
-    main()

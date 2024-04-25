@@ -138,6 +138,7 @@ class SimpleSequence(SequenceType):
     def run(self):
         """Runs all the functions in the package sequentially"""
         success = True
+        self._logger.debug(f"Starting to execute SimpleSequence: {self.pkg.task_id}")
         for action in self.pkg.actions:
             try:
 
@@ -161,12 +162,13 @@ class SimpleSequence(SequenceType):
                 )
                 success = False
 
+        self.feedback.publish("Finish", _status=ExecutionStatus.FINISH)
+
         if success:
             self.feedback.publish("Success", _status=ExecutionStatus.SUCCESS)
         else:
             self.feedback.publish("Abort (Failed)", _status=ExecutionStatus.ABORT)
 
-        self.feedback.publish("Abort (Failed)", _status=ExecutionStatus.FINISH)
         if self.exit is not None:
             self.exit(self.pkg.task_id)
 
