@@ -2,9 +2,9 @@ import json
 
 import rclpy
 
-from execution_layer.rosa.build.alb import ALB
 from execution_layer.rosa.constants import ITEM_ENCODED_PREFIX
 from execution_layer.rosa.gateway.mocks import gateway
+from execution_layer.rosa.interfaces.alb import ALB
 from execution_layer.rosa.ros2.tools.packages import ActionPackage
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.tools.packages import SequencePriority

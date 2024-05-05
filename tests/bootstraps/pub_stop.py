@@ -4,9 +4,9 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from std_msgs.msg import String
 
-from execution_layer.rosa.build.alb import ALB
 from execution_layer.rosa.constants import REQUEST_TOPIC
 from execution_layer.rosa.gateway import empty_function
+from execution_layer.rosa.interfaces.alb import ALB
 from execution_layer.rosa.ros2.tools.packages import ActionPackage
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.tools.packages import SequencePriority

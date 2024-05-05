@@ -36,7 +36,7 @@ This project requires both **ROS2** and **colcon build** for compilation. Ensure
 git clone https://github.com/SamthinkGit/GU-systems.git
 cd GU-Systems
 pip install -r requirements.txt
-./scripts/build.sh
+./scripts/interfaces.sh
 ```
 
 **Set up the development environment**

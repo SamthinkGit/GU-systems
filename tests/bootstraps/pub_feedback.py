@@ -1,4 +1,4 @@
-from execution_layer.rosa.build.alb import ALB
+from execution_layer.rosa.interfaces.alb import ALB
 from execution_layer.rosa.ros2 import Feedback
 
 

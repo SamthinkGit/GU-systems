@@ -16,7 +16,7 @@ from enum import Enum
 from sequence_action_server.feedback import FeedbackPublisher
 from typing import Any
 
-from execution_layer.rosa.build.nodes import NodeRegistry
+from execution_layer.rosa.interfaces.nodes import NodeRegistry
 from execution_layer.rosa.ros2.tools.registry import ItemEncoder
 from execution_layer.rosa.ros2.tools.registry import ThreadRegistry
 from execution_layer.rosa.shared import get_logger

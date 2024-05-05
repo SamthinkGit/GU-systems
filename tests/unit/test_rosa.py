@@ -2,8 +2,8 @@ import time
 
 import pytest  # noqa
 
-from execution_layer.rosa.build.rosa import ROSA
 from execution_layer.rosa.gateway.mocks.debug import sleep_and_print
+from execution_layer.rosa.interfaces.rosa import ROSA
 from execution_layer.rosa.ros2.tools.feedback import ExecutionStatus
 from execution_layer.rosa.ros2.tools.feedback import Feedback
 from execution_layer.rosa.ros2.tools.packages import ActionPackage

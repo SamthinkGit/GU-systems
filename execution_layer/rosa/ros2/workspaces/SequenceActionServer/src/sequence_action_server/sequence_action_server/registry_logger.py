@@ -12,8 +12,8 @@ from sequence_action_server.client import SequenceActionClient
 from rclpy.node import Node
 from std_msgs.msg import String
 
-from execution_layer.rosa.build.nodes import NodeRegistry
 from execution_layer.rosa.constants import REGISTRY_TOPIC
+from execution_layer.rosa.interfaces.nodes import NodeRegistry
 
 
 class RegistryLogger(Node):

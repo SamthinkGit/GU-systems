@@ -2,9 +2,9 @@ from sequence_action_server.sequence_publisher import SequencePublisher
 
 from icecream import ic  # noqa
 
-from execution_layer.rosa.build.alb import ALB
-from execution_layer.rosa.build.nodes import NodeRegistry
 from execution_layer.rosa.gateway import test_function
+from execution_layer.rosa.interfaces.alb import ALB
+from execution_layer.rosa.interfaces.nodes import NodeRegistry
 from execution_layer.rosa.ros2 import ActionPackage
 from execution_layer.rosa.ros2 import ItemRegistry
 from execution_layer.rosa.ros2 import SequencePackage

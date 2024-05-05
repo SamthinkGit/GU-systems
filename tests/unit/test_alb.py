@@ -4,9 +4,9 @@ import pytest  # noqa
 import rclpy.node  # noqa
 from rclpy.node import Node
 
-from execution_layer.rosa.build.alb import ALB
 from execution_layer.rosa.constants import FEEDBACK_TOPIC
 from execution_layer.rosa.constants import REQUEST_TOPIC
+from execution_layer.rosa.interfaces.alb import ALB
 
 
 class TestALB:
