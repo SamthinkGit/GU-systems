@@ -4,9 +4,9 @@ import pytest  # noqa
 import rclpy.node  # noqa
 from rclpy.node import Node
 
-from gusysalb.alb import ALB
-from gusyscore.constants import FEEDBACK_TOPIC
-from gusyscore.constants import REQUEST_TOPIC
+from execution_layer.rosa.build.alb import ALB
+from execution_layer.rosa.constants import FEEDBACK_TOPIC
+from execution_layer.rosa.constants import REQUEST_TOPIC
 
 
 class TestALB:
@@ -16,11 +16,11 @@ class TestALB:
 
     def test_load_mocks(self):
         self.alb.load_mocks()
-        assert "gusyscore.gateway.mocks.gateway" in sys.modules
+        assert "execution_layer.rosa.gateway.mocks.gateway" in sys.modules
 
     def test_load_types(self):
         self.alb.load_types()
-        assert "gusysros.types.basic" in sys.modules
+        assert "execution_layer.rosa.ros2.types.basic" in sys.modules
 
     def test_load_nodes(self):
         self.alb.load_nodes()

@@ -1,6 +1,6 @@
 import pytest
 
-from gusysros.tools.registry import ThreadRegistry
+from execution_layer.rosa.ros2.tools.registry import ThreadRegistry
 
 father_id = None
 

@@ -1,6 +1,6 @@
 import pytest
 
-from gusysros.tools.registry import ItemRegistry
+from execution_layer.rosa.ros2.tools.registry import ItemRegistry
 
 
 def test_item_registry(capsys: pytest.CaptureFixture):

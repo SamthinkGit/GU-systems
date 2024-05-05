@@ -1,7 +1,7 @@
 import pytest # noqa
 
-from gusyscore.constants import ITEM_ENCODED_PREFIX
-from gusysros.tools.registry import ItemEncoder
+from execution_layer.rosa.constants import ITEM_ENCODED_PREFIX
+from execution_layer.rosa.ros2.tools.registry import ItemEncoder
 
 
 def test_encoder():

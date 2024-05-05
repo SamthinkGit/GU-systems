@@ -8,7 +8,7 @@ export PYTHONPATH=$PYTHONPATH:$SOURCE
 PYTHONWARNINGS="ignore:easy_install command is deprecated,ignore:setup.py install is deprecated,ignore:" export PYTHONWARNINGS
 
 # ROS2 sources
-workspaces_dir=$SOURCE/gusysros/workspaces
+workspaces_dir=$SOURCE/execution_layer/rosa/ros2/workspaces
 
 for dir in "$workspaces_dir"/*; do
     if [ -d "$dir" ]; then

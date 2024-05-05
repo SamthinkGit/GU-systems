@@ -2,17 +2,17 @@ import json
 
 import rclpy
 
-from gusysalb.alb import ALB
-from gusyscore.constants import ITEM_ENCODED_PREFIX
-from gusyscore.gateway.mocks import gateway
-from gusysros.tools.packages import ActionPackage
-from gusysros.tools.packages import SequencePackage
-from gusysros.tools.packages import SequencePriority
-from gusysros.tools.packages import TaskRegistry
-from gusysros.tools.packages import TaskStatus
-from gusysros.tools.registry import ItemRegistry
-from gusysros.types.basic import SequenceType
-from gusysros.types.basic import SimpleSequence
+from execution_layer.rosa.build.alb import ALB
+from execution_layer.rosa.constants import ITEM_ENCODED_PREFIX
+from execution_layer.rosa.gateway.mocks import gateway
+from execution_layer.rosa.ros2.tools.packages import ActionPackage
+from execution_layer.rosa.ros2.tools.packages import SequencePackage
+from execution_layer.rosa.ros2.tools.packages import SequencePriority
+from execution_layer.rosa.ros2.tools.packages import TaskRegistry
+from execution_layer.rosa.ros2.tools.packages import TaskStatus
+from execution_layer.rosa.ros2.tools.registry import ItemRegistry
+from execution_layer.rosa.ros2.types.basic import SequenceType
+from execution_layer.rosa.ros2.types.basic import SimpleSequence
 from tests.mocks.packages import PackageMock
 
 

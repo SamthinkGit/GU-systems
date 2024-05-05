@@ -2,15 +2,15 @@ import time
 
 import pytest  # noqa
 
-from gusysalb.rosa import ROSA
-from gusyscore.gateway.mocks.debug import sleep_and_print
-from gusysros.tools.feedback import ExecutionStatus
-from gusysros.tools.feedback import Feedback
-from gusysros.tools.packages import ActionPackage
-from gusysros.tools.packages import SequencePackage
-from gusysros.tools.packages import SequencePriority
-from gusysros.tools.registry import ItemRegistry
-from gusysros.types.basic import SimpleSequence
+from execution_layer.rosa.build.rosa import ROSA
+from execution_layer.rosa.gateway.mocks.debug import sleep_and_print
+from execution_layer.rosa.ros2.tools.feedback import ExecutionStatus
+from execution_layer.rosa.ros2.tools.feedback import Feedback
+from execution_layer.rosa.ros2.tools.packages import ActionPackage
+from execution_layer.rosa.ros2.tools.packages import SequencePackage
+from execution_layer.rosa.ros2.tools.packages import SequencePriority
+from execution_layer.rosa.ros2.tools.registry import ItemRegistry
+from execution_layer.rosa.ros2.types.basic import SimpleSequence
 from tests.mocks.packages import PackageMock
 
 
