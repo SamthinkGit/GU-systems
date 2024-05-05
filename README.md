@@ -15,6 +15,8 @@
   <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/62b27a54-c44e-4fca-92ae-12294dd6d1ee" alt="Software Architecture Diagram" width=900>
 </div>
 
+<div align="center"><a href="https://github.com/SamthinkGit/GU-systems/wiki"><strong>📖 Access our Wiki for detailed documentation</strong></a></div>
+
 ## 🚀 Introduction
 
 Welcome to **(codename) GU Systems**, where the future of human-computer interaction unfolds. Imagine orchestrating your computer not by mere clicks and keystrokes but through an AI-powered interface that understands your intent and seamlessly translates it into actions. This is GU Systems - an avant-garde software/hardware suite driven by intelligent AI to elevate your computing to the next level.
