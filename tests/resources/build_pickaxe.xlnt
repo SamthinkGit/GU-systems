@@ -1,0 +1,10 @@
+def build_pickaxe():
+    with Sequential(on_error=DUMP_LOGS):
+        call(MinecraftExpert, "Go search for wood")
+        call(MinecraftExpert, "Go obtain stone")
+
+    with Retry(times=5):
+        call(MinecraftExpert, "Try to build a stone pickaxe")
+
+    with Sequential():
+        print("Done :D")

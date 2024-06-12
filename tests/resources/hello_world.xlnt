@@ -1,0 +1,11 @@
+# type: ignore
+
+def my_task():
+    with Sequential(on_fail=DUMP_LOGS):
+        with Sequential():
+            click("windows_icon")
+            click("notepad")
+
+        with Sequential():
+            click("window")
+            write("Hello World!")

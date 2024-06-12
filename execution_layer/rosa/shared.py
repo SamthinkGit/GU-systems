@@ -25,7 +25,7 @@ def get_rosa_path() -> Path:
 
 def get_root_path() -> Path:
     """
-    Retrieves the path to the root directory of the application.
+    Retrieves the path to the root directory of the repository.
     :return: The Path object pointing to the core directory.
     :rtype: Path
     """
