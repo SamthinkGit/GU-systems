@@ -44,6 +44,7 @@ class ItemRegistry:
     _instance = None
     _functions: Dict[Hashable, Callable] = {}
     _items: Dict[Hashable, Any] = {}
+    _names: Dict[str, Callable] = {}
 
     def __new__(cls):
         if cls._instance is None:
@@ -78,6 +79,7 @@ class ItemRegistry:
         """Decorator to register a function with a unique action ID."""
         id = cls.get_id(func)
         cls._functions[id] = func
+        cls._names[func.__name__] = func
         cls._logger.debug(f"Function {func} registered")
         return func
 
@@ -88,6 +90,7 @@ class ItemRegistry:
         id = cls.get_id(func)
         if id not in cls._functions:
             cls._functions[id] = func
+            cls._names[func.__name__] = func
 
     @classmethod
     def add_item(cls, item: Any) -> None:
@@ -117,6 +120,10 @@ class ItemRegistry:
             return cls._functions[id](*args, **kwargs)
         else:
             raise KeyError(f"No function registered under ID {id}")
+
+    @classmethod
+    def get_from_name(cls, name: str) -> Callable | None:
+        return cls._names.get(name)
 
 
 class ItemEncoder:
@@ -191,6 +198,7 @@ class ItemEncoder:
             return cls.decode(id)
 
         return code
+
     # ---------------------------------------------------------------------------
 
 
@@ -233,12 +241,10 @@ class ThreadRegistry:
         thread._target_func = target  # type: ignore
         thread._task_id = task_id  # type: ignore
 
-        if 'seq_type' in kwargs:
-            thread._seq_type = kwargs['seq_type']  # type: ignore
+        if "seq_type" in kwargs:
+            thread._seq_type = kwargs["seq_type"]  # type: ignore
 
-        self._logger.debug(
-            f"New thread built with task_id '{task_id}'"
-        )
+        self._logger.debug(f"New thread built with task_id '{task_id}'")
 
         thread.start()
         self._threads[task_id] = thread

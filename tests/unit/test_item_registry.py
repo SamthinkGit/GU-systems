@@ -4,9 +4,9 @@ from ecm.registry import ItemRegistry
 
 
 def test_item_registry(capsys: pytest.CaptureFixture):
+    registry = ItemRegistry()
 
     print("----- Testing ItemRegistry -----")
-    registry = ItemRegistry()
 
     @ItemRegistry.register_function
     def myfunc(message):
@@ -19,3 +19,12 @@ def test_item_registry(capsys: pytest.CaptureFixture):
 
     capture = capsys.readouterr()
     assert message in capture.out
+
+
+def test_obtain_function():
+    registry = ItemRegistry()
+
+    @ItemRegistry.register_function
+    def expected_func(): ...
+
+    assert registry.get_from_name("expected_func") == expected_func
