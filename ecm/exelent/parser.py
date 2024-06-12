@@ -1,4 +1,5 @@
 import ast
+from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -145,6 +146,34 @@ class ExelentParser:
         sequence = [cls._parse_with(node) for node in task.body]
 
         return ParsedTask(name, sequence)
+
+
+def linerize_task(task: ParsedTask) -> ParsedTask:
+    task = deepcopy(task)
+    result = []
+    for _with in task.sequence:
+        result.append(_linearize_with(_with))
+    task.sequence = result
+    return task
+
+
+def _linearize_with(_with: ParsedWith) -> ParsedWith:
+
+    if all([isinstance(node, ParsedAction) for node in _with.contains]):
+        return _with
+
+    actions = []
+    for node in _with.contains:
+        if isinstance(node, ParsedAction):
+            actions.append(node)
+            continue
+
+        node: ParsedWith
+        node = _linearize_with(node)
+        actions.extend(node.contains)
+
+    _with.contains = actions
+    return _with
 
 
 def parse(

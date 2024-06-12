@@ -11,7 +11,10 @@ from typing import Callable
 from typing import DefaultDict
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Tuple
+
+import rclpy
 
 from ecm.registry import ItemRegistry
 from ecm.shared import get_logger
@@ -132,7 +135,7 @@ class ROSA:
         pass
 
     def new_task(
-        self, task_id: str = "default", feedback_callback: Callable = empty_callback
+        self, task_id: str = "default", feedback_callback: Optional[Callable] = None
     ) -> None:
         """
         Prepares ROSA to redirect the feedback from a task to a given feedback_callback.
@@ -140,7 +143,10 @@ class ROSA:
         :param task_id: The unique identifier for the task.
         :param feedback_callback: The callback function to invoke for task feedback.
         """
-        self._task_callback[task_id] = feedback_callback
+        if feedback_callback is not None:
+            self._task_callback[task_id] = feedback_callback
+        else:
+            self._task_callback[task_id] = ROSA.empty_callback
 
         if task_id not in self._conditions.keys():
             self._conditions[task_id] = []
@@ -224,3 +230,6 @@ class ROSA:
 
         with self._lock:
             self._conditions[task_id].append(entry)
+
+    def kill(self):
+        rclpy.shutdown()

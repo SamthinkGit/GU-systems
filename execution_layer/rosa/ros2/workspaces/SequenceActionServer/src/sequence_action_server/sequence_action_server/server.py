@@ -160,7 +160,7 @@ class SequenceActionServer(Node):
         Callback to close a task, marking it as complete and notifying client.
         :param task_id: The identifier of the task to close.
         """
-        print("Closing Task...")
+        cls._logger.debug("Closing Task...")
         cls._dead_tasks.append(task_id)
         Publisher.notify_subscribers(task_id)
 
