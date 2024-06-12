@@ -19,11 +19,11 @@ from rclpy.qos import qos_profile_system_default
 from std_msgs.msg import String
 from sys_actions.action import Sequence
 
+from ecm.shared import get_logger
 from execution_layer.rosa.constants import REQUEST_TOPIC
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.tools.packages import TaskRegistry
 from execution_layer.rosa.ros2.tools.packages import TaskStatus
-from execution_layer.rosa.shared import get_logger
 
 
 class SequenceActionClient(Node):

@@ -15,7 +15,7 @@ import time
 
 import pyautogui
 
-from execution_layer.rosa.ros2.tools.registry import ItemRegistry
+from ecm.registry import ItemRegistry
 from execution_layer.rosa.workspace.workspace import Workspace
 
 

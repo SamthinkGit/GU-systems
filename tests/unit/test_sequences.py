@@ -2,7 +2,8 @@ import json
 
 import rclpy
 
-from execution_layer.rosa.constants import ITEM_ENCODED_PREFIX
+from ecm.constants import ITEM_ENCODED_PREFIX
+from ecm.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks import gateway
 from execution_layer.rosa.interfaces.alb import ALB
 from execution_layer.rosa.ros2.tools.packages import ActionPackage
@@ -10,7 +11,6 @@ from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.tools.packages import SequencePriority
 from execution_layer.rosa.ros2.tools.packages import TaskRegistry
 from execution_layer.rosa.ros2.tools.packages import TaskStatus
-from execution_layer.rosa.ros2.tools.registry import ItemRegistry
 from execution_layer.rosa.ros2.types.basic import SequenceType
 from execution_layer.rosa.ros2.types.basic import SimpleSequence
 from tests.mocks.packages import PackageMock

@@ -22,8 +22,8 @@ from queue import Empty
 from typing import Dict
 from typing import Type
 
-from execution_layer.rosa.ros2.tools.registry import ItemEncoder
-from execution_layer.rosa.ros2.tools.registry import ItemRegistry
+from ecm.registry import ItemEncoder
+from ecm.registry import ItemRegistry
 
 
 class TaskStatus(Enum):

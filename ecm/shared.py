@@ -1,0 +1,43 @@
+from pathlib import Path
+
+import colorlog
+
+from ecm.constants import LOG_LEVEL
+
+
+def get_root_path() -> Path:
+    """
+    Retrieves the path to the root directory of the repository.
+    :return: The Path object pointing to the core directory.
+    :rtype: Path
+    """
+    # ----------------------------------------------------------------
+    # CAUTION: Moving this function to a different file or changing
+    # the location of the file can shift the result!!!
+    # ----------------------------------------------------------------
+
+    path = Path(__file__).parent.parent.resolve()
+    return path
+
+
+def get_logger(name: str):
+
+    handler = colorlog.StreamHandler()
+    formatter = colorlog.ColoredFormatter(
+        "[%(log_color)s%(levelname)s%(reset)s] [%(yellow)s%(name)s%(reset)s]: %(message)s",
+        log_colors={
+            "DEBUG": "cyan",
+            "INFO": "green",
+            "WARNING": "purple",
+            "ERROR": "red",
+            "CRITICAL": "red,bg_white",
+        },
+        secondary_log_colors={},
+        style="%",
+    )
+
+    handler.setFormatter(formatter)
+    logger = colorlog.getLogger(name)
+    logger.setLevel(LOG_LEVEL)
+    logger.addHandler(handler)
+    return logger

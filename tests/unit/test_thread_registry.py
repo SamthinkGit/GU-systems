@@ -1,6 +1,6 @@
 import pytest
 
-from execution_layer.rosa.ros2.tools.registry import ThreadRegistry
+from ecm.registry import ThreadRegistry
 
 father_id = None
 

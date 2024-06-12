@@ -1,7 +1,12 @@
 import ecm.exelent.parser as parser
-from execution_layer.rosa.shared import get_root_path
+from ecm.shared import get_root_path
 
 
 def test_parse_tasks() -> None:
     path = get_root_path() / "tests" / "resources" / "hello_world.xlnt"
-    print(parser.parse(path))
+    task = parser.parse(path)
+    assert task.name == "my_task"
+
+    path = get_root_path() / "tests" / "resources" / "build_pickaxe.xlnt"
+    task = parser.parse(path)
+    assert task.name == "build_pickaxe"

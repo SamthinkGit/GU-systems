@@ -27,8 +27,8 @@ from typing import Callable
 from typing import Dict
 from typing import Hashable
 
-from execution_layer.rosa.constants import ITEM_ENCODED_PREFIX
-from execution_layer.rosa.shared import get_logger
+from ecm.constants import ITEM_ENCODED_PREFIX
+from ecm.shared import get_logger
 
 
 class ItemRegistry:

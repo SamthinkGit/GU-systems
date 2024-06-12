@@ -1,7 +1,7 @@
 import pytest # noqa
 
-from execution_layer.rosa.constants import ITEM_ENCODED_PREFIX
-from execution_layer.rosa.ros2.tools.registry import ItemEncoder
+from ecm.constants import ITEM_ENCODED_PREFIX
+from ecm.registry import ItemEncoder
 
 
 def test_encoder():

@@ -1,6 +1,6 @@
 import time
 
-from execution_layer.rosa.ros2.tools.registry import ItemRegistry
+from ecm.registry import ItemRegistry
 
 
 @ItemRegistry.register_function

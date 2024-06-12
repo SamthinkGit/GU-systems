@@ -27,9 +27,9 @@ from typing import Callable
 import rclpy
 from rclpy.executors import MultiThreadedExecutor
 
+from ecm.shared import get_logger
+from ecm.shared import get_root_path
 from execution_layer.rosa.interfaces.nodes import NodeRegistry
-from execution_layer.rosa.shared import get_logger
-from execution_layer.rosa.shared import get_root_path
 from execution_layer.rosa.shared import ignore_invalid_warnings as ignore_warns
 
 
@@ -82,7 +82,7 @@ class ALB:
             self.load_types()
             self.load_nodes()
         else:
-            self._logger.warn("Trying to interfaces ALB after it has already been built. Skipping")
+            self._logger.warn("Trying to build ALB after it has already been built. Skipping")
 
     def load_mocks(self):
         """
