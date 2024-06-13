@@ -7,6 +7,7 @@ It extends the `Interpreter` class and integrates with the ROSA system to manage
 The module also includes `RosaInterpreterSupports` to specify the capabilities of the Rosa interpreter.
 """
 from dataclasses import dataclass
+from typing import Any
 from typing import Callable
 from typing import Optional
 
@@ -49,6 +50,14 @@ class RosaInterpreterSupports(InterpreterSupports):
 class RosaInterpreter(Interpreter):
 
     type_dict: dict[str, SequenceType] = {"Sequential": SimpleSequence}
+    callback_dict: dict[str, ExecutionStatus] = {
+        "RUNNING": ExecutionStatus.RUNNING,
+        "STEP": ExecutionStatus.STEP,
+        "SUCCESS": ExecutionStatus.SUCCESS,
+        "ABORT": ExecutionStatus.ABORT,
+        "FINISH": ExecutionStatus.FINISH,
+        "SWITCH": ExecutionStatus.SWITCH,
+    }
 
     def __init__(self) -> None:
         self.rosa: ROSA = ROSA()
@@ -57,10 +66,25 @@ class RosaInterpreter(Interpreter):
 
         if callback == "silent" or callback == "mute":
             callback = self.rosa.muted_callback
+
         self.rosa.new_task(task_id=task.name, feedback_callback=callback)
         for pkg in self._generate_packages_from_parsed_task(task):
             self.rosa.execute(pkg)
         self.rosa.wait_for(task.name, ExecutionStatus.FINISH)
+
+    def arun(self, task: ParsedTask, callback: Optional[Callable] = None) -> None:
+        self.rosa.new_task(task_id=task.name, feedback_callback=callback)
+        for pkg in self._generate_packages_from_parsed_task(task):
+            self.rosa.execute(pkg)
+
+    def stop(self, task: str) -> Any:
+        self.rosa.soft_stop(task_id=task)
+
+    def hard_stop(self, task: str) -> Any:
+        self.rosa._hard_stop(task_id=task)
+
+    def wait_for(self, task: str, call: str) -> None:
+        self.rosa.wait_for(task_id=task, code=self.callback_dict[call])
 
     def _generate_packages_from_parsed_task(
         self,
@@ -72,7 +96,9 @@ class RosaInterpreter(Interpreter):
         # - ROSA only supports linearized tasks (cannot deal with not-sequential nested types)
         # - kwargs in types not supported yet
 
-        if not isinstance(task, ParsedTask) or not isinstance(task.sequence, ParsedWith):
+        if not isinstance(task, ParsedTask) or not isinstance(
+            task.sequence, ParsedWith
+        ):
             raise ValueError(
                 "Structure received is not a valid Task. Maybe the definition does not start with 'def'?"
                 f"Received: {task}"
