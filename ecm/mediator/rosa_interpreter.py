@@ -1,3 +1,11 @@
+"""
+Rosa Interpreter Module
+=================================
+
+This module defines the `RosaInterpreter` class for executing Exelent-tasks using the ROSA framework.
+It extends the `Interpreter` class and integrates with the ROSA system to manage task execution.
+The module also includes `RosaInterpreterSupports` to specify the capabilities of the Rosa interpreter.
+"""
 from dataclasses import dataclass
 from typing import Callable
 from typing import Optional
