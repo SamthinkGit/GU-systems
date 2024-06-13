@@ -149,9 +149,14 @@ class ExelentParser:
 
 
 def linerize_task(task: ParsedTask) -> ParsedTask:
+    assert task.sequence is not None, "Given task does not contain any sequences? Check the definition of the task."
     task = deepcopy(task)
     result = []
     for _with in task.sequence:
+
+        if not isinstance(_with, ParsedWith):
+            continue
+
         result.append(_linearize_with(_with))
     task.sequence = result
     return task

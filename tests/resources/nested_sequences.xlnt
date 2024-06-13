@@ -1,0 +1,10 @@
+def my_task():
+    with Sequential():
+        with Sequential():
+            test()
+            test()
+        with Sequential():
+            test()
+            test()
+        test()
+        test()
