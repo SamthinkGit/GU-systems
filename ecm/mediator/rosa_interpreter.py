@@ -85,6 +85,9 @@ class RosaInterpreter(Interpreter):
     def wait_for(self, task: str, call: str) -> None:
         self.rosa.wait_for(task_id=task, code=self.callback_dict[call])
 
+    def kill(self):
+        self.rosa.kill()
+
     def _generate_packages_from_parsed_task(
         self,
         task: ParsedTask,
