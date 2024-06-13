@@ -14,7 +14,6 @@ from typing import Optional
 from ecm.exelent.parser import linerize_task
 from ecm.exelent.parser import ParsedTask
 from ecm.exelent.parser import ParsedType
-from ecm.exelent.parser import ParsedWith
 from ecm.mediator.Interpreter import Interpreter
 from ecm.mediator.Interpreter import InterpreterSupports
 from ecm.tools.registry import ItemRegistry
@@ -96,9 +95,7 @@ class RosaInterpreter(Interpreter):
         # - ROSA only supports linearized tasks (cannot deal with not-sequential nested types)
         # - kwargs in types not supported yet
 
-        if not isinstance(task, ParsedTask) or not isinstance(
-            task.sequence, ParsedWith
-        ):
+        if not isinstance(task, ParsedTask):
             raise ValueError(
                 "Structure received is not a valid Task. Maybe the definition does not start with 'def'?"
                 f"Received: {task}"

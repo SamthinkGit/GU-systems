@@ -19,7 +19,7 @@ done
 # -------------------------- Some dev-aliases ---------------------------------
 
 # [gutree]: Show the tree of the proyect without redundant files
-alias gutree='tree -I interfaces -I install -I log -I __pycache__ -I docs'
+alias gutree='tree -I interfaces -I install -I log -I __pycache__ -I docs -I build'
 
 # [jsed]: Prints json files formatted (used in combination with ros2 topic echo)
 # Example: ros2 topic echo /tast_registry | jsed
