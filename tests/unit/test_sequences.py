@@ -3,7 +3,7 @@ import json
 import rclpy
 
 from ecm.constants import ITEM_ENCODED_PREFIX
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks import gateway
 from execution_layer.rosa.interfaces.alb import ALB
 from execution_layer.rosa.ros2.tools.packages import ActionPackage

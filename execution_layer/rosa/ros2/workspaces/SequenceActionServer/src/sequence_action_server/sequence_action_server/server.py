@@ -17,8 +17,8 @@ from rclpy.action import ActionServer
 from rclpy.node import Node
 from sys_actions.action import Sequence
 
-from ecm.registry import ThreadRegistry
 from ecm.shared import get_logger
+from ecm.tools.registry import ThreadRegistry
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.types.basic import ReservedTypeCode
 from execution_layer.rosa.ros2.types.basic import SequenceType

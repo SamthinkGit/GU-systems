@@ -22,8 +22,8 @@ from queue import Empty
 from typing import Dict
 from typing import Type
 
-from ecm.registry import ItemEncoder
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemEncoder
+from ecm.tools.registry import ItemRegistry
 
 
 class TaskStatus(Enum):

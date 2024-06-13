@@ -16,9 +16,9 @@ from enum import Enum
 from sequence_action_server.feedback import FeedbackPublisher
 from typing import Any
 
-from ecm.registry import ItemEncoder
-from ecm.registry import ThreadRegistry
 from ecm.shared import get_logger
+from ecm.tools.registry import ItemEncoder
+from ecm.tools.registry import ThreadRegistry
 from execution_layer.rosa.interfaces.nodes import NodeRegistry
 
 

@@ -8,7 +8,7 @@ from ecm.exelent.parser import ParsedType
 from ecm.exelent.parser import ParsedWith
 from ecm.mediator.Interpreter import Interpreter
 from ecm.mediator.Interpreter import InterpreterSupports
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.interfaces.rosa import ROSA
 from execution_layer.rosa.ros2.tools.feedback import ExecutionStatus
 from execution_layer.rosa.ros2.tools.packages import ActionPackage

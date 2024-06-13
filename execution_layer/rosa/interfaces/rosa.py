@@ -16,8 +16,8 @@ from typing import Tuple
 
 import rclpy
 
-from ecm.registry import ItemRegistry
 from ecm.shared import get_logger
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks.debug import empty_function
 from execution_layer.rosa.interfaces.alb import ALB
 from execution_layer.rosa.interfaces.nodes import NodeRegistry

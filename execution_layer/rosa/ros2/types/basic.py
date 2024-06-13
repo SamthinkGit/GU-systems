@@ -14,8 +14,8 @@ from typing import Callable
 from typing import Dict
 from typing import Type
 
-from ecm.registry import ItemRegistry
 from ecm.shared import get_logger
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.ros2.tools.feedback import ExecutionStatus
 from execution_layer.rosa.ros2.tools.feedback import Feedback
 from execution_layer.rosa.ros2.tools.packages import SequencePackage

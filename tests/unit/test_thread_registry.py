@@ -1,6 +1,6 @@
 import pytest
 
-from ecm.registry import ThreadRegistry
+from ecm.tools.registry import ThreadRegistry
 
 father_id = None
 

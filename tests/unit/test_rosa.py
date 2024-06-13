@@ -2,7 +2,7 @@ import time
 
 import pytest  # noqa
 
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks.debug import sleep_and_print
 from execution_layer.rosa.interfaces.rosa import ROSA
 from execution_layer.rosa.ros2.tools.feedback import ExecutionStatus

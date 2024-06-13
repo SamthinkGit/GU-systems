@@ -1,7 +1,7 @@
 import ecm.exelent.parser as parser
 from ecm.mediator.rosa_interpreter import RosaInterpreter
-from ecm.registry import ItemRegistry
 from ecm.shared import get_root_path
+from ecm.tools.registry import ItemRegistry
 
 
 @ItemRegistry.register_function

@@ -1,7 +1,7 @@
 import pytest # noqa
 
 from ecm.constants import ITEM_ENCODED_PREFIX
-from ecm.registry import ItemEncoder
+from ecm.tools.registry import ItemEncoder
 
 
 def test_encoder():

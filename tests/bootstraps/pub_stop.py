@@ -4,7 +4,7 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from std_msgs.msg import String
 
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.constants import REQUEST_TOPIC
 from execution_layer.rosa.gateway import empty_function
 from execution_layer.rosa.interfaces.alb import ALB

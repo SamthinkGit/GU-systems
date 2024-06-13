@@ -1,6 +1,6 @@
 import time
 
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemRegistry
 
 
 @ItemRegistry.register_function

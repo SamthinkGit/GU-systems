@@ -1,6 +1,6 @@
 import pytest
 
-from ecm.registry import ItemRegistry
+from ecm.tools.registry import ItemRegistry
 
 
 def test_item_registry(capsys: pytest.CaptureFixture):

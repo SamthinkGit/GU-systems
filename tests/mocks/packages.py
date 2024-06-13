@@ -1,5 +1,5 @@
-from ecm.registry import ItemRegistry
 from ecm.shared import get_logger
+from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks.debug import append_to_list
 from execution_layer.rosa.ros2.tools.packages import ActionPackage
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
