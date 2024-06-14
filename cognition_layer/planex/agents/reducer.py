@@ -34,19 +34,19 @@ class Reducer:
             [("system", sys_message), ("user", "{input}")]
         )
         self.chain = self.prompt | self.llm
+        self.auto_bind_actions()
 
-    def _auto_bind_actions(self):
+    def auto_bind_actions(self):
         tools: list[StructuredTool] = [
             build_tool(t) for t in ItemRegistry._functions.values()
         ]
         tools_formatted = "\n".join([format_tool(t) for t in tools])
-        self._actions = tools_formatted
+        self.actions = tools_formatted
 
     def reduce(self, input: str, actions: Optional[str] = None) -> BaseMessage:
 
         if actions is None:
-            self._auto_bind_actions()
-            actions = self._actions
+            actions = self.actions
 
         return self.chain.invoke({"actions": actions, "input": input})
 

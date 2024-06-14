@@ -40,7 +40,6 @@ class PlanexPrompts:
         "5. Maintain the original context in addition to the changed keywords into functions.\n"
     )
 
-    # Caution: Using this example may confuse the llm making it use the functions as exactly specified in the example.
     REDUCER_EXAMPLE: str = (
         "\nFunctions:\nmy_func(keyword) # Does a function"
         "\nInput: 0. Do a func with Win + R to open the 'Run' dialog."
