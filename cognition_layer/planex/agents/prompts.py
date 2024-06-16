@@ -1,3 +1,26 @@
+"""
+PlanexPrompts Module
+=================================
+
+The class includes detailed instructions, guidelines, and examples for different roles
+such as Planner, Reducer, and Translator, each designed to facilitate specific functions
+within the planning and execution process.
+
+Key components include:
+- `PLANNER_INSTRUCTIONS`: Guidelines for generating detailed, step-by-step plans.
+- `PLANNER_GUIDELINES`: Rules to ensure clarity and executability of steps.
+- `PLANNER_EXAMPLE`: Example plan for reference.
+- `REDUCER_INSTRUCTIONS`: Guidelines for optimizing given plans using predefined functions.
+- `REDUCER_GUIDELINES`: Rules for rewriting plans to achieve the same result using available functions.
+- `REDUCER_EXAMPLE`: Example of a function-optimized plan.
+- `TRANSLATOR_INSTRUCTIONS`: Guidelines for translating plans into the Exelent language.
+- `TRANSLATOR_GUIDELINES`: Rules for ensuring the translated plan uses Exelent syntax and achieves the intended result.
+- `EXELENT_DESCRIPTION`: Overview of the Exelent language, its key elements, and syntax.
+- `TRANSLATOR_EXAMPLE`: Example of a plan translated into Exelent.
+
+The module is based on the 3 Step Planning from this link:
+https://github.com/SamthinkGit/GU-systems/wiki/ECM-Problem-Analysis
+"""
 from dataclasses import dataclass
 
 

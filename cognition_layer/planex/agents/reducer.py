@@ -1,3 +1,20 @@
+"""
+Reducer Module
+=================================
+
+This module provides the `Reducer` class for simplifying and defining task actions using
+the `ChatOpenAI` model. The reducer main goal is to change a set of keywords inside a plan
+for a set of actions defined previously
+
+The module is based on the "Reduction" Step from this link:
+https://github.com/SamthinkGit/GU-systems/wiki/ECM-Problem-Analysis
+
+# Note: This agent depends on the ItemRegistry class for resolving the possible tools
+defined to be used for the AI
+
+For standalone use, refer to the example below. To integrate this agent with other LangChain-compatible
+tools, check the example in /test/sandbox/planex.
+"""
 from typing import Optional
 
 from colorama import Fore
@@ -19,6 +36,7 @@ class Reducer:
     def __init__(
         self, model: str = DEFAULT_MODEL, temperature: float = 0, **kwargs
     ) -> None:
+        """Inits connection with OpenAI and loads prompt resources"""
         self.llm = ChatOpenAI(model=model, temperature=temperature, **kwargs)
         sys_message = (
             "\nInstructions: \n"
@@ -37,6 +55,7 @@ class Reducer:
         self.auto_bind_actions()
 
     def auto_bind_actions(self):
+        """Saves all functions defined inside the ItemRegistry and binds them to the agent."""
         tools: list[StructuredTool] = [
             build_tool(t) for t in ItemRegistry._functions.values()
         ]
@@ -44,7 +63,7 @@ class Reducer:
         self.actions = tools_formatted
 
     def reduce(self, input: str, actions: Optional[str] = None) -> BaseMessage:
-
+        """Given a plan, changes action keywords into binded functions"""
         if actions is None:
             actions = self.actions
 

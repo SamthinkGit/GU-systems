@@ -1,3 +1,16 @@
+"""
+Translator Module
+=================================
+
+This module provides the `Translator` class for converting task plans into executable actions using
+the `ChatOpenAI` model. The translator changes a given reduced plan into an Exelent task.
+
+The module is based on the "Translation" Step from this link:
+https://github.com/SamthinkGit/GU-systems/wiki/ECM-Problem-Analysis
+
+For standalone use, refer to the example below. To integrate this agent with other LangChain-compatible
+tools, check the example in /test/sandbox/planex.
+"""
 from colorama import Fore
 from colorama import Style
 from langchain_core.messages import BaseMessage
@@ -13,8 +26,9 @@ class Translator:
     def __init__(
         self, model: str = DEFAULT_MODEL, temperature: float = 0, **kwargs
     ) -> None:
-        self.llm = ChatOpenAI(model=model, temperature=temperature, **kwargs)
+        """Inits connection with OpenAI and loads prompt resources"""
 
+        self.llm = ChatOpenAI(model=model, temperature=temperature, **kwargs)
         # TODO: Add a structure for avoiding the type hard-coding
         exelent_supported_types = [
             (
@@ -42,6 +56,7 @@ class Translator:
         self.chain = self.prompt | self.llm
 
     def translate(self, input: str) -> BaseMessage:
+        """Translates a plan into a Exlent valid task"""
         return self.chain.invoke({"input": input})
 
 
