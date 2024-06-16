@@ -44,11 +44,11 @@ class ALB:
     mocks = ["/execution_layer/rosa/gateway/mocks"]
     types = ["/execution_layer/rosa/ros2/types"]
     nodes = {
-        'sequence_server': SequenceActionServer,
-        'sequence_client': SequenceActionClient,
-        'feedback_publisher': FeedbackPublisher,
-        'sequence_publisher': SequencePublisher,
-        'registry_logger': RegistryLogger
+        "sequence_server": SequenceActionServer,
+        "sequence_client": SequenceActionClient,
+        "feedback_publisher": FeedbackPublisher,
+        "sequence_publisher": SequencePublisher,
+        "registry_logger": RegistryLogger,
     }
 
     _logger = get_logger("ALB")
@@ -82,7 +82,9 @@ class ALB:
             self.load_types()
             self.load_nodes()
         else:
-            self._logger.warn("Trying to build ALB after it has already been built. Skipping")
+            self._logger.warn(
+                "Trying to build ALB after it has already been built. Skipping"
+            )
 
     def load_mocks(self):
         """
@@ -114,7 +116,7 @@ class ALB:
         if self._feedback_listener is not None:
             feedback_node = FeedbackListener(self._feedback_listener)
             self.executor.add_node(feedback_node)
-            NodeRegistry.inited_nodes['feedback_listener'] = feedback_node
+            NodeRegistry.inited_nodes["feedback_listener"] = feedback_node
 
         thread = threading.Thread(target=self.executor.spin)
         thread.start()

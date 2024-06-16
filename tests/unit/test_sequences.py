@@ -3,6 +3,7 @@ import json
 import rclpy
 
 from ecm.constants import ITEM_ENCODED_PREFIX
+from ecm.shared import enable_mocks
 from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks import gateway
 from execution_layer.rosa.interfaces.alb import ALB
@@ -17,6 +18,9 @@ from tests.mocks.packages import PackageMock
 
 
 def test_sequence_building():
+
+    enable_mocks()
+
     with gateway.OneFileWorkspaceMock(temporal=True) as ws:
 
         # --- Initializing Building ---
@@ -69,6 +73,7 @@ def test_sequence_building():
 
 def test_sequence_types():
 
+    enable_mocks()
     alb = ALB()
     alb.build_all()
 

@@ -28,6 +28,7 @@ from typing import Dict
 from typing import Hashable
 
 from ecm.constants import ITEM_ENCODED_PREFIX
+from ecm.shared import _MOCKS_ENABLED
 from ecm.shared import get_logger
 
 
@@ -77,6 +78,8 @@ class ItemRegistry:
     @classmethod
     def register_function(cls, func: Callable):
         """Decorator to register a function with a unique action ID."""
+        if not _MOCKS_ENABLED.status and func.__doc__ == "MOCK":
+            return func
         id = cls.get_id(func)
         cls._functions[id] = func
         cls._names[func.__name__] = func

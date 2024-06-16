@@ -45,3 +45,42 @@ class PlanexPrompts:
         "\nInput: 0. Do a func with Win + R to open the 'Run' dialog."
         "\n\n0. Do my_func('Win+R') to open the 'Run' dialog.\n"
     )
+    TRANSLATOR_INSTRUCTIONS: str = (
+        "\nYou are an Expert Exelent Plan Translator. Your task is to translate a given plan, "
+        "that uses predefined functions, into an Exelent file that accomplishes the same actions. "
+        "Ensure each step is specific, clear, and executable using the Exelent language. "
+        "Begin each step with a comment explaining its purpose and expected result.\n"
+    )
+    TRANSLATOR_GUIDELINES: str = (
+        "1. Review the given plan thoroughly to understand the intended result.\n"
+        "2. Translate the plan into Exelent language, following the syntax and structure of Exelent.\n"
+        "3. Each step should be preceded by a comment explaining the purpose and expected outcome "
+        "of the subsequent action.\n"
+        "4. Ensure the new plan uses only the Exelent language constructs and achieves the same result "
+        "as the original plan.\n"
+    )
+    EXELENT_DESCRIPTION: str = (
+        "\nExelent is a declarative language with Pythonic syntax designed for describing AI-generated plans "
+        "and sequences of programmatic steps to reach a solution. Here are the key elements:\n"
+        "1. Define a Plan Function: All plans are defined as functions. A plan definition can include arguments "
+        "specifying the properties of the plan.\n"
+        "2. Define Types within Each Plan: A 'type' represents a predefined behavior, similar to using loops in "
+        "imperative programming languages. Types can have properties specified through its arguments.\n"
+        "3. Define Actions within Each Type: An 'action' corresponds to a function that will be linked during "
+        "the interpretation of the file. Actions are similar to function calls but without declarations, "
+        "imports, or definitions.\n"
+        "4. The syntax for defining a plan in Exelent is as follows:\n"
+        "```python\n"
+        "def <plan>(<properties>):\n"
+        "  with <type>(<properties>):\n"
+        "    <action>()\n"
+        "    <action>()\n"
+        "```\n"
+    )
+    TRANSLATOR_EXAMPLE: str = (
+        "\n# Functions:\nmy_func(keyword) # Does a function"
+        "\n# Input: 0. Do a func with Win + R to open the 'Run' dialog."
+        "\n\ndef run_dialog():\n"
+        "\n  with Sequential():\n"
+        "\n    my_func('Win+R')\n"
+    )

@@ -1,8 +1,21 @@
+import sys
 from pathlib import Path
 
 import colorlog
 
 from ecm.constants import LOG_LEVEL
+
+
+class _MOCKS_ENABLED:
+    status: bool = False
+
+
+def enable_mocks():
+    _MOCKS_ENABLED.status = True
+
+
+if "pytest" in sys.modules:
+    enable_mocks()
 
 
 def get_root_path() -> Path:
