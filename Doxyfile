@@ -32,7 +32,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "GU-Systems"
+PROJECT_NAME           = "My Project"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -58,7 +58,7 @@ PROJECT_LOGO           =
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = "./docs"
+OUTPUT_DIRECTORY       = docs
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -86,7 +86,7 @@ ALLOW_UNICODE_NAMES    = NO
 # Esperanto, Farsi (Persian), Finnish, French, German, Greek, Hungarian,
 # Indonesian, Italian, Japanese, Japanese-en (Japanese with English messages),
 # Korean, Korean-en (Korean with English messages), Latvian, Lithuanian,
-# Macedonian, Norwegian, Persian (Farsi), Polish, Portuguese, Romanian, Russian,
+# Macedonian, Norwegian,
 # Serbian, Serbian-Cyrillic, Slovak, Slovene, Spanish, Swedish, Turkish,
 # Ukrainian and Vietnamese.
 # The default value is: English.
@@ -864,7 +864,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  =
+INPUT                  = ecm execution_layer cognition_layer
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -968,7 +968,7 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */build/* */install/* */log/* */__pycache__/* */__init__.py/* */test_*
+EXCLUDE_PATTERNS       = */install/* */log/* */__pycache__/* */build/*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -1061,7 +1061,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = ./ecm/mainpage.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
