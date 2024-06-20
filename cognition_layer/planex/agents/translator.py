@@ -11,17 +11,22 @@ https://github.com/SamthinkGit/GU-systems/wiki/ECM-Problem-Analysis
 For standalone use, refer to the example below. To integrate this agent with other LangChain-compatible
 tools, check the example in /test/sandbox/planex.
 """
+from typing import Optional
+
 from colorama import Fore
 from colorama import Style
 from langchain_core.messages import BaseMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
+from cognition_layer.constants import DEFAULT_MODEL
 from cognition_layer.planex.agents.prompts import PlanexPrompts
-from cognition_layer.planex.constants import DEFAULT_MODEL
+from ecm.shared import get_logger
 
 
 class Translator:
+
+    _logger = get_logger("Translator")
 
     def __init__(
         self, model: str = DEFAULT_MODEL, temperature: float = 0, **kwargs
@@ -55,9 +60,15 @@ class Translator:
         )
         self.chain = self.prompt | self.llm
 
-    def translate(self, input: str) -> BaseMessage:
+    def translate(self, input: str, verbose: Optional[bool] = False) -> BaseMessage:
         """Translates a plan into a Exlent valid task"""
-        return self.chain.invoke({"input": input})
+        result = self.chain.invoke({"input": input})
+
+        if verbose:
+            Translator._logger.info("Received: \n" + input)
+            Translator._logger.info("Generated: \n" + result.content)
+
+        return result
 
 
 if __name__ == "__main__":

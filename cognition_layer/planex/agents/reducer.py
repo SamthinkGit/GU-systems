@@ -25,13 +25,16 @@ from langchain.tools import tool as build_tool
 from langchain_core.messages import BaseMessage
 from langchain_openai import ChatOpenAI
 
+from cognition_layer.constants import DEFAULT_MODEL
 from cognition_layer.planex.agents.prompts import PlanexPrompts
-from cognition_layer.planex.constants import DEFAULT_MODEL
 from cognition_layer.planex.utils.format import format_tool
+from ecm.shared import get_logger
 from ecm.tools.registry import ItemRegistry
 
 
 class Reducer:
+
+    _logger = get_logger("Reducer")
 
     def __init__(
         self, model: str = DEFAULT_MODEL, temperature: float = 0, **kwargs
@@ -61,13 +64,21 @@ class Reducer:
         ]
         tools_formatted = "\n".join([format_tool(t) for t in tools])
         self.actions = tools_formatted
+        Reducer._logger.debug(f"Autobinded {[tool.name for tool in tools]}")
 
-    def reduce(self, input: str, actions: Optional[str] = None) -> BaseMessage:
+    def reduce(
+        self, input: str, actions: Optional[str] = None, verbose: Optional[bool] = False
+    ) -> BaseMessage:
         """Given a plan, changes action keywords into binded functions"""
         if actions is None:
             actions = self.actions
 
-        return self.chain.invoke({"actions": actions, "input": input})
+        result = self.chain.invoke({"actions": actions, "input": input})
+        if verbose:
+            Reducer._logger.info("Received: \n" + input)
+            Reducer._logger.info("Generated: \n" + result.content)
+
+        return result
 
 
 if __name__ == "__main__":

@@ -1,11 +1,13 @@
+from typing import Optional
+
 from agent_protocol import Agent
 from agent_protocol import Step
 from agent_protocol import Task
 
+from cognition_layer.constants import API_PORT
 from cognition_layer.planex.agents.planner import Planner
 from cognition_layer.planex.agents.reducer import Reducer
 from cognition_layer.planex.agents.translator import Translator
-from cognition_layer.planex.constants import API_PORT
 from cognition_layer.templates import ServerAPI
 from ecm.shared import get_logger
 
@@ -13,11 +15,16 @@ from ecm.shared import get_logger
 class PlanexServer(ServerAPI):
 
     _logger = get_logger("Planex Server")
+    planner: Planner | None = None
+    reducer: Reducer | None = None
+    translator: Translator | None = None
+    verbose: bool = False
 
-    def __init__(self) -> None:
-        self.planner = Planner()
-        self.reducer = Reducer()
-        self.translator = Translator()
+    def __init__(self, verbose: Optional[bool] = False) -> None:
+        PlanexServer.planner = Planner()
+        PlanexServer.reducer = Reducer()
+        PlanexServer.translator = Translator()
+        PlanexServer.verbose = verbose
 
     def start(self) -> None:
         Agent.setup_agent(PlanexServer.task_handler, PlanexServer.step_handler).start(
@@ -32,7 +39,7 @@ class PlanexServer(ServerAPI):
             task_id=task.task_id, input=task.input, name="reduce"
         )
         await Agent.db.create_step(
-            task_id=task.task_id, input=task.input, name="translate"
+            task_id=task.task_id, input=task.input, name="translate", is_last=True
         )
         PlanexServer.reducer.auto_bind_actions()
 
@@ -43,16 +50,21 @@ class PlanexServer(ServerAPI):
 
         match step.name:
             case "plan":
-                result = PlanexServer.planner.plan(step.input).content
+                result = PlanexServer.planner.plan(
+                    step.input, verbose=PlanexServer.verbose
+                ).content
                 step.output = result
 
             case "reduce":
-                result = PlanexServer.reducer.reduce(step.input).content
+                result = PlanexServer.reducer.reduce(
+                    step.input, verbose=PlanexServer.verbose
+                ).content
                 step.output = result
 
             case "translate":
-                result = PlanexServer.translator.translate(step.input).content
+                result = PlanexServer.translator.translate(
+                    step.input, verbose=PlanexServer.verbose
+                ).content
                 step.output = result
-                step.is_last = True
 
         return step

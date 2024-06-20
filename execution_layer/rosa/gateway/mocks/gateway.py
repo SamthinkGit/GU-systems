@@ -34,6 +34,7 @@ class IOMock():
     @staticmethod
     @ItemRegistry.register_function
     def write(text: str) -> None:
+        """MOCK"""
         assert_valid_text(text)
         pyautogui.write(text)
 
@@ -62,6 +63,7 @@ class OneFileWorkspaceMock(Workspace):
     @staticmethod
     @ItemRegistry.register_function
     def write_with(workspace, text: str):
+        """MOCK"""
         workspace.write(text)
 
 
