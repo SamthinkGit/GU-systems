@@ -5,3 +5,5 @@ colorlog
 colorama
 langchain
 langchain-openai
+agent-protocol
+agent-protocol-client

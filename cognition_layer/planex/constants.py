@@ -1,1 +1,3 @@
 DEFAULT_MODEL = "gpt-3.5-turbo"
+API_ADDRESS = "0.0.0.0"
+API_PORT = 8090

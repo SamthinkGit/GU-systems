@@ -14,7 +14,7 @@ from ecm.tools.registry import ItemRegistry
 if __name__ == "__main__":
 
     set_verbose(False)
-    set_debug(True)
+    set_debug(False)
 
     query = input("Select Task (Press ENTER for deafault): ")
     if query == "":

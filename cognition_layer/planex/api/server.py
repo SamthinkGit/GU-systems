@@ -1,0 +1,58 @@
+from agent_protocol import Agent
+from agent_protocol import Step
+from agent_protocol import Task
+
+from cognition_layer.planex.agents.planner import Planner
+from cognition_layer.planex.agents.reducer import Reducer
+from cognition_layer.planex.agents.translator import Translator
+from cognition_layer.planex.constants import API_PORT
+from cognition_layer.templates import ServerAPI
+from ecm.shared import get_logger
+
+
+class PlanexServer(ServerAPI):
+
+    _logger = get_logger("Planex Server")
+
+    def __init__(self) -> None:
+        self.planner = Planner()
+        self.reducer = Reducer()
+        self.translator = Translator()
+
+    def start(self) -> None:
+        Agent.setup_agent(PlanexServer.task_handler, PlanexServer.step_handler).start(
+            port=API_PORT
+        )
+
+    @staticmethod
+    async def task_handler(task: Task) -> None:
+        PlanexServer._logger.debug("Initializing...")
+        await Agent.db.create_step(task_id=task.task_id, input=task.input, name="plan")
+        await Agent.db.create_step(
+            task_id=task.task_id, input=task.input, name="reduce"
+        )
+        await Agent.db.create_step(
+            task_id=task.task_id, input=task.input, name="translate"
+        )
+        PlanexServer.reducer.auto_bind_actions()
+
+    @staticmethod
+    async def step_handler(step: Step) -> Step:
+
+        PlanexServer._logger.debug(f"Running Step: {step.name}")
+
+        match step.name:
+            case "plan":
+                result = PlanexServer.planner.plan(step.input).content
+                step.output = result
+
+            case "reduce":
+                result = PlanexServer.reducer.reduce(step.input).content
+                step.output = result
+
+            case "translate":
+                result = PlanexServer.translator.translate(step.input).content
+                step.output = result
+                step.is_last = True
+
+        return step
