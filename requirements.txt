@@ -8,3 +8,4 @@ langchain-openai
 agent-protocol
 agent-protocol-client
 requests
+pyautogui

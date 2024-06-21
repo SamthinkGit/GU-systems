@@ -7,7 +7,6 @@ import agent_protocol_client
 import requests
 
 import ecm.exelent.parser as parser
-import tests.mocks.agent_actions  # noqa
 from cognition_layer.api import CognitionMediator
 from cognition_layer.api import ServerAPI
 from cognition_layer.constants import API_ADDRESS
@@ -19,7 +18,7 @@ from ecm.shared import get_logger
 # TOOLS
 
 
-async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA"):
+async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA", verbose: bool = False):
 
     # ---- Initializing ----
     host = f"http://{API_ADDRESS}:{API_PORT}"
@@ -33,7 +32,7 @@ async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA"):
 
             from cognition_layer.planex.api.server import PlanexServer
 
-            server = PlanexServer(verbose=True)
+            server = PlanexServer(verbose=verbose)
 
         case _:
             return ValueError(
@@ -112,4 +111,6 @@ async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA"):
 
 
 if __name__ == "__main__":
+
+    import tests.mocks.agent_actions  # noqa
     asyncio.run(main(execution_layer="ROSA", cognition_layer="PLANEX"))
