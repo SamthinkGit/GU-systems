@@ -1,4 +1,5 @@
 import asyncio
+import atexit
 import multiprocessing
 import time
 
@@ -7,12 +8,15 @@ import requests
 from agent_protocol_client.models import TaskStepsListResponse
 from agent_protocol_client.rest import ApiException
 
+import ecm.exelent.parser as parser
 import tests.mocks.agent_actions  # noqa
 from cognition_layer.constants import API_ADDRESS
 from cognition_layer.constants import API_PORT
+from cognition_layer.planex.utils.format import extract_python_code
 from cognition_layer.templates import ServerAPI
 from ecm.mediator.Interpreter import Interpreter
 from ecm.shared import get_logger
+
 # TOOLS
 
 
@@ -62,6 +66,7 @@ async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA"):
 
     server_process = multiprocessing.Process(target=server.start)
     server_process.start()
+    atexit.register(lambda p: p.join(), server_process)
 
     info_shown = False
     status_code = 404
@@ -84,8 +89,11 @@ async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA"):
 
         while True:
 
-            task = agent_protocol_client.TaskRequestBody()
-            task.input = input("Request a Task: ")
+            # ------------ COGNITION LAYER -------------------
+
+            task = agent_protocol_client.TaskRequestBody(
+                input=input("Request a Task: ")
+            )
 
             # Request a task
             try:
@@ -125,8 +133,20 @@ async def main(cognition_layer: str = "PLANEX", execution_layer: str = "ROSA"):
 
                 counter += 1
 
-            logger.debug(result.output)
-            interpreter.kill()
+            # ------------ PARSING EXELENT -------------------
+            task = result.output
+            if task.startswith("```python"):
+                task = extract_python_code(task)
+
+            task = parser.parse(target_str=task)
+
+            logger.debug("Generated Packages:\n")
+            for pkg in interpreter._generate_packages_from_parsed_task(task):
+                logger.debug(pkg.to_json())
+
+            # ------------ EXECUTION LAYER -------------------
+            logger.debug("Running Packages...")
+            interpreter.run(task, callback="silent")
 
 
 if __name__ == "__main__":

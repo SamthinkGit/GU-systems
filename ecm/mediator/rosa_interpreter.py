@@ -57,9 +57,11 @@ class RosaInterpreter(Interpreter):
         "FINISH": ExecutionStatus.FINISH,
         "SWITCH": ExecutionStatus.SWITCH,
     }
+    _running = False
 
     def __init__(self) -> None:
         self.rosa: ROSA = ROSA()
+        RosaInterpreter._running = True
 
     def run(self, task: ParsedTask, callback: Optional[Callable] = None) -> None:
 
@@ -86,7 +88,9 @@ class RosaInterpreter(Interpreter):
         self.rosa.wait_for(task_id=task, code=self.callback_dict[call])
 
     def kill(self):
-        self.rosa.kill()
+        if RosaInterpreter._running:
+            RosaInterpreter._running = False
+            self.rosa.kill()
 
     def _generate_packages_from_parsed_task(
         self,
