@@ -4,11 +4,11 @@ from agent_protocol import Agent
 from agent_protocol import Step
 from agent_protocol import Task
 
+from cognition_layer.api import ServerAPI
 from cognition_layer.constants import API_PORT
 from cognition_layer.planex.agents.planner import Planner
 from cognition_layer.planex.agents.reducer import Reducer
 from cognition_layer.planex.agents.translator import Translator
-from cognition_layer.templates import ServerAPI
 from ecm.shared import get_logger
 
 
