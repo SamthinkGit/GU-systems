@@ -69,9 +69,10 @@ class RosaInterpreter(Interpreter):
             callback = self.rosa.muted_callback
 
         self.rosa.new_task(task_id=task.name, feedback_callback=callback)
-        for pkg in self._generate_packages_from_parsed_task(task):
+        packages = self._generate_packages_from_parsed_task(task)
+        for pkg in packages:
             self.rosa.execute(pkg)
-        self.rosa.wait_for(task.name, ExecutionStatus.FINISH)
+            self.rosa.wait_for(task.name, ExecutionStatus.FINISH)
 
     def arun(self, task: ParsedTask, callback: Optional[Callable] = None) -> None:
         self.rosa.new_task(task_id=task.name, feedback_callback=callback)

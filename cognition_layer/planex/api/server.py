@@ -1,3 +1,12 @@
+"""
+Planex Server Module
+=================================
+
+This module provides the `PlanexServer` class for orchestrating the planning, reduction,
+and translation of task plans using the agents from the Planex system. The server integrates
+the Planner, Reducer, and Translator agents to convert user queries into executable tasks,
+coordinating the entire process through the `Agent Protocol`.
+"""
 from typing import Optional
 
 from agent_protocol import Agent

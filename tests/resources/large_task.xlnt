@@ -1,0 +1,28 @@
+def perform_actions():
+
+  with Sequential():
+    # Open the 'Run' dialog
+    type('Win+R')
+
+    # Open the Command Prompt
+    type("cmd")
+    type('Enter')
+
+    # Navigate to the directory where your files are located
+    type("cd path\to\your\files")
+    type('Enter')
+
+    # Start a Python HTTP server
+    type("python -m http.server")
+    click('Enter')
+
+    # Open a web browser
+    click("web browser")
+
+    # Access the Python HTTP server
+    type("http://localhost:8000")
+    type('Enter')
+
+    # Upload files to the Python HTTP server
+    type("files you want to add")
+    click("Python HTTP server window in the web browser")

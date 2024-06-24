@@ -83,11 +83,13 @@ class ExelentParser:
     def parse(self) -> ParsedTask | None:
         """Parse the settled content file/str and return a ParsedTask object."""
 
-        # Note: Currently multiple tasks are not supported
         self.tree = ast.parse(self.content)
+        tasks = []
         for node in ast.walk(self.tree):
             if isinstance(node, ast.FunctionDef):
-                return self._parse_task(node)
+                tasks.append(self._parse_task(node))
+
+        return linearize_multiple_defs(tasks)
 
     @classmethod
     def _parse_action(cls, action: ast.Call) -> ParsedAction | None:
@@ -100,9 +102,9 @@ class ExelentParser:
         if not isinstance(action, ast.Call):
             return None
 
-        # Caution: If it starts with upper, then it is a type
+        # Caution: If it starts with upper, it will be changed to lower
         if name[0].isupper():
-            return None
+            name = name.lower()
 
         args = [cls._parse_name_or_const(val) for val in action.args]
         kwargs = {
@@ -191,6 +193,15 @@ class ExelentParser:
         return ParsedTask(name, sequence)
 
 
+def linearize_multiple_defs(tasks: list[ParsedTask]) -> ParsedTask:
+    _withs = []
+    for task in tasks:
+        _withs.extend(task.sequence)
+
+    result = ParsedTask(name=tasks[0].name, sequence=_withs)
+    return result
+
+
 def linerize_task(task: ParsedTask) -> ParsedTask:
     """
     Linearize a ParsedTask object into a sequence of actions.
@@ -231,6 +242,9 @@ def _linearize_with(_with: ParsedWith) -> ParsedWith:
         if isinstance(node, ParsedAction):
             actions.append(node)
             continue
+
+        if not isinstance(node, ParsedWith):
+            raise TypeError(f"Expected With type and obtained: {node}. ¿Maybe there is a misspell?")
 
         node: ParsedWith
         node = _linearize_with(node)

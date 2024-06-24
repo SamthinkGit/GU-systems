@@ -1,3 +1,16 @@
+"""
+Cognition Mediator Module
+=================================
+
+This module provides the `CognitionMediator` class for managing and executing tasks
+using the Agent Protocol. The mediator acts as an intermediary, handling the interaction
+between the server and the agents, and ensuring the smooth execution of task plans
+through the various steps defined in the agent protocol.
+
+The module is designed to work seamlessly with the `ServerAPI` defined class for each agent from the
+cognition layer, facilitating the orchestration of tasks by integrating the agent protocol client.
+This allows for the efficient handling of task creation, step execution, and result retrieval.
+"""
 import agent_protocol_client
 from agent_protocol import Step
 from agent_protocol import Task

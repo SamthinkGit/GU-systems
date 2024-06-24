@@ -1,0 +1,27 @@
+def execute_file_upload_process():
+  with Sequential():
+    # Open the command prompt
+    type('Win+R')
+    type("cmd")
+    type('Enter')
+
+  with Sequential():
+    # Navigate to the directory where your files are located
+    type("cd path_to_your_directory")
+    type('Enter')
+
+  with Sequential():
+    # Start an HTTP server using Python
+    type("python -m http.server")
+    type('Enter')
+
+  with Sequential():
+    # Access the server in a web browser
+    click("web browser")
+
+  with Sequential():
+    # Upload files to the server
+    click("Choose File")
+    # Select the file manually
+    click("Upload")
+    # The file should now be accessible through the web browser at "http://localhost:8000/filename"

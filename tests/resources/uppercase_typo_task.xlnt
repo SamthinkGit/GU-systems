@@ -1,0 +1,3 @@
+def misspelled_task():
+    with Sequential():
+        Click("test")

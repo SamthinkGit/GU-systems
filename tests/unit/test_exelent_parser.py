@@ -21,3 +21,16 @@ def test_parse_nested_sequences():
     task = parser.parse(path)
     linear_task = parser.linerize_task(task)
     assert len(linear_task.sequence[0].contains) == 6
+
+
+def test_parse_multiple_defs():
+    path = get_root_path() / "tests" / "resources" / "multiple_defs.xlnt"
+    task = parser.parse(path)
+    assert len(task.sequence) == 3 and task.name == "my_task"
+
+
+def test_misspelled_uppercase():
+    path = get_root_path() / "tests" / "resources" / "uppercase_typo_task.xlnt"
+    task = parser.parse(path)
+    assert task.sequence[0].type.name == "Sequential"
+    assert task.sequence[0].contains[0].name == "click"

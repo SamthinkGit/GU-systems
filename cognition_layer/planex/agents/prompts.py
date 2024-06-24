@@ -41,6 +41,8 @@ class PlanexPrompts:
         "5. Avoid qualitative actions; all steps must be precise and executable through keystrokes or mouse actions.\n"
         "7. If necessary specify the window which must be selected to do the action\n"
         "8. Start each step with a step number as shown in the example.\n"
+        "9. You are not allowed to use generic paths, tools, directories, names, etc, instead define specific keywords "
+        "or names when needed.\n"
     )
     PLANNER_EXAMPLE: str = (
         "\nQuery: Improve my computer's performance"
@@ -89,9 +91,9 @@ class PlanexPrompts:
         "specifying the properties of the plan.\n"
         "2. Define Types within Each Plan: A 'type' represents a predefined behavior, similar to using loops in "
         "imperative programming languages. Types can have properties specified through its arguments.\n"
-        "3. Define Actions within Each Type: An 'action' corresponds to a function that will be linked during "
-        "the interpretation of the file. Actions are similar to function calls but without declarations, "
-        "imports, or definitions.\n"
+        "3. Define Actions within Each Type: An 'action' corresponds to a function (always in lowercase) that will "
+        "be linked during the interpretation of the file. Actions are similar to function calls but without "
+        "declarations, imports, or definitions.\n"
         "4. The syntax for defining a plan in Exelent is as follows:\n"
         "```python\n"
         "def <plan>(<properties>):\n"
