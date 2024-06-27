@@ -3,6 +3,10 @@ import subprocess
 from ecm.tools.registry import ItemRegistry
 
 
+@ItemRegistry.alias([
+    'click_window',
+    'focus_program'
+])
 @ItemRegistry.register_function
 def focus_window(window_name: str):
     """Focus the selected window. Ensure to exactly match the name of the window. Usage: focus_window('notepad')""" # noqa

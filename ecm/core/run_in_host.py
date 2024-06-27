@@ -8,6 +8,7 @@ from ecm.core.main import main # noqa
 
 # ------ ACTIONS (This actions will be used by the AI) ------
 import action_space.keyboard.pynput # noqa
+import action_space.window.focus # noqa
 
 # -----------------------------------------------------------
 

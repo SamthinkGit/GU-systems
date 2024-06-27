@@ -22,6 +22,7 @@ import functools
 import hashlib
 import json
 import threading
+import types
 import uuid
 from typing import Any
 from typing import Callable
@@ -86,6 +87,36 @@ class ItemRegistry:
         cls._names[func.__name__] = func
         cls._logger.debug(f"Function {func} registered")
         return func
+
+    @classmethod
+    def alias(cls, names: list[str]):
+        """Decorator to register a function with different names."""
+
+        def wrapper(func: Callable):
+
+            new_funcs = [cls._clone_function(func) for _ in names]
+            for idx, name in enumerate(names):
+
+                new_funcs[idx].__name__ = name
+                cls.register_function(new_funcs[idx])
+
+            return func
+
+        return wrapper
+
+    @classmethod
+    def _clone_function(cls, func: Callable):
+        new_func = types.FunctionType(
+            func.__code__,
+            func.__globals__,
+            name=func.__name__,
+            argdefs=func.__defaults__,
+            closure=func.__closure__,
+        )
+        new_func.__dict__.update(func.__dict__)
+        new_func.__annotations__ = func.__annotations__
+        new_func.__qualname__ = func.__qualname__
+        return new_func
 
     @classmethod
     def add_function(cls, func: Callable) -> None:
