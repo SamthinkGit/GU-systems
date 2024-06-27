@@ -12,6 +12,7 @@ https://github.com/SamthinkGit/GU-systems/wiki/ECM-Problem-Analysis
 For using alone you can use the example below, if you want to chain this agent
 to other langchain compatibles, you can check the example in /test/sandbox/planex
 """
+import json
 from typing import Optional
 
 from colorama import Fore
@@ -23,6 +24,7 @@ from langchain_openai import ChatOpenAI
 from cognition_layer.constants import DEFAULT_MODEL
 from cognition_layer.planex.agents.prompts import PlanexPrompts
 from ecm.shared import get_logger
+from ecm.tools.inspector import SystemInspector
 
 
 class Planner:
@@ -41,16 +43,21 @@ class Planner:
             + PlanexPrompts.PLANNER_GUIDELINES
             + "\nExample: \n"
             + PlanexPrompts.PLANNER_EXAMPLE
+            + "System Real Time Information: "
+            + PlanexPrompts.SYSTEM_INFORMATION
+            + "{sys_realtime_info}"
         )
 
         self.prompt = ChatPromptTemplate.from_messages(
             [("system", sys_message), ("user", "{input}")]
         )
         self.chain = self.prompt | self.llm
+        self.sys_inspector = SystemInspector()
 
     def plan(self, input: str, verbose: Optional[bool] = False) -> BaseMessage:
         """From a given query, returns a plan to solve that query"""
-        result = self.chain.invoke({"input": input})
+        sys_realtime_info = json.dumps(self.sys_inspector.summary(), indent=2)
+        result = self.chain.invoke({"input": input, "sys_realtime_info": sys_realtime_info})
         if verbose:
             Planner._logger.info("Received: \n" + input)
             Planner._logger.info("Generated: \n" + result.content)

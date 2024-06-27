@@ -1,14 +1,17 @@
 import argparse
 import asyncio
 import atexit
+import logging
 import multiprocessing
 import time
 
 import agent_protocol_client
 import aiohttp.client_exceptions
 import requests
+from langchain.globals import set_debug
 
 import ecm.exelent.parser as parser
+import ecm.shared
 from cognition_layer.api import CognitionMediator
 from cognition_layer.api import ServerAPI
 from cognition_layer.constants import API_ADDRESS
@@ -141,10 +144,16 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(
         description="Run Planex Server with optional verbosity."
     )
-    argparser.add_argument(
-        "--verbose", action="store_true", help="Enable verbose output"
-    )
+    argparser.add_argument("--verbose", action="store_true", help="Enable verbose outputs from the agents")
+    argparser.add_argument("--debug", action="store_true", help="Enable debug output")
+    argparser.add_argument("--langchain-debug", action="store_true", help="Enable LangChain Debug information")
+
     args = argparser.parse_args()
+
+    if args.debug:
+        ecm.shared.LOG_LEVEL = logging.DEBUG
+    if args.langchain_debug:
+        set_debug(True)
 
     asyncio.run(
         main(execution_layer="ROSA", cognition_layer="PLANEX", verbose=args.verbose)

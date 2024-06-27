@@ -8,7 +8,6 @@ new protocols for ordering a sequence of actions, expanding the Action Space B (
 It supports dynamic registration of sequence types, and enforces a structure where each sequence type can
 manage its execution and error handling.
 """
-import traceback
 from enum import Enum
 from typing import Callable
 from typing import Dict
@@ -160,11 +159,8 @@ class SimpleSequence(SequenceType):
                 func(*args, **kwargs)
                 self.feedback.publish("Step", _status=ExecutionStatus.STEP)
 
-            except Exception as e:
-                self._logger.error(
-                    f"Exception when running {action} in  task: {self.pkg.task_id}."
-                    + f"Traceback: {traceback.format_exc(e)}"
-                )
+            except Exception:
+                self._logger.error(f"Exception when running {action} in task: {self.pkg.task_id}", exc_info=True)
                 success = False
 
         if success:

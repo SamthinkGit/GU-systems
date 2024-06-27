@@ -26,6 +26,11 @@ from dataclasses import dataclass
 
 @dataclass
 class PlanexPrompts:
+    SYSTEM_INFORMATION: str = (
+        "\n I am about to provide you with comprehensive and sensitive information about my computer's current "
+        "state, including details on open applications, system specifications, focused window, and other "
+        "relevant metrics."
+    )
     PLANNER_INSTRUCTIONS: str = (
         "\nYou are an Expert Planning Assistant. Your task is to provide a detailed, "
         "step-by-step plan to address the user's query. Ensure each action is specific, "
