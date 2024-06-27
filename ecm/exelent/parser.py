@@ -142,6 +142,9 @@ class ExelentParser:
         elif isinstance(input, ast.Name):
             input: ast.Name
             return input.id
+        elif isinstance(input, ast.List) or isinstance(input, ast.Tuple):
+            input: ast.List
+            return [cls._parse_name_or_const(var) for var in input.elts]
         elif isinstance(input, ast.Expr):
             input: ast.Expr
             return cls._parse_name_or_const(input.value)

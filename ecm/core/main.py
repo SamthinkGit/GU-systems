@@ -22,6 +22,8 @@ from ecm.shared import get_logger
 
 # TOOLS
 
+DEBUG_SHOW_EXELENT = False
+
 
 async def main(
     cognition_layer: str = "PLANEX",
@@ -113,6 +115,9 @@ async def main(
             if result.startswith("```python"):
                 result = extract_python_code(result)
 
+            if DEBUG_SHOW_EXELENT:
+                logger.info(result)
+
             try:
                 plan = parser.parse(target_str=result)
             except Exception:
@@ -139,8 +144,8 @@ async def main(
 
 if __name__ == "__main__":
 
-    import action_space.keyboard.pynput # noqa
-    import action_space.window.focus # noqa
+    import action_space.keyboard.pynput  # noqa
+    import action_space.window.focus  # noqa
     from ecm.tools.registry import ItemRegistry
 
     # We use this invalidation so all the functions become fake (Safe use of this module).
@@ -149,9 +154,20 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(
         description="Run Planex Server with optional verbosity."
     )
-    argparser.add_argument("--verbose", action="store_true", help="Enable verbose outputs from the agents")
+    argparser.add_argument(
+        "--verbose", action="store_true", help="Enable verbose outputs from the agents"
+    )
     argparser.add_argument("--debug", action="store_true", help="Enable debug output")
-    argparser.add_argument("--langchain-debug", action="store_true", help="Enable LangChain Debug information")
+    argparser.add_argument(
+        "--langchain-debug",
+        action="store_true",
+        help="Enable LangChain Debug information",
+    )
+    argparser.add_argument(
+        "--show-exelent",
+        action="store_true",
+        help="Shows Exelent file obtained from the Cognition Layer",
+    )
 
     args = argparser.parse_args()
 
@@ -159,6 +175,8 @@ if __name__ == "__main__":
         ecm.shared.LOG_LEVEL = logging.DEBUG
     if args.langchain_debug:
         set_debug(True)
+    if args.show_exelent:
+        DEBUG_SHOW_EXELENT = True
 
     asyncio.run(
         main(execution_layer="ROSA", cognition_layer="PLANEX", verbose=args.verbose)
