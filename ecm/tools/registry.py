@@ -18,6 +18,7 @@ threads associated with specific tasks. It uses a singleton pattern to ensure a 
 global registry of threads throughout the application lifecycle.  Key functionalities include
 watching tasks, running tasks with specific identifiers, and waiting for task completion.
 """
+import functools
 import hashlib
 import json
 import threading
@@ -58,7 +59,7 @@ class ItemRegistry:
         func = cls._functions.get(key, None)
         if func is None:
             raise KeyError(
-                "The key received does not correspond to a registered function."
+                f"The key received `{key}` does not correspond to a registered function."
                 "Please ensure you have used the decorator @register_function first"
             )
         return func
@@ -69,7 +70,7 @@ class ItemRegistry:
         item = cls._items.get(key, None)
         if item is None:
             raise KeyError(
-                "The key received does not correspond to any saved item."
+                f"The key received `{key}` does not correspond to any saved item."
                 "Please ensure you have used add_item() befor using this function."
                 "If you are using ItemEncoder ensure you have used encoder.autoencode(item)"
             )
@@ -126,7 +127,24 @@ class ItemRegistry:
 
     @classmethod
     def get_from_name(cls, name: str) -> Callable | None:
+        """Returns a registered function by its name"""
         return cls._names.get(name)
+
+    @classmethod
+    def invalidate_all_functions(cls) -> None:
+        """Changes all registered functions into fake ones. Used for safe playing of actions."""
+        cls._logger.warning(
+            "All functions have been invalidated. Fake functions will be run instead (Safe Use)"
+        )
+        for name, func in cls._names.items():
+            key = cls.get_id(func)
+            fake = functools.wraps(func)(
+                lambda *args, name=name, **kwargs: print(
+                    f"{name}(args: {args}, kwargs: {kwargs})"
+                )
+            )
+            cls._names[name] = fake
+            cls._functions[key] = fake
 
 
 class ItemEncoder:

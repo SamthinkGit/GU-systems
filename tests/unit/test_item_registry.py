@@ -21,6 +21,25 @@ def test_item_registry(capsys: pytest.CaptureFixture):
     assert message in capture.out
 
 
+def safe_test_invalidation(capsys: pytest.CaptureFixture):
+    # Run this test independently, it can cause errors on other tests
+
+    registry = ItemRegistry()
+
+    @ItemRegistry.register_function
+    def myfunc(message):
+        print(f"I will print a message: {message}")
+
+    ItemRegistry.invalidate_all_functions()
+    id = ItemRegistry.get_id(myfunc)
+    message = "myfunc"
+    registry.call(id, message=message)
+
+    capture = capsys.readouterr()
+    assert message in capture.out
+    assert "I will print a message" not in capture.out
+
+
 def test_obtain_function():
     registry = ItemRegistry()
 

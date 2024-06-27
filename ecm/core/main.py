@@ -139,7 +139,12 @@ async def main(
 
 if __name__ == "__main__":
 
-    import tests.mocks.agent_actions  # noqa
+    import action_space.keyboard.pynput # noqa
+    import action_space.window.focus # noqa
+    from ecm.tools.registry import ItemRegistry
+
+    # We use this invalidation so all the functions become fake (Safe use of this module).
+    ItemRegistry.invalidate_all_functions()
 
     argparser = argparse.ArgumentParser(
         description="Run Planex Server with optional verbosity."
