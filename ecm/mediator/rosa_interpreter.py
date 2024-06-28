@@ -24,6 +24,7 @@ from execution_layer.rosa.ros2.tools.feedback import Feedback as OriginalRosaFee
 from execution_layer.rosa.ros2.tools.packages import ActionPackage
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.tools.packages import SequencePriority
+from execution_layer.rosa.ros2.types.basic import ControlledSequence
 from execution_layer.rosa.ros2.types.basic import SequenceType
 from execution_layer.rosa.ros2.types.basic import SimpleSequence
 
@@ -45,12 +46,18 @@ class RosaInterpreterSupports(InterpreterSupports):
         "FINISH",
         "SWITCH",
     )
-    types: tuple[str] = "Sequential"
+    types: tuple[str] = (
+        "Sequential",
+        "ControlledSequence"
+    )
 
 
 class RosaInterpreter(Interpreter):
 
-    type_dict: dict[str, SequenceType] = {"Sequential": SimpleSequence}
+    type_dict: dict[str, SequenceType] = {
+        "Sequential": SimpleSequence,
+        "ControlledSequence": ControlledSequence,
+    }
     callback_dict: dict[str, ExecutionStatus] = {
         "RUNNING": ExecutionStatus.RUNNING,
         "STEP": ExecutionStatus.STEP,

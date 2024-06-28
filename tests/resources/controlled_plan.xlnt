@@ -1,0 +1,6 @@
+def controlled_plan():
+    with ControlledSequence():
+        click()
+        click()
+        click()
+        click()

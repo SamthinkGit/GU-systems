@@ -121,7 +121,10 @@ class ROSA:
         # Execute the callback
         callback = ROSA._task_callback.get(feedback.task_id, None)
         if callback is not None:
-            callback(feedback)
+            try:
+                callback(feedback)
+            except Exception:
+                ROSA._logger.error("Error occurred during the execution of a task callback", exc_info=True)
 
     @staticmethod
     def empty_callback(feedback: Feedback) -> None:

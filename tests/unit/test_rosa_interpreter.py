@@ -1,4 +1,6 @@
 import ecm.exelent.parser as parser
+from ecm.mediator.rosa_interpreter import ExecutionStatus
+from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper as Feedback
 from ecm.mediator.rosa_interpreter import RosaInterpreter
 from ecm.shared import get_root_path
 from ecm.tools.registry import ItemRegistry
@@ -43,3 +45,24 @@ class TestRosaInterpreter:
         assert TestRosaInterpreter.types == 9
         TestRosaInterpreter.clicks = 0
         TestRosaInterpreter.types = 0
+
+    def test_controlled_sequence(self):
+
+        counter = 0
+
+        def callback(message):
+            nonlocal counter
+
+            feedback = Feedback.parse(message)
+            if counter == 3 and feedback._exec_status == ExecutionStatus.REQUEST_TO_CONTINUE:
+                feedback.response(None, ExecutionStatus.ABORT)
+                return
+
+            if feedback._exec_status == ExecutionStatus.REQUEST_TO_CONTINUE:
+                counter += 1
+                feedback.response(None, ExecutionStatus.CONTINUE)
+
+        path = get_root_path() / "tests" / "resources" / "controlled_plan.xlnt"
+        task = parser.parse(path)
+        self.rosa.run(task, callback=callback)
+        assert TestRosaInterpreter.clicks == 3
