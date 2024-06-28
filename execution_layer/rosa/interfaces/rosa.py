@@ -72,11 +72,15 @@ class ROSA:
             cls._built = True
             alb = ALB()
             alb.build_all(feedback_listener=ROSA._callback_manager)
-            cls._sequence_publisher = NodeRegistry.inited_nodes.get("sequence_publisher", None)
+            cls._sequence_publisher = NodeRegistry.inited_nodes.get(
+                "sequence_publisher", None
+            )
             cls._task_callback = defaultdict(ROSA.empty_callback)
             cls._logger.debug("Building completed")
 
-            assert cls._sequence_publisher is not None, "Sequence Publisher failed to be inited in ROSA"
+            assert (
+                cls._sequence_publisher is not None
+            ), "Sequence Publisher failed to be inited in ROSA"
 
     @staticmethod
     def _callback_manager(msg: str) -> None:
@@ -88,7 +92,11 @@ class ROSA:
         """
 
         feedback = Feedback.from_pkg(msg)
-        if feedback.task_id == 'null' or feedback.task_id == "" or feedback.task_id is None:
+        if (
+            feedback.task_id == "null"
+            or feedback.task_id == ""
+            or feedback.task_id is None
+        ):
             return
 
         # Notify blocked threads if necessary

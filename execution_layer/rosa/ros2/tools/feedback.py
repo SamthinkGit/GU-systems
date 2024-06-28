@@ -14,6 +14,8 @@ Key Components:
 import json
 from enum import Enum
 from sequence_action_server.feedback import FeedbackPublisher
+from sequence_action_server.feedback_response import ResponseListener
+from sequence_action_server.feedback_response import ResponsePublisher
 from typing import Any
 
 from ecm.shared import get_logger
@@ -34,6 +36,8 @@ class ExecutionStatus(Enum):
     ABORT = 3
     FINISH = 4
     SWITCH = 5
+    REQUEST_TO_CONTINUE = 6
+    CONTINUE = 7
 
 
 class Feedback:
@@ -47,6 +51,12 @@ class Feedback:
     def __init__(self) -> None:
         self.publisher: FeedbackPublisher = NodeRegistry.inited_nodes[
             "feedback_publisher"
+        ]
+        self.responder: ResponsePublisher = NodeRegistry.inited_nodes[
+            "response_publisher"
+        ]
+        self.response_listener: ResponseListener = NodeRegistry.inited_nodes[
+            "response_listener"
         ]
         self.task_id = None
         self.object = None
@@ -66,6 +76,45 @@ class Feedback:
         }
         json_pkg = json.dumps(message, indent=4)
         self.publisher.publish_feedback(json_pkg)
+
+    def wait_for_response(self, response_code) -> "Feedback":
+        """
+        Waits for a response from the feedback listener until the task ID matches.
+        :return: The feedback received from the response listener.
+        """
+        self.task_id = ThreadRegistry.get_task_id()
+        pkg = self.response_listener.wait_for_message(response_code)
+        feedback = Feedback.from_json(pkg)
+        return feedback
+
+    def approve(self, object: Any = "Request Approved"):
+        """Sends an approval message by detecting automatically the response code."""
+        response = Feedback()
+        response.task_id = self.task_id
+        response_code = self.object[1]
+        response.response(
+            object=object,
+            _exec_status=ExecutionStatus.CONTINUE,
+            response_code=response_code,
+        )
+
+    def response(self, object: Any, _exec_status: ExecutionStatus, response_code: str):
+        """
+        Publishes a response with the provided object and current task ID.
+
+        :param object: The object to be included in the response.
+        :returns: The code to receive the answer by using wait_for_response function.
+        """
+        assert (
+            self.task_id is not None
+        ), "task_id not settled, ensure to set feedback.task_id before publishing/waiting"
+        message = {
+            "task_id": self.task_id,
+            "object": ItemEncoder.autoencode(object),
+            "_exec_status": ItemEncoder.autoencode(_exec_status),
+        }
+        json_pkg = response_code + json.dumps(message, indent=4)
+        self.responder.publish_response(json_pkg)
 
     @classmethod
     def from_pkg(cls, pkg: str):

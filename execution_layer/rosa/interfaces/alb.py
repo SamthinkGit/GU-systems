@@ -19,6 +19,8 @@ import threading
 from sequence_action_server.client import SequenceActionClient
 from sequence_action_server.feedback import FeedbackListener
 from sequence_action_server.feedback import FeedbackPublisher
+from sequence_action_server.feedback_response import ResponseListener
+from sequence_action_server.feedback_response import ResponsePublisher
 from sequence_action_server.registry_logger import RegistryLogger
 from sequence_action_server.sequence_publisher import SequencePublisher
 from sequence_action_server.server import SequenceActionServer
@@ -47,6 +49,8 @@ class ALB:
         "sequence_server": SequenceActionServer,
         "sequence_client": SequenceActionClient,
         "feedback_publisher": FeedbackPublisher,
+        "response_publisher": ResponsePublisher,
+        "response_listener": ResponseListener,
         "sequence_publisher": SequencePublisher,
         "registry_logger": RegistryLogger,
     }

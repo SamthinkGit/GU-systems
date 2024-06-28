@@ -8,6 +8,7 @@ new protocols for ordering a sequence of actions, expanding the Action Space B (
 It supports dynamic registration of sequence types, and enforces a structure where each sequence type can
 manage its execution and error handling.
 """
+import random
 from enum import Enum
 from typing import Callable
 from typing import Dict
@@ -160,7 +161,10 @@ class SimpleSequence(SequenceType):
                 self.feedback.publish("Step", _status=ExecutionStatus.STEP)
 
             except Exception:
-                self._logger.error(f"Exception when running {action} in task: {self.pkg.task_id}", exc_info=True)
+                self._logger.error(
+                    f"Exception when running {action} in task: {self.pkg.task_id}",
+                    exc_info=True,
+                )
                 success = False
 
         if success:
@@ -174,7 +178,79 @@ class SimpleSequence(SequenceType):
             self.exit(self.pkg.task_id)
 
 
+class ControlledSequence(SequenceType):
+    """
+    A human-in-the-loop based sequence. It runs the obtained steps sequentially,
+    however, it waits for a signal to continue before executing each step.
+    """
+
+    _logger = get_logger("ControlledSequence")
+    type_code = 9
+
+    def __init__(self, pkg: SequencePackage) -> None:
+        super().__init__(pkg)
+
+    def run(self):
+        """Runs all the functions in the package sequentially"""
+        success = True
+        self._logger.debug(f"Starting to run: {self.pkg.task_id}")
+        result = None
+        for action in self.pkg.actions:
+            try:
+
+                # Managing Soft-Stop
+                if self.soft_stop_called():
+                    self.feedback.publish(
+                        "Abort (By Soft-Stop)", _status=ExecutionStatus.ABORT
+                    )
+                    success = False
+                    break
+
+                # Requesting Approval
+                response_code = str(random.randint(1000, 9999))
+
+                self.feedback.publish(
+                    object=[result, response_code], _status=ExecutionStatus.REQUEST_TO_CONTINUE
+                )
+                self._logger.debug("Waiting for approval to execute action.")
+                response = self.feedback.wait_for_response(
+                    response_code=response_code
+                )
+
+                if response._exec_status == ExecutionStatus.ABORT:
+                    self._logger.debug(f"Abort (By response) on task: {self.pkg.task_id}")
+                    success = False
+                    break
+                self._logger.debug("Approval to continue received.")
+
+                # Calling Function
+                func = ItemRegistry.get_function(action.action_id)
+                args = action.args
+                kwargs = action.kwargs
+                result = func(*args, **kwargs)
+                self.feedback.publish("Step", _status=ExecutionStatus.STEP)
+
+            except Exception:
+                self._logger.error(
+                    f"Exception when running {action} in task: {self.pkg.task_id}",
+                    exc_info=True,
+                )
+                success = False
+
+        if success:
+            self.feedback.publish("Success", _status=ExecutionStatus.SUCCESS)
+        else:
+            self.feedback.publish("Abort (Failed)", _status=ExecutionStatus.ABORT)
+
+        self._logger.debug(f"Execution Finished: {self.pkg.task_id}")
+        self.feedback.publish("Finish", _status=ExecutionStatus.FINISH)
+
+        if self.exit is not None:
+            self.exit(self.pkg.task_id)
+
+
 # ----- YOU CAN ADD HERE THE TYPES THAT SHOULD AUTOREGISTER WHEN IMPORTING THIS FILE (ALB) --------
 SequenceType.auto_register_type(SimpleSequence)
+SequenceType.auto_register_type(ControlledSequence)
 
 # -------------------------------------------------------------------------------------------------
