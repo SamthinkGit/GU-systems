@@ -12,32 +12,16 @@ Key Components:
 - Feedback: Class responsible for publishing feedback regarding task execution status.
 """
 import json
-from enum import Enum
 from sequence_action_server.feedback import FeedbackPublisher
 from sequence_action_server.feedback_response import ResponseListener
 from sequence_action_server.feedback_response import ResponsePublisher
 from typing import Any
 
+from ecm.mediator.feedback import ExecutionStatus
 from ecm.shared import get_logger
 from ecm.tools.registry import ItemEncoder
 from ecm.tools.registry import ThreadRegistry
 from execution_layer.rosa.interfaces.nodes import NodeRegistry
-
-
-class ExecutionStatus(Enum):
-    """
-    Enumeration of possible execution statuses of a task.
-    Should only be used by SequenceTypes status communication.
-    """
-
-    RUNNING = 0
-    STEP = 1
-    SUCCESS = 2
-    ABORT = 3
-    FINISH = 4
-    SWITCH = 5
-    REQUEST_TO_CONTINUE = 6
-    CONTINUE = 7
 
 
 class Feedback:
@@ -67,7 +51,6 @@ class Feedback:
         Publishes the provided object and execution status as feedback.
 
         :param object: The object related to the task feedback, any object can be passed to higher levels.
-        :param _status: IMPORTANT: Should only be used by SequenceStatus. Sets the current execution status of the task.
         """
         message = {
             "task_id": ThreadRegistry.get_task_id(),

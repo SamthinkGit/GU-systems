@@ -9,7 +9,6 @@ import rclpy
 class TestFeedback:
 
     def setup(self):
-        rclpy.init()
         self.publisher_node = ResponsePublisher()
         self.listener_node = ResponseListener()
 
@@ -22,7 +21,6 @@ class TestFeedback:
     def teardown(self):
         self.executor.shutdown()
         self.executor_thread.join()
-        rclpy.shutdown()
 
     def waiting_callback(self):
         message = self.listener_node.wait_for_message("1234")
