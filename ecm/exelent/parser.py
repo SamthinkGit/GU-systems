@@ -80,6 +80,8 @@ class ExelentParser:
         if target_str:
             self.content = target_str
 
+        self.tree = None
+
     def parse(self) -> ParsedTask | None:
         """Parse the settled content file/str and return a ParsedTask object."""
 

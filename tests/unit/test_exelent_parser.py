@@ -1,5 +1,9 @@
+import pytest
+
 import ecm.exelent.parser as parser
+from ecm.exelent.verify import verify_valid_actions
 from ecm.shared import get_root_path
+from ecm.tools.registry import ItemRegistry
 
 
 def test_parse_tasks() -> None:
@@ -34,3 +38,17 @@ def test_misspelled_uppercase():
     task = parser.parse(path)
     assert task.sequence[0].type.name == "Sequential"
     assert task.sequence[0].contains[0].name == "click"
+
+
+@ItemRegistry.register_function
+def valid():
+    """MOCK"""
+    ...
+
+
+def test_invalid_actions():
+
+    path = get_root_path() / "tests" / "resources" / "invalid_actions.xlnt"
+    task = parser.parse(path)
+    with pytest.raises(KeyError):
+        verify_valid_actions(task)

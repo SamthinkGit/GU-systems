@@ -159,7 +159,14 @@ class ItemRegistry:
     @classmethod
     def get_from_name(cls, name: str) -> Callable | None:
         """Returns a registered function by its name"""
-        return cls._names.get(name)
+        result = cls._names.get(name)
+        if result is None:
+            raise KeyError(
+                f"The name received `{name}` does not correspond to any saved item."
+                "Please ensure you have used add_item() or @ItemRegistry.register_function "
+                "before using this function."
+            )
+        return result
 
     @classmethod
     def invalidate_all_functions(cls) -> None:

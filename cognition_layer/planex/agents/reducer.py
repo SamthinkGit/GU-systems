@@ -55,6 +55,7 @@ class Reducer:
             [("system", sys_message), ("user", "{input}")]
         )
         self.chain = self.prompt | self.llm
+        self.actions = None
         self.auto_bind_actions()
 
     def auto_bind_actions(self):

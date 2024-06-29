@@ -1,0 +1,8 @@
+def my_task():
+    with Sequential():
+        valid()
+        valid()
+        valid()
+        invalid()
+        valid()
+        valid()
