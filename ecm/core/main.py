@@ -46,9 +46,8 @@ async def main(
             server = PlanexServer(verbose=verbose)
 
         case "planexv2":
-            from cognition_layer.planexv2.api.server import PlanexV2Server
-
-            server = PlanexV2Server(verbose=verbose)
+            from cognition_layer.planexv2.api.server_from_iterator import get_server
+            server = get_server(verbose=verbose)
 
         case _:
             return ValueError(

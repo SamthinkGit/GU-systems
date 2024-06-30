@@ -12,6 +12,8 @@ from ecm.shared import get_logger
 
 
 class PlanexV2Server(ServerAPI):
+    # Deprecated: Replaced for server_from_iterator template
+
     _logger = get_logger("PlanexV2 Server")
 
     def __init__(self, verbose: Optional[bool] = False, *args, **kwargs) -> None:
@@ -40,7 +42,6 @@ class PlanexV2Server(ServerAPI):
                 )
 
             message: PlanexV2Message = next(PlanexV2Server.iterator)
-            PlanexV2._logger.debug(f"Message received from Planex: {message}")
 
             if not message.is_last:
                 await Agent.db.create_step(
