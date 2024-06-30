@@ -29,4 +29,8 @@ class Feedback:
     def response(self, object: Any, _exec_status: ExecutionStatus): ...
 
     @classmethod
-    def parse(message: Any) -> "Feedback": ...
+    def parse(message: Any, *args, **kwargs) -> "Feedback":
+        raise SystemError(
+            "The feedback function called is virtual. Please ensure that you are "
+            "using the appropriate Feedback Implementation instead of the template. "
+        )

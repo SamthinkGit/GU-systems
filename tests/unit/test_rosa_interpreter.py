@@ -54,7 +54,10 @@ class TestRosaInterpreter:
             nonlocal counter
 
             feedback = Feedback.parse(message)
-            if counter == 3 and feedback._exec_status == ExecutionStatus.REQUEST_TO_CONTINUE:
+            if (
+                counter == 3
+                and feedback._exec_status == ExecutionStatus.REQUEST_TO_CONTINUE
+            ):
                 feedback.response(None, ExecutionStatus.ABORT)
                 return
 
