@@ -1,5 +1,7 @@
 import asyncio
+from asyncio import Lock as ALock
 from operator import methodcaller
+from threading import Lock
 
 import ecm.exelent.parser as parser
 from cognition_layer.planex.utils.format import extract_python_code
@@ -15,13 +17,15 @@ class AsyncInterpreter:
     _interpreter: Interpreter
     _loop: asyncio.AbstractEventLoop
     _logger = get_logger("RePlan Tools")
+    history: list[Feedback] = []
+    _lock = Lock()
+    _alock = ALock()
 
     @classmethod
     def build(cls, interpreter: Interpreter, feedback_class: Feedback):
 
         cls._loop = asyncio.get_event_loop()
         cls._interpreter = interpreter
-        cls._last_feedback = cls._loop.create_future()
         cls._feedback_class = feedback_class
         assert hasattr(
             feedback_class, "parse"
@@ -31,9 +35,19 @@ class AsyncInterpreter:
     @classmethod
     def feedback_callback(cls, message):
         feedback = methodcaller("parse", message)(cls._feedback_class)
-        cls._last_feedback.get_loop().call_soon_threadsafe(
-            cls._last_feedback.set_result, feedback
-        )
+        with cls._lock:
+            cls.history.append(feedback)
+
+            if cls._last_feedback is None or cls._last_feedback.done():
+                cls._last_feedback = cls._loop.create_future()
+
+            cls._last_feedback.get_loop().call_soon_threadsafe(
+                cls._last_feedback.set_result, feedback
+            )
+
+    @classmethod
+    def flush(cls):
+        cls.history = []
 
     @classmethod
     def set_exelent_code(cls, code: str):
@@ -80,5 +94,6 @@ class AsyncInterpreter:
     @classmethod
     async def get_feedback(cls):
         result = await cls._last_feedback
-        cls._last_feedback = cls._loop.create_future()
+        async with cls._alock:
+            cls._last_feedback = cls._loop.create_future()
         return result
