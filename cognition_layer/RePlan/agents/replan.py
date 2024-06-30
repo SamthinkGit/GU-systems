@@ -83,17 +83,17 @@ class RePlan:
             case ExecutionStatus.RUNNING:
                 return f"[RUNNING] {task_id}: Exelent task is running. Any problem has been detected."
             case ExecutionStatus.STEP:
-                return f"[STEP] {task_id}: Executing step from the exelent code"
+                return f"[STEP] {task_id}: Succesfully executed `{feedback.object}` from the exelent code"
             case ExecutionStatus.SUCCESS:
-                return f"[SUCCESS] {task_id}: A sequence of steps has successfully been executed."
+                return f"[SUCCESS] {task_id}: A sequence of steps has completed with success."
             case ExecutionStatus.ABORT:
                 return f"[ABORT] {task_id}: The execution of a sequence of steps has been aborted."
             case ExecutionStatus.FINISH:
-                return f"[FINISH] {task_id}: A sequence of steps is exiting after completion."
+                return f"[FINISH] {task_id}: An Exelent plan has fully finished its mission completion."
             case ExecutionStatus.REQUEST_TO_CONTINUE:
                 return (
-                    f"[REQUEST] {task_id}: The Step has been programmed to ask for AI approval. Please "
-                    "use approve to continue, or deny for ending the task."
+                    f"[REQUEST] {task_id}: The Step `{feedback.object[2]}` has been programmed to ask for "
+                    "AI approval. Please use approve to continue, or deny for ending the task."
                 )
             case _:
 

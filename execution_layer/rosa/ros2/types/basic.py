@@ -158,7 +158,7 @@ class SimpleSequence(SequenceType):
                 args = action.args
                 kwargs = action.kwargs
                 func(*args, **kwargs)
-                self.feedback.publish("Step", _status=ExecutionStatus.STEP)
+                self.feedback.publish(action._func_name, _status=ExecutionStatus.STEP)
 
             except Exception:
                 self._logger.error(
@@ -210,7 +210,7 @@ class ControlledSequence(SequenceType):
                 response_code = str(random.randint(1000, 9999))
 
                 self.feedback.publish(
-                    object=[result, response_code], _status=ExecutionStatus.REQUEST_TO_CONTINUE
+                    object=[result, response_code, action._func_name], _status=ExecutionStatus.REQUEST_TO_CONTINUE
                 )
                 self._logger.debug("Waiting for approval to execute action.")
                 response = self.feedback.wait_for_response(
