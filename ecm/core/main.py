@@ -38,12 +38,17 @@ async def main(
 
     # ---- Settling Layers ----
     logger.debug(f"Running {cognition_layer} as cognition_layer")
-    match cognition_layer:
-        case "PLANEX":
+    match cognition_layer.lower():
+        case "planex":
 
             from cognition_layer.planex.api.server import PlanexServer
 
             server = PlanexServer(verbose=verbose)
+
+        case "planexv2":
+            from cognition_layer.planexv2.api.server import PlanexV2Server
+
+            server = PlanexV2Server(verbose=verbose)
 
         case _:
             return ValueError(
@@ -51,6 +56,7 @@ async def main(
                 + str(
                     [
                         "PLANEX",
+                        "PlanexV2",
                     ]
                 )
             )
@@ -99,17 +105,30 @@ async def main(
     async with agent_protocol_client.ApiClient(configuration) as api_client:
 
         mediator = CognitionMediator(api_client)
+        previous_query = None
 
         while True:
 
+            query = previous_query if previous_query else input("Request a Task: ")
+            previous_query = None
+
             # ------------ COGNITION LAYER -------------------
             try:
-                task = await mediator.get_task(input=input("Request a Task: "))
+                task = await mediator.get_task(input=query)
                 result = await mediator.run_task(task)
+
             except aiohttp.client_exceptions.ClientOSError:
                 logger.error("Conection lost, retrying...")
                 mediator = CognitionMediator(api_client)
+                previous_query = query
                 continue
+            except Exception:
+                logger.error("Exception ocurred during the call of the cognition layer", exc_info=True)
+                break
+
+            if not isinstance(result, str):
+                logger.error(f"Cognition Layer returned invalid task: {result}. Exit")
+                break
 
             # ------------ PARSING EXELENT -------------------
             if result.startswith("```python"):
@@ -168,6 +187,9 @@ if __name__ == "__main__":
         action="store_true",
         help="Shows Exelent file obtained from the Cognition Layer",
     )
+    argparser.add_argument(
+        "--agent", type=str, help="Select the Agent used for the cognition layer"
+    )
 
     args = argparser.parse_args()
 
@@ -178,6 +200,8 @@ if __name__ == "__main__":
     if args.show_exelent:
         DEBUG_SHOW_EXELENT = True
 
+    cognition_layer = args.agent if args.agent else "PLANEX"
+
     asyncio.run(
-        main(execution_layer="ROSA", cognition_layer="PLANEX", verbose=args.verbose)
+        main(execution_layer="ROSA", cognition_layer=cognition_layer, verbose=args.verbose)
     )

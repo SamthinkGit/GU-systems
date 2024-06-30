@@ -40,8 +40,8 @@ class CognitionMediator:
         task = agent_protocol_client.TaskRequestBody(input=input)
         try:
             task_response: Task = await self.api_instance.create_agent_task(task)
-        except ApiException as e:
-            self._logger.error("Exception when calling AgentApi: %s\n" % e)
+        except ApiException:
+            self._logger.error("Exception when calling AgentApi:\n", exc_info=True)
 
         return task_response
 
@@ -57,26 +57,28 @@ class CognitionMediator:
             self._logger.warn("Steps received are empty? Skip.")
             return None
 
-        # Running steps
-        self._logger.info("Loading...")
+        self._logger.info("Running Agent...")
+        is_last = False
 
-        step = step_list.steps[0]
         counter = 0
-        result = None
-        while step.is_last is False:
+        try:
+            while not is_last:
 
-            step_list = await self.api_instance.list_agent_task_steps(
-                task_id=task.task_id
+                step_list: TaskStepsListResponse = (
+                    await self.api_instance.list_agent_task_steps(task_id=task.task_id)
+                )
+
+                self._logger.debug(f"Running Step `{step_list.steps[counter].name}`")
+                result = await self.api_instance.execute_agent_task_step(
+                    task_id=task.task_id, step_request_body=step_list.steps[counter]
+                )
+
+                is_last = result.is_last
+                counter += 1
+
+            return result.output
+
+        except Exception:
+            self._logger.error(
+                "Error occurred while running AgentProtocol Steps: ", exc_info=True
             )
-
-            step = step_list.steps[counter]
-            if result:
-                step.input = result.output
-
-            result = await self.api_instance.execute_agent_task_step(
-                task_id=task.task_id, step_request_body=step
-            )
-
-            counter += 1
-
-        return result.output
