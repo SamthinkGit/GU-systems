@@ -46,13 +46,58 @@ class RosaInterpreterSupports(InterpreterSupports):
         "FINISH",
         "SWITCH",
     )
-    types: tuple[str] = (
-        "Sequential",
-        "ControlledSequence"
-    )
+    types: tuple[str] = ("Sequential", "ControlledSequence")
+
+
+class RosaFeedbackWrapper(FeedbackTemplate):
+
+    task_id: str
+    object: Any
+    _exec_status: ExecutionStatus
+
+    def __init__(self) -> None:
+        pass
+
+    def publish(
+        self,
+        object: Any,
+        _exec_status: ExecutionStatus = ExecutionStatus.RUNNING,
+        **kwargs,  # noqa
+    ):
+        self._rosa_feedback.publish(object, _exec_status)
+
+    def response(self, object: Any, _exec_status: ExecutionStatus):
+        # Note, we asumme the case were feedback is comming from rosa so we would
+        # have:
+        # Feedback(task_id=task_id, object=[result, response_code])
+
+        response = OriginalRosaFeedback()
+        response.task_id = self.task_id
+        response_code = self.object[1]
+        response.response(
+            object=object,
+            _exec_status=_exec_status,
+            response_code=response_code,
+        )
+
+    @classmethod
+    def parse(cls, message: OriginalRosaFeedback) -> "RosaFeedbackWrapper":
+
+        assert isinstance(
+            message, OriginalRosaFeedback
+        ), "Trying to parse a message that is not from ROSA with RosaFeedback"
+
+        feedback = RosaFeedbackWrapper()
+        feedback.task_id = message.task_id
+        feedback.object = message.object
+        feedback._exec_status = message._exec_status
+        feedback._rosa_feedback = message
+        return feedback
 
 
 class RosaInterpreter(Interpreter):
+
+    feedback_message_class = RosaFeedbackWrapper
 
     type_dict: dict[str, SequenceType] = {
         "Sequential": SimpleSequence,
@@ -152,49 +197,3 @@ class RosaInterpreter(Interpreter):
             raise KeyError(f"{type} is not supported yet with ROSA interpreter")
 
         return self.type_dict[type.name].get_type()
-
-
-class RosaFeedbackWrapper(FeedbackTemplate):
-
-    task_id: str
-    object: Any
-    _exec_status: ExecutionStatus
-
-    def __init__(self) -> None:
-        pass
-
-    def publish(
-        self,
-        object: Any,
-        _exec_status: ExecutionStatus = ExecutionStatus.RUNNING,
-        **kwargs,  # noqa
-    ):
-        self._rosa_feedback.publish(object, _exec_status)
-
-    def response(self, object: Any, _exec_status: ExecutionStatus):
-        # Note, we asumme the case were feedback is comming from rosa so we would
-        # have:
-        # Feedback(task_id=task_id, object=[result, response_code])
-
-        response = OriginalRosaFeedback()
-        response.task_id = self.task_id
-        response_code = self.object[1]
-        response.response(
-            object=object,
-            _exec_status=_exec_status,
-            response_code=response_code,
-        )
-
-    @classmethod
-    def parse(cls, message: OriginalRosaFeedback) -> "RosaFeedbackWrapper":
-
-        assert isinstance(
-            message, OriginalRosaFeedback
-        ), "Trying to parse a message that is not from ROSA with RosaFeedback"
-
-        feedback = RosaFeedbackWrapper()
-        feedback.task_id = message.task_id
-        feedback.object = message.object
-        feedback._exec_status = message._exec_status
-        feedback._rosa_feedback = message
-        return feedback

@@ -24,9 +24,12 @@ from typing import Callable
 from typing import Optional
 
 from ecm.exelent.parser import ParsedTask
+from ecm.mediator.feedback import Feedback
 
 
 class Interpreter:
+
+    feedback_message_class: Feedback
 
     def __init__(self) -> None: ...
     def run(self, task: ParsedTask, callback: Optional[Callable]) -> None: ...

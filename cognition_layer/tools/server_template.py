@@ -18,6 +18,7 @@ class ServerFromIterator(ServerAPI):
         iterator: Callable,
         content_getter: Callable,
         is_last_getter: Callable,
+        async_iterator: bool = False,
         *args,
         step_name_getter: Optional[Callable] = None,
         **kwargs,
@@ -27,6 +28,8 @@ class ServerFromIterator(ServerAPI):
         ServerFromIterator.step_name_getter = step_name_getter
         ServerFromIterator.content_getter = content_getter
         ServerFromIterator.is_last_getter = is_last_getter
+        ServerFromIterator.async_iterator = async_iterator
+        ServerFromIterator.steps = 0
 
     def start(self, *args, **kwargs) -> None:
         Agent.setup_agent(
@@ -36,6 +39,8 @@ class ServerFromIterator(ServerAPI):
     @staticmethod
     async def task_handler(task: Task) -> None:
         ServerFromIterator._logger.debug("Initializing task")
+        ServerFromIterator.steps = 0
+
         await Agent.db.create_step(
             task_id=task.task_id, input=task.input, name="start", is_last=False
         )
@@ -47,7 +52,12 @@ class ServerFromIterator(ServerAPI):
             if step.name == "start":
                 ServerFromIterator.iterator = ServerFromIterator.iterator(step.input)
 
-            message = next(ServerFromIterator.iterator)
+            message = (
+                await anext(ServerFromIterator.iterator)
+                if ServerFromIterator.async_iterator
+                else next(ServerFromIterator.iterator)
+            )
+            ServerFromIterator.steps += 1
 
             if ServerFromIterator.step_name_getter:
                 name = ServerFromIterator.step_name_getter(message)
@@ -57,7 +67,7 @@ class ServerFromIterator(ServerAPI):
             if not message.is_last:
                 await Agent.db.create_step(
                     task_id=step.task_id,
-                    name=f"Step [{message.steps+1}] {name}",
+                    name=f"Step [{ServerFromIterator.steps}] {name}",
                 )
             step.output = ServerFromIterator.content_getter(message)
             step.is_last = ServerFromIterator.is_last_getter(message)

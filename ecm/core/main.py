@@ -35,31 +35,9 @@ async def main(
     host = f"http://{API_ADDRESS}:{API_PORT}"
     configuration = agent_protocol_client.Configuration(host=host)
     logger = get_logger("main")
+    execution_layer_managed_by_server = False
 
     # ---- Settling Layers ----
-    logger.debug(f"Running {cognition_layer} as cognition_layer")
-    match cognition_layer.lower():
-        case "planex":
-
-            from cognition_layer.planex.api.server import PlanexServer
-
-            server = PlanexServer(verbose=verbose)
-
-        case "planexv2":
-            from cognition_layer.planexv2.api.server_from_iterator import get_server
-            server = get_server(verbose=verbose)
-
-        case _:
-            return ValueError(
-                "Cognition Layer not valid, the unique supported values are: "
-                + str(
-                    [
-                        "PLANEX",
-                        "PlanexV2",
-                    ]
-                )
-            )
-
     logger.debug(f"Running {execution_layer} as execution_layer")
     match execution_layer:
         case "ROSA":
@@ -73,6 +51,36 @@ async def main(
                 + str(
                     [
                         "ROSA",
+                    ]
+                )
+            )
+
+    logger.debug(f"Running {cognition_layer} as cognition_layer")
+    match cognition_layer.lower():
+        case "planex":
+
+            from cognition_layer.planex.api.server import PlanexServer
+
+            server = PlanexServer(verbose=verbose)
+
+        case "planexv2":
+            from cognition_layer.planexv2.api.server_from_iterator import get_server
+
+            server = get_server(verbose=verbose)
+
+        case "replan":
+            from cognition_layer.RePlan.api.server import get_server
+
+            server = get_server(interpreter=interpreter, verbose=verbose)
+            execution_layer_managed_by_server = True
+        case _:
+            return ValueError(
+                "Cognition Layer not valid, the unique supported values are: "
+                + str(
+                    [
+                        "PLANEX",
+                        "PlanexV2",
+                        "RePlan",
                     ]
                 )
             )
@@ -116,13 +124,19 @@ async def main(
                 task = await mediator.get_task(input=query)
                 result = await mediator.run_task(task)
 
+                if execution_layer_managed_by_server:
+                    continue
+
             except aiohttp.client_exceptions.ClientOSError:
                 logger.error("Conection lost, retrying...")
                 mediator = CognitionMediator(api_client)
                 previous_query = query
                 continue
             except Exception:
-                logger.error("Exception ocurred during the call of the cognition layer", exc_info=True)
+                logger.error(
+                    "Exception ocurred during the call of the cognition layer",
+                    exc_info=True,
+                )
                 break
 
             if not isinstance(result, str):
@@ -202,5 +216,9 @@ if __name__ == "__main__":
     cognition_layer = args.agent if args.agent else "PLANEX"
 
     asyncio.run(
-        main(execution_layer="ROSA", cognition_layer=cognition_layer, verbose=args.verbose)
+        main(
+            execution_layer="ROSA",
+            cognition_layer=cognition_layer,
+            verbose=args.verbose,
+        )
     )
