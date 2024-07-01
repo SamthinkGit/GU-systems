@@ -1,3 +1,11 @@
+"""
+KeyNames
+==============================
+This class contains only a dictionary for multiple keys that can be
+used by an AI.
+"""
+
+
 class KeyNames:
 
     CTRL: list[str] = [
@@ -109,5 +117,5 @@ class KeyNames:
         "endkey",
         "endkeypress",
         "press_end",
-        "endpressed"
+        "endpressed",
     ]

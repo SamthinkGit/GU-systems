@@ -1,3 +1,12 @@
+"""
+PlanexV2 Server Module [Deprecated, use server_from_iterator instead]
+==============================
+
+This module defines the PlanexV2Server class, which sets up a server to process
+tasks and steps using the PlanexV2 agent. It integrates with the Agent Protocol
+to manage the task and step handling, facilitating the iterative processing of
+input queries through the PlanexV2 agent.
+"""
 from typing import Optional
 
 from agent_protocol import Agent

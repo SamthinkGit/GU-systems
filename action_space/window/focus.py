@@ -1,3 +1,11 @@
+"""
+Window Focus Utility
+==============================
+
+This module provides functionality to focus a window by its name using
+the 'xdotool' command-line tool. It allows AI to bring a specified
+window to the foreground programmatically.
+"""
 import subprocess
 
 from ecm.tools.registry import ItemRegistry

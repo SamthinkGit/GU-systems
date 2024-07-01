@@ -1,3 +1,16 @@
+"""
+Execution Layer Wrapper Module
+==============================
+
+This module defines the `ExecutionLayerWrapper` class, which provides a wrapper for managing and executing tasks
+using an interpreter. It handles the initialization of the interpreter, parsing of Exelent code, and execution
+of the parsed plan. It also manages feedback from the execution layer, maintaining a history of feedback messages.
+
+[HELP] This module is used by the cognition_layer.RePlan.agents.replan in order to fully manage the execution layer
+easily with an agent, use it as an example.
+[HELP] Use the tests/unit/test_execution_layer_wrapper.py file as an example of this module implemented with ROSA
+as execution layer.
+"""
 from operator import methodcaller
 from threading import Lock
 
@@ -18,6 +31,7 @@ class ExecutionLayerWrapper:
 
     @classmethod
     def build(cls, interpreter_class: Interpreter, feedback_class: Feedback):
+        # TODO: Change this to __init__
 
         cls._interpreter = interpreter_class
         cls._feedback_class = feedback_class
@@ -29,6 +43,12 @@ class ExecutionLayerWrapper:
 
     @classmethod
     def feedback_callback(cls, message):
+        """
+        Callback function to handle feedback messages from the execution layer.
+        It will just parse it and save it to the history.
+        :param message: The feedback message to be parsed and stored.
+        """
+
         try:
             feedback = methodcaller("parse", message)(cls._feedback_class)
             if not issubclass(feedback.__class__, Feedback):
@@ -52,9 +72,19 @@ class ExecutionLayerWrapper:
 
     @classmethod
     def start_execution(cls):
+        """
+        Starts the execution of the Exelent code using the interpreter. Initializes the
+        interpreter if it hasn't been initialized yet, parses the Exelent code, and
+        executes the parsed plan. Collects feedback during execution.
+        You can obtain the feedback from this execution by looking with:
+        ```python
+        with execution_layer_wrapper._lock():
+          print(execution_layer_wrapper.history)
+        ```
+        """
 
         # IMPORTANT: We init all the interpreter memory here so there are not different threads
-        # when running the interpreter commands.
+        # when running the interpreter commands. It could run into different memory spaces and fail.
         if not cls._interpreter_inited:
             cls._interpreter = cls._interpreter()
             cls._interpreter_inited = True

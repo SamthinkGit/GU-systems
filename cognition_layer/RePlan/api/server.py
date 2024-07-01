@@ -1,3 +1,14 @@
+"""
+RePlan Server Module
+==============================
+
+This module defines functions to set up servers for handling tasks using the RePlan
+and AsyncRePlan agents. It integrates with the cognition layer's execution framework
+and provides server configurations for both synchronous and asynchronous processing
+of input queries.
+
+Note that this servers fully integrates with Agent Protocol
+"""
 from operator import attrgetter
 
 from cognition_layer.api import ServerAPI
@@ -12,6 +23,16 @@ from ecm.tools.async_interpreter import AsyncInterpreter
 def get_server(
     verbose, interpreter_class: Interpreter, max_planex_steps: int = 11
 ) -> ServerAPI:
+    """
+    Initializes and returns a ServerAPI instance configured to use the RePlan
+    agent for processing queries.
+
+    :param verbose: Flag to enable verbose logging of the server's processing steps.
+    :param interpreter_class: The interpreter class to be used by the execution layer.
+    You can use any interpreter from the ecm / execution layer
+    :param max_planex_steps: Maximum number of steps for the RePlan agent.
+    :return: An instance of ServerAPI configured with the RePlan agent.
+    """
     execution_layer_wrapper = ExecutionLayerWrapper()
     execution_layer_wrapper.build(
         interpreter_class=interpreter_class, feedback_class=interpreter_class.feedback_message_class

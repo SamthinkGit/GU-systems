@@ -1,3 +1,13 @@
+"""
+Main ECM Runner
+==============================
+
+This script sets up and runs the ECM, integrating the execution layer and
+cognition layer to handle tasks using the Agent Protocol. It initializes the necessary components,
+including the server, interpreter, and agent protocol client, and manages the workflow for
+processing tasks and executing plans. The script supports different cognition layers and provides
+options for verbosity, debugging, and displaying intermediate results.
+"""
 import argparse
 import asyncio
 import atexit
@@ -187,8 +197,11 @@ async def main(
 
 if __name__ == "__main__":
 
+    # ---------- ACTION SPACE ---------
     import action_space.keyboard.pynput  # noqa
     import action_space.window.focus  # noqa
+    # ----------------------------------
+
     from ecm.tools.registry import ItemRegistry
 
     # We use this invalidation so all the functions become fake (Safe use of this module).

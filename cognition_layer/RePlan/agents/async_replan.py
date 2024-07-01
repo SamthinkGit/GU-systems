@@ -1,3 +1,4 @@
+# DEPRECATED, Use cognition_layer.RePlan.agents.replan instead
 from dataclasses import dataclass
 from typing import AsyncGenerator
 from typing import Optional

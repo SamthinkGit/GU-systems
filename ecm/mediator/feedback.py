@@ -1,3 +1,13 @@
+"""
+Execution Feedback Module
+==============================
+
+This module defines the `ExecutionStatus` enumeration and the Virtual `Feedback` class for managing
+the execution status and feedback of tasks. It should provide mechanisms for publishing and
+parsing feedback, as well as responding to execution status changes.
+
+[HELP] A implementation of this virtual class can be seen in ecm.mediator.rosa_interpreter
+"""
 from enum import Enum
 from typing import Any
 

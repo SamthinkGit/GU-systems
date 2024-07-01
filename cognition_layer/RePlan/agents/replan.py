@@ -1,3 +1,16 @@
+"""
+RePlan Module
+==============================
+
+This module defines the RePlan class and its associated tools, which orchestrate the
+planning and execution of tasks using the PlanexV2 agent and the LangChain framework.
+
+It is based on ReAct Agent methodology but using PlanexV2 as main planner. Also contains other
+tools based on the execution layer for fully control the execution, being able to
+stop, continue, approve steps etc.
+
+[HELP] There is an example for using this module in tests/sandbox/replan.py
+"""
 from dataclasses import dataclass
 from typing import AsyncGenerator
 from typing import Optional
@@ -22,6 +35,16 @@ from ecm.shared import get_logger
 
 @dataclass
 class ReplanResponse:
+    """
+    Represents the response from the RePlan iterative process. It includes the
+    name of the action, the content of the response, and a flag indicating whether
+    it is the last response.
+
+    :param name: The name of the action or step.
+    :param content: The content of the response.
+    :param is_last: Boolean indicating if this is the last response.
+    """
+
     name: str
     content: str
     is_last: bool
@@ -40,6 +63,17 @@ class RePlan:
         verbose: bool = False,
         max_planex_steps: Optional[int] = None,
     ) -> None:
+        """
+        Initializes the RePlan class with an execution layer wrapper, verbosity
+        settings, and the maximum number of PlanexV2 steps. Sets up the agent
+        executor with defined tools and prompts.
+
+        :param execution_layer_wrapper: The wrapper for the execution layer. You
+        can use ecm.core.mediator.execution_layer_wrapper. It is used for synchronizing
+        both cognition and execution layer.
+        :param verbose: Optional flag to enable verbose logging.
+        :param max_planex_steps: Optional maximum number of steps for PlanexV2.
+        """
         if max_planex_steps is None:
             max_planex_steps = 11
 
@@ -65,6 +99,16 @@ class RePlan:
 
     @classmethod
     async def iter(cls, query: str) -> AsyncGenerator[ReplanResponse, None]:
+        """
+        Asynchronously processes the input query iteratively using the agent
+        executor, yielding ReplanResponse objects for each step.
+
+        :param query: The input query to be processed.
+        :return: An asynchronous generator yielding ReplanResponse objects.
+
+        [HELP] There is an example for using this module in tests/sandbox/replan.py
+        """
+
         async for chunk in cls.agent_executor.astream({"input": query}):
             if "actions" in chunk:
                 action = chunk["actions"][0]

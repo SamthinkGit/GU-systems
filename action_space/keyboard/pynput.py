@@ -1,3 +1,9 @@
+"""
+PynPut
+==============================
+This module contains a set of instructions that are easily used by an AI for
+managing the keyboard.
+"""
 import time
 
 from pynput.keyboard import Controller

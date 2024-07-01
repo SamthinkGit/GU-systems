@@ -4,7 +4,11 @@ Rosa Interpreter Module
 
 This module defines the `RosaInterpreter` class for executing Exelent-tasks using the ROSA framework.
 It extends the `Interpreter` class and integrates with the ROSA system to manage task execution.
+
 The module also includes `RosaInterpreterSupports` to specify the capabilities of the Rosa interpreter.
+
+[HELP] This module is an implementation of ecm.mediator.Interpreter for using ROSA, you can define
+new interpreters by implementing all virtual functions.
 """
 from dataclasses import dataclass
 from typing import Any
