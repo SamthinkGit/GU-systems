@@ -25,12 +25,15 @@ from ecm.shared import get_logger
 DEBUG_SHOW_EXELENT = False
 
 
+def clean(interpreter: Interpreter):
+    interpreter.kill()
+
+
 async def main(
     cognition_layer: str = "PLANEX",
     execution_layer: str = "ROSA",
     verbose: bool = False,
 ):
-
     # ---- Initializing ----
     host = f"http://{API_ADDRESS}:{API_PORT}"
     configuration = agent_protocol_client.Configuration(host=host)
@@ -43,7 +46,7 @@ async def main(
         case "ROSA":
             from ecm.mediator.rosa_interpreter import RosaInterpreter
 
-            interpreter = RosaInterpreter()
+            interpreter_class = RosaInterpreter
 
         case _:
             return ValueError(
@@ -62,17 +65,21 @@ async def main(
             from cognition_layer.planex.api.server import PlanexServer
 
             server = PlanexServer(verbose=verbose)
+            interpreter = interpreter_class()
 
         case "planexv2":
             from cognition_layer.planexv2.api.server_from_iterator import get_server
 
             server = get_server(verbose=verbose)
+            interpreter = interpreter_class()
 
         case "replan":
             from cognition_layer.RePlan.api.server import get_server
 
-            server = get_server(interpreter=interpreter, verbose=verbose)
+            server = get_server(interpreter_class=interpreter_class, verbose=verbose)
             execution_layer_managed_by_server = True
+            interpreter = None
+
         case _:
             return ValueError(
                 "Cognition Layer not valid, the unique supported values are: "
@@ -86,11 +93,15 @@ async def main(
             )
 
     server: ServerAPI
-    interpreter: Interpreter
+    interpreter: Interpreter | None
 
     # ---- Deploying AgentProtocol ----
     server_process = multiprocessing.Process(target=server.start)
     server_process.start()
+
+    if interpreter:
+        atexit.register(clean, interpreter)
+
     atexit.register(lambda p: p.join(), server_process)
 
     info_shown = False
@@ -124,9 +135,6 @@ async def main(
                 task = await mediator.get_task(input=query)
                 result = await mediator.run_task(task)
 
-                if execution_layer_managed_by_server:
-                    continue
-
             except aiohttp.client_exceptions.ClientOSError:
                 logger.error("Conection lost, retrying...")
                 mediator = CognitionMediator(api_client)
@@ -138,6 +146,9 @@ async def main(
                     exc_info=True,
                 )
                 break
+
+            if execution_layer_managed_by_server:
+                continue
 
             if not isinstance(result, str):
                 logger.error(f"Cognition Layer returned invalid task: {result}. Exit")

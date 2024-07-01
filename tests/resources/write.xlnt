@@ -1,0 +1,3 @@
+def write_task():
+    with Sequential():
+        write("hello world")

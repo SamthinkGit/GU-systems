@@ -11,6 +11,7 @@ from typing import Any
 from typing import Callable
 from typing import Optional
 
+from ecm.exelent.parser import linearize_multiple_defs
 from ecm.exelent.parser import linerize_task
 from ecm.exelent.parser import ParsedTask
 from ecm.exelent.parser import ParsedType
@@ -128,8 +129,10 @@ class RosaInterpreter(Interpreter):
             self.rosa.execute(pkg)
             self.rosa.wait_for(task.name, ExecutionStatus.FINISH)
 
-    def arun(self, task: ParsedTask, callback: Optional[Callable] = None) -> None:
-        self.rosa.new_task(task_id=task.name, feedback_callback=callback)
+    def arun(
+        self, task: ParsedTask, feedback_callback: Optional[Callable] = None
+    ) -> None:
+        self.rosa.new_task(task_id=task.name, feedback_callback=feedback_callback)
         for pkg in self._generate_packages_from_parsed_task(task):
             self.rosa.execute(pkg)
 
@@ -149,7 +152,7 @@ class RosaInterpreter(Interpreter):
 
     def _generate_packages_from_parsed_task(
         self,
-        task: ParsedTask,
+        task: ParsedTask | list[ParsedTask],
     ) -> list[SequencePackage]:
         # This function takes the following premises:
         # - Multi-Task_id in one task is not supported
@@ -163,6 +166,8 @@ class RosaInterpreter(Interpreter):
                 f"Received: {task}"
             )
 
+        if isinstance(task, list):
+            task = linearize_multiple_defs(task)
         task = linerize_task(task)
         sequences: list[SequencePackage] = []
         task_id = task.name

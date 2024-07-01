@@ -50,12 +50,12 @@ class ServerFromIterator(ServerAPI):
         try:
 
             if step.name == "start":
-                ServerFromIterator.iterator = ServerFromIterator.iterator(step.input)
+                ServerFromIterator.iterator_step = ServerFromIterator.iterator(step.input)
 
             message = (
-                await anext(ServerFromIterator.iterator)
+                await anext(ServerFromIterator.iterator_step)
                 if ServerFromIterator.async_iterator
-                else next(ServerFromIterator.iterator)
+                else next(ServerFromIterator.iterator_step)
             )
             ServerFromIterator.steps += 1
 

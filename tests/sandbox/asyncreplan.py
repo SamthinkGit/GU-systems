@@ -5,11 +5,11 @@ from colorama import Style
 
 import action_space.keyboard.pynput  # noqa
 import action_space.window.focus  # noqa
-from cognition_layer.RePlan.agents.replan import RePlan
-from cognition_layer.RePlan.agents.replan import ReplanResponse
-from ecm.mediator.execution_layer_wrapper import ExecutionLayerWrapper
+from cognition_layer.RePlan.agents.async_replan import AsyncRePlan as RePlan
+from cognition_layer.RePlan.agents.async_replan import ReplanResponse
 from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper
 from ecm.mediator.rosa_interpreter import RosaInterpreter
+from ecm.tools.async_interpreter import AsyncInterpreter
 from ecm.tools.registry import ItemRegistry
 
 
@@ -17,10 +17,10 @@ async def main():
     ItemRegistry.invalidate_all_functions()
 
     rosa = RosaInterpreter()
-    elw = ExecutionLayerWrapper()
-    elw.build(interpreter=rosa, feedback_class=RosaFeedbackWrapper)
+    interpreter = AsyncInterpreter()
+    interpreter.build(interpreter=rosa, feedback_class=RosaFeedbackWrapper)
     replan = RePlan(
-        execution_layer_wrapper=elw,
+        async_interpreter=interpreter,
         verbose=False,
     )
 
