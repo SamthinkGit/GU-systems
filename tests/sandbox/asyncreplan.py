@@ -7,10 +7,10 @@ import action_space.keyboard.pynput  # noqa
 import action_space.window.focus  # noqa
 from cognition_layer.RePlan.agents.async_replan import AsyncRePlan as RePlan
 from cognition_layer.RePlan.agents.async_replan import ReplanResponse
-from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper
-from ecm.mediator.rosa_interpreter import RosaInterpreter
 from ecm.tools.async_interpreter import AsyncInterpreter
 from ecm.tools.registry import ItemRegistry
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaFeedbackWrapper
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
 
 async def main():

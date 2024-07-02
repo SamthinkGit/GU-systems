@@ -8,8 +8,8 @@ from cognition_layer.planex.agents.planner import Planner
 from cognition_layer.planex.agents.reducer import Reducer
 from cognition_layer.planex.agents.translator import Translator
 from cognition_layer.planex.utils.format import extract_python_code
-from ecm.mediator.rosa_interpreter import RosaInterpreter
 from ecm.tools.registry import ItemRegistry
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
 if __name__ == "__main__":
 

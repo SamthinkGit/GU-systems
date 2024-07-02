@@ -1,9 +1,9 @@
 import ecm.exelent.parser as parser
-from ecm.mediator.rosa_interpreter import ExecutionStatus
-from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper as Feedback
-from ecm.mediator.rosa_interpreter import RosaInterpreter
 from ecm.shared import get_root_path
 from ecm.tools.registry import ItemRegistry
+from execution_layer.rosa.interpreter.rosa_interpreter import ExecutionStatus
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaFeedbackWrapper as Feedback
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
 
 class TestRosaInterpreter:

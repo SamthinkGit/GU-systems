@@ -9,7 +9,7 @@ from colorama import Style
 import ecm.exelent.parser as parser
 import tests.mocks.agent_actions  # noqa
 from cognition_layer.planex.utils.format import extract_python_code
-from ecm.mediator.rosa_interpreter import RosaInterpreter
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
 
 configuration = agent_protocol_client.Configuration(host="http://0.0.0.0:8000")

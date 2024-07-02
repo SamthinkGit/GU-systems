@@ -3,10 +3,10 @@ import time
 from ecm.mediator.execution_layer_wrapper import ExecutionLayerWrapper
 from ecm.mediator.feedback import ExecutionStatus
 from ecm.mediator.feedback import Feedback
-from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper
-from ecm.mediator.rosa_interpreter import RosaInterpreter
 from ecm.shared import get_root_path
 from ecm.tools.registry import ItemRegistry
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaFeedbackWrapper
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
 
 @ItemRegistry.register_function

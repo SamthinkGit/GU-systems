@@ -1,10 +1,10 @@
 import pytest
 
-from ecm.mediator.rosa_interpreter import ExecutionStatus
-from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper as Feedback
 from ecm.tools.registry import ItemRegistry
 from execution_layer.rosa.gateway.mocks.debug import hello_world
 from execution_layer.rosa.interfaces.rosa import ROSA
+from execution_layer.rosa.interpreter.rosa_interpreter import ExecutionStatus
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaFeedbackWrapper as Feedback
 from execution_layer.rosa.ros2.tools.packages import ActionPackage
 from execution_layer.rosa.ros2.tools.packages import SequencePackage
 from execution_layer.rosa.ros2.tools.packages import SequencePriority

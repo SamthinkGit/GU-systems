@@ -54,7 +54,7 @@ async def main(
     logger.debug(f"Running {execution_layer} as execution_layer")
     match execution_layer:
         case "ROSA":
-            from ecm.mediator.rosa_interpreter import RosaInterpreter
+            from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
             interpreter_class = RosaInterpreter
 

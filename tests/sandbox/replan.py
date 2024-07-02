@@ -8,9 +8,9 @@ import action_space.window.focus  # noqa
 from cognition_layer.RePlan.agents.replan import RePlan
 from cognition_layer.RePlan.agents.replan import ReplanResponse
 from ecm.mediator.execution_layer_wrapper import ExecutionLayerWrapper
-from ecm.mediator.rosa_interpreter import RosaFeedbackWrapper
-from ecm.mediator.rosa_interpreter import RosaInterpreter
 from ecm.tools.registry import ItemRegistry
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaFeedbackWrapper
+from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 
 
 async def main():
