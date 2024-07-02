@@ -1,7 +1,7 @@
 # <div align="center">GU-Systems</div>
 
 <div align="center">
-  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/62b27a54-c44e-4fca-92ae-12294dd6d1ee" alt="Software Architecture Diagram" width=770>
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/62b27a54-c44e-4fca-92ae-12294dd6d1ee" alt="Software Architecture Diagram" width=700>
 
 |       |                                                                                                                                                                        |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
