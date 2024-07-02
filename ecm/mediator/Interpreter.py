@@ -32,12 +32,46 @@ class Interpreter:
     feedback_message_class: Feedback
 
     def __init__(self) -> None: ...
-    def run(self, task: ParsedTask, callback: Optional[Callable]) -> None: ...
-    def arun(self, task: ParsedTask, callback: Optional[Callable]) -> None: ...
-    def stop(self, task: str) -> Any: ...
-    def hard_stop(self, task: str) -> Any: ...
-    def wait_for(self, task: str, call: str) -> None: ...
-    def kill(self): ...
+
+    def run(self, task: ParsedTask, callback: Optional[Callable]) -> None:
+        """
+        Runs a parsed task (by using the schema defined in /ecm/exelent/parser.py) and
+        defines a callback function where all the feedback from the execution will return.
+        This function is blocking until the execution finished
+        """
+        ...
+
+    def arun(self, task: ParsedTask, callback: Optional[Callable]) -> None:
+        """
+        Defines a function with the same properties as run(), this call though is
+        not blocking (does not wait for finish)
+        """
+        ...
+
+    def stop(self, task: str) -> Any:
+        """
+        Stops a task that is running at the moment. (Gracefully)
+        """
+        ...
+
+    def hard_stop(self, task: str) -> Any:
+        """
+        Kills immediately all the proccess running the task (safe exit)
+        """
+        ...
+
+    def wait_for(self, task: str, call: str) -> None:
+        """
+        Waits for a signal/feedback from the execution layer. The signals
+        can be defined in the InterpreterSupports
+        """
+        ...
+
+    def kill(self):
+        """
+        Cleans all the interpreter before exiting (if necesary)
+        """
+        ...
 
 
 class InterpreterSupports:

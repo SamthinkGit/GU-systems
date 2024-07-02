@@ -35,11 +35,43 @@ class Feedback:
     _exec_status: ExecutionStatus
 
     def __init__(self) -> None: ...
-    def publish(self, object: Any, _exec_status: ExecutionStatus = ExecutionStatus.RUNNING, **kwargs): ...
-    def response(self, object: Any, _exec_status: ExecutionStatus): ...
+
+    def publish(
+        self,
+        object: Any,
+        _exec_status: ExecutionStatus = ExecutionStatus.RUNNING,
+        **kwargs
+    ):
+        """
+        Used for publishing globally the feedback from the execution layer to other upper layers.
+        The classification of the task_id/author is responsability of the interpreter/execution_layer
+        implementation.
+        """
+        ...
+
+    def response(self, object: Any, _exec_status: ExecutionStatus):
+        """
+        Used for sending feedback from the upper layers to the execution layer. It should automatically
+        match the appropiate task/action.
+        """
 
     @classmethod
     def parse(message: Any, *args, **kwargs) -> "Feedback":
+        """
+        This function will be called always before using any Feedback function. Use this for
+        parsing any object that comes from the callback into your own Feedback implementation.
+        Example:
+
+        class MyFeedback(Feedback):
+            ...
+            @classmethod
+            def parse(object_from_interpreter):
+                return MyFeedback(object_from_interpreter.name, ...)
+
+        def my_interpreter_callback(message):
+            # All agents ensure that they will parse your message
+            feedback: MyFeedback = MyFeedback.parse(message)
+        """
         raise SystemError(
             "The feedback function called is virtual. Please ensure that you are "
             "using the appropriate Feedback Implementation instead of the template. "
