@@ -17,6 +17,9 @@ client and sender must have imported the function target.
 threads associated with specific tasks. It uses a singleton pattern to ensure a consistent
 global registry of threads throughout the application lifecycle.  Key functionalities include
 watching tasks, running tasks with specific identifiers, and waiting for task completion.
+
+[HELP] This module is where all the actions and items are saved serving as communicator between
+different layers.
 """
 import functools
 import hashlib

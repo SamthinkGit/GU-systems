@@ -72,7 +72,7 @@ class RosaFeedbackWrapper(FeedbackTemplate):
         self._rosa_feedback.publish(object, _exec_status)
 
     def response(self, object: Any, _exec_status: ExecutionStatus):
-        # Note, we asumme the case were feedback is comming from rosa so we would
+        # Note, we asummed the case were feedback is comming from rosa so we would
         # have:
         # Feedback(task_id=task_id, object=[result, response_code])
 
@@ -159,7 +159,6 @@ class RosaInterpreter(Interpreter):
         task: ParsedTask | list[ParsedTask],
     ) -> list[SequencePackage]:
         # This function takes the following premises:
-        # - Multi-Task_id in one task is not supported
         # - TODO: SequencePriority is Normal by default (soon we will add support to more)
         # - ROSA only supports linearized tasks (cannot deal with not-sequential nested types)
         # - kwargs in types not supported yet

@@ -3,16 +3,13 @@ Exelent Parser Module
 =================================
 
 This module provides the `ExelentParser` class for parsing and analyzing tasks defined
-in Python code. The parser can handle tasks specified as functions and their associated
+in Exelent code. The parser can handle tasks specified as functions and their associated
 actions and types within `with` statements. Key classes include `ParsedTask`, `ParsedWith`,
 `ParsedAction`, and `ParsedType`, each representing various elements of a task.
 
 The `ExelentParser` can be initialized with either a file path or a string containing the
 code to be parsed. The module supports parsing the function calls and with-blocks,
 distinguishing between actions and types based on naming conventions.
-
-Additionally, the module offers the `linerize_task` function to linearize nested `with`
-blocks into a sequence of actions for easier processing.
 
 Functions:
 - [Recommended] parse: Parses a given target file or string, returning a ParsedTask object.
@@ -199,6 +196,18 @@ class ExelentParser:
 
 
 def linearize_multiple_defs(tasks: list[ParsedTask]) -> ParsedTask:
+    """
+    Linearize multiple defs used in Exelent.
+    Example:
+    def my task():
+        ...
+    def my_task_2():
+        ...
+    def my_task():
+        with Sequential():
+            my_task()
+            my_task_2()
+    """
     _withs = []
     for task in tasks:
         _withs.extend(task.sequence)
@@ -249,7 +258,9 @@ def _linearize_with(_with: ParsedWith) -> ParsedWith:
             continue
 
         if not isinstance(node, ParsedWith):
-            raise TypeError(f"Expected With type and obtained: {node}. ¿Maybe there is a misspell?")
+            raise TypeError(
+                f"Expected With type and obtained: {node}. ¿Maybe there is a misspell?"
+            )
 
         node: ParsedWith
         node = _linearize_with(node)
@@ -259,6 +270,7 @@ def _linearize_with(_with: ParsedWith) -> ParsedWith:
     return _with
 
 
+# ------ Main parser Function ------
 def parse(
     target_file: Optional[Path | str] = None, target_str: Optional[str] = None
 ) -> ParsedTask | None:

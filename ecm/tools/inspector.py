@@ -1,3 +1,14 @@
+"""
+System Inspector Module
+==============================
+
+This module defines the `SystemInspector` class, which provides methods to gather basic system information,
+get the title of the currently focused window, and retrieve detailed information about the focused window
+on Linux systems. It utilizes platform-specific libraries and commands to fetch and parse the necessary data.
+
+[HELP] This librarie is implemented in the cognition layer (Planex) to gather information about the pc before
+planning
+"""
 import json
 import platform
 import subprocess
@@ -12,7 +23,10 @@ class SystemInspector:
         pass
 
     def get_system_info(self) -> Dict[str, str]:
-        """Get basic information about the system."""
+        """
+        Get basic information about the system.
+        :return: A dictionary containing basic system information.
+        """
         return {
             "platform": platform.system(),
             "platform-release": platform.release(),
@@ -22,7 +36,10 @@ class SystemInspector:
         }
 
     def get_focused_window(self) -> Optional[str]:
-        """Get the title of the currently focused window."""
+        """
+        Get the title of the currently focused window.
+        :return: The title of the currently focused window, or None if not available.
+        """
         if platform.system() == "Windows":
             import win32gui
 
@@ -38,7 +55,10 @@ class SystemInspector:
         return None
 
     def get_focused_window_info(self) -> Optional[Dict[str, str]]:
-        """Get detailed information about the currently focused window on Linux."""
+        """
+        Get detailed information about the currently focused window on Linux.
+        :return: A dictionary containing detailed window information, or None if not available.
+        """
         try:
             # Get the ID of the currently focused window
             window_id = (
@@ -76,12 +96,8 @@ class SystemInspector:
     def _parse_xprop_output(self, xprop_output: str) -> Dict[str, str]:
         """
         Parse the output from xprop into a dictionary.
-
-        Args:
-            xprop_output (str): The raw output from xprop.
-
-        Returns:
-            Dict[str, str]: A dictionary containing parsed window information.
+        :param xprop_output: The raw output from xprop.
+        :return: A dictionary containing parsed window information.
         """
         details = {}
         for line in xprop_output.splitlines():
@@ -91,6 +107,10 @@ class SystemInspector:
         return details
 
     def summary(self) -> Dict[str, str]:
+        """
+        Get a summary of system information and focused window details.
+        :return: A dictionary containing system information and focused window details.
+        """
         return {
             'System Information': self.get_system_info(),
             'Focused Window': self.get_focused_window(),
