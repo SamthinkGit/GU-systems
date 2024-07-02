@@ -53,8 +53,17 @@ source scripts/dev_setup.sh
 # TIP: You can also add this line to your ~/.bashrc
 export OPENAI_API_KEY='sk-...'
 ```
+## 📖 Usage
+Using the ECM is as simple as running a python script!
+You can use RePlan (our best agent so far) to start sending queries to control your computer!
 
-This command will start executing RePlan in your computer
+```bash
+# For safety reasons this does not affect your computer.
+# You can use ecm/core/run_in_host.py if you are in a safe environment.
+
+python ecm/core/main.py --agent RePlan
+```
+
 ## ✨ Features
 
 - **Task Planning**: Generate action plans from user requests.
