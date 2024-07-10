@@ -54,7 +54,9 @@ async def main(
     logger.debug(f"Running {execution_layer} as execution_layer")
     match execution_layer:
         case "ROSA":
-            from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
+            from execution_layer.rosa.interpreter.rosa_interpreter import (
+                RosaInterpreter,
+            )
 
             interpreter_class = RosaInterpreter
 
@@ -200,12 +202,10 @@ if __name__ == "__main__":
     # ---------- ACTION SPACE ---------
     import action_space.keyboard.pynput  # noqa
     import action_space.window.focus  # noqa
+
     # ----------------------------------
 
     from ecm.tools.registry import ItemRegistry
-
-    # We use this invalidation so all the functions become fake (Safe use of this module).
-    ItemRegistry.invalidate_all_functions()
 
     argparser = argparse.ArgumentParser(
         description="Run Planex Server with optional verbosity."
@@ -224,6 +224,13 @@ if __name__ == "__main__":
         action="store_true",
         help="Shows Exelent file obtained from the Cognition Layer",
     )
+
+    argparser.add_argument(
+        "--host",
+        action="store_true",
+        help="[CAUTION] Executes the exelent generated code into the host machine. Please use in a safe environment.",
+    )
+
     argparser.add_argument(
         "--agent", type=str, help="Select the Agent used for the cognition layer"
     )
@@ -236,6 +243,8 @@ if __name__ == "__main__":
         set_debug(True)
     if args.show_exelent:
         DEBUG_SHOW_EXELENT = True
+    if not args.host:
+        ItemRegistry.invalidate_all_functions()
 
     cognition_layer = args.agent if args.agent else "PLANEX"
 
