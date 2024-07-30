@@ -1,6 +1,7 @@
 """
 PynPut
 ==============================
+[DEPRECATED] Use Virtual Keyboard instead.
 This module contains a set of instructions that are easily used by an AI for
 managing the keyboard.
 """
