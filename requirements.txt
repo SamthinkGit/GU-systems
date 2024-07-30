@@ -9,3 +9,4 @@ agent-protocol
 agent-protocol-client
 requests
 pyautogui
+pika # Requires RabbitMQ server

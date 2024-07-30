@@ -33,6 +33,7 @@ from typing import Dict
 from typing import Hashable
 
 from ecm.constants import ITEM_ENCODED_PREFIX
+from ecm.remote.server import EcmServer
 from ecm.shared import _MOCKS_ENABLED
 from ecm.shared import get_logger
 
@@ -186,6 +187,25 @@ class ItemRegistry:
             )
             cls._names[name] = fake
             cls._functions[key] = fake
+
+    @classmethod
+    def transfer_execution_to_client(cls):
+        """Changes all registered functions into the same functions executed on the clients connected
+        to the ECM server. Note that those functions must be already imported in the ItemRegirsty of
+        the client."""
+        cls._logger.warning(
+            "All functions will be executed on the clients connected to the ECM Server."
+        )
+
+        for name, func in cls._names.items():
+            key = cls.get_id(func)
+            remote_function = functools.wraps(func)(
+                lambda *args, name=name, **kwargs: EcmServer.send_task(
+                    name, *args, **kwargs
+                )
+            )
+            cls._names[name] = remote_function
+            cls._functions[key] = remote_function
 
 
 class ItemEncoder:
