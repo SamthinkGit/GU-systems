@@ -50,6 +50,7 @@ class ItemRegistry:
     _logger = get_logger("ItemRegistry")
     _instance = None
     _functions: Dict[Hashable, Callable] = {}
+    _utils: Dict[str, Callable] = {}
     _items: Dict[Hashable, Any] = {}
     _names: Dict[str, Callable] = {}
 
@@ -90,6 +91,17 @@ class ItemRegistry:
         cls._functions[id] = func
         cls._names[func.__name__] = func
         cls._logger.debug(f"Function {func} registered")
+        return func
+
+    @classmethod
+    def register_util(cls, func: Callable):
+        """Decorator to register a util with a unique action ID. This utils will not be
+        notified to the AI agents as valid actions."""
+        if not _MOCKS_ENABLED.status and func.__doc__ == "MOCK":
+            return func
+        name = func.__name__
+        cls._utils[name] = func
+        cls._logger.debug(f"Util {func} registered")
         return func
 
     @classmethod
@@ -185,7 +197,7 @@ class ItemRegistry:
                     f"{name}(args: {args}, kwargs: {kwargs})"
                 )
             )
-            cls._names[name] = fake
+            cls._utils[name] = fake
             cls._functions[key] = fake
 
     @classmethod
@@ -206,6 +218,14 @@ class ItemRegistry:
             )
             cls._names[name] = remote_function
             cls._functions[key] = remote_function
+
+        for name, func in cls._utils.items():
+            remote_function = functools.wraps(func)(
+                lambda *args, name=name, **kwargs: EcmServer.send_task(
+                    name, *args, **kwargs
+                )
+            )
+            cls._utils[name] = remote_function
 
 
 class ItemEncoder:

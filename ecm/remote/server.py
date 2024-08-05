@@ -4,15 +4,17 @@ import os
 import time
 
 import pika
-from dotenv import load_dotenv
 
 from ecm.shared import get_logger
+from ecm.shared import load_env
+load_env()
 
 
 class EcmServer:
 
     _instance = None
     _logger = get_logger("ECM Server")
+    _inited = False
 
     def __new__(cls):
         if cls._instance is None:
@@ -20,7 +22,6 @@ class EcmServer:
         return cls._instance
 
     def __init__(self) -> None:
-        load_dotenv()
 
         user = os.getenv("ECM_USER")
         password = os.getenv("ECM_PASS")
@@ -41,6 +42,7 @@ class EcmServer:
         EcmServer.channel = channel
         EcmServer.conection = connection
         atexit.register(EcmServer.cleanup)
+        EcmServer._inited = True
 
     @classmethod
     def cleanup(cls):
@@ -48,6 +50,9 @@ class EcmServer:
 
     @classmethod
     def send_task(cls, func_name, *args, **kwargs):
+        if not EcmServer._inited:
+            EcmServer()
+
         task = {"func_name": func_name, "args": args, "kwargs": kwargs}
         cls._logger.debug(f"Publishing task: {task} to client.")
 

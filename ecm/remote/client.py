@@ -4,10 +4,11 @@ import os
 import traceback
 
 import pika
-from dotenv import load_dotenv
 
 from ecm.shared import get_logger
+from ecm.shared import load_env
 from ecm.tools.registry import ItemRegistry
+load_env()
 
 
 class EcmClient:
@@ -21,7 +22,6 @@ class EcmClient:
         return cls._instance
 
     def __init__(self) -> None:
-        load_dotenv()
 
         user = os.getenv("ECM_USER")
         password = os.getenv("ECM_PASS")
@@ -75,7 +75,14 @@ class EcmClient:
         exception = None
 
         try:
-            result = ItemRegistry._names[func_name](*args, **kwargs)
+            func = ItemRegistry._names.get(func_name)
+            if func is None:
+                func = ItemRegistry._utils.get(func_name)
+            if func is None:
+                raise SystemError(f"Function {func_name} has not been found in the client ItemRegistry.")
+
+            result = func(*args, **kwargs)
+
         except Exception:
             result = None
             exception = traceback.format_exc()
