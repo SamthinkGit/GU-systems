@@ -68,4 +68,9 @@ def load_env():
     for path in paths:
         result = dotenv.load_dotenv(path)
         if result is False:
-            logger.warning(f"Path {path} failed when trying to load enviroment variables.")
+            logger.warning(
+                f"Path {path} failed when trying to load enviroment variables."
+            )
+
+
+load_env()

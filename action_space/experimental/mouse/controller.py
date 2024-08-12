@@ -9,6 +9,7 @@ from action_space.experimental.mouse.grid import Cell
 from action_space.experimental.mouse.grid import Grid
 from action_space.tools.image import load_image
 from ecm.tools.registry import ItemRegistry
+
 # ---- Required Actions in ItemRegistry ----
 
 
@@ -28,14 +29,14 @@ class MouseDescriptor:
     def build(
         cls,
         screenshot_tool: Callable[[], Image],
-        click_tool: Callable[[float, float], None],
+        move_tool: Callable[[float, float], None],
         resolution: int = 10,
         font_size: int = 40,
     ) -> None:
         cls.screenshot_tool = screenshot_tool
         cls.resolution = resolution
         cls.font_size = font_size
-        cls.click_tool = click_tool
+        cls.move_tool = move_tool
         cls._built = True
 
     @classmethod
@@ -61,9 +62,9 @@ class MouseDescriptor:
         return cls._grid
 
     @classmethod
-    def click(cls):
+    def move(cls):
         coords = cls._current_cell.absolute()
-        cls.click_tool(coords.center_x, coords.center_y)
+        cls.move_tool(coords.center_x, coords.center_y)
 
     @classmethod
     def _verify_building(cls) -> None:
@@ -77,13 +78,13 @@ def screenshot_tool():
     return load_image(ItemRegistry._utils["screenshot"]())
 
 
-def click_tool(x, y):
+def move_tool(x, y):
     return ItemRegistry._utils["move_mouse_to"](x, y)
 
 
 MouseDescriptor.build(
     screenshot_tool=screenshot_tool,
-    click_tool=click_tool,
+    move_tool=move_tool,
     resolution=10,
 )
 
@@ -101,4 +102,4 @@ if __name__ == "__main__":
 
     cell = int(input("Move to: "))
     MouseDescriptor.zoom(cell)
-    MouseDescriptor.click()
+    MouseDescriptor.move()

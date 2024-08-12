@@ -11,9 +11,9 @@ from langchain_openai import ChatOpenAI
 from PIL import Image
 
 from action_space.experimental.mouse.controller import MouseDescriptor
+from cognition_layer.constants import DEFAULT_IMAGE_MODEL
 from ecm.shared import get_logger
 
-MODEL = "gpt-4o-mini"
 SCREEN_DESCRIPTION_PROMPT = """
 You are an assistant designed to receive an image of a computer screen and a
 user's request regarding a specific element within that screen. Your task is to
@@ -62,7 +62,8 @@ class DescriptionResponse(BaseModel):
 class FinderResponse(BaseModel):
     reasoning: str = Field(
         description="A comprehensive reasoning according to the description of the element "
-        "referencing the original description and looking at the image provided.", min_length=100
+        "referencing the original description and looking at the image provided.",
+        min_length=100,
     )
     cell: int = Field(
         description="Number corresponding to the cell of the grid which contains the user element."
@@ -77,7 +78,7 @@ class MouseAgent:
 
     @classmethod
     def _build(cls):
-        cls.llm = ChatOpenAI(model=MODEL, temperature=0)
+        cls.llm = ChatOpenAI(model=DEFAULT_IMAGE_MODEL, temperature=0)
         cls._built = True
 
     @staticmethod
@@ -180,7 +181,7 @@ class MouseAgent:
         cls._logger.debug(
             f"Obtained pixel at [{MouseDescriptor._current_cell.center_x}, {MouseDescriptor._current_cell.center_y}]"
         )
-        MouseDescriptor.click()
+        MouseDescriptor.move()
 
     @classmethod
     def _verify_building(cls):
