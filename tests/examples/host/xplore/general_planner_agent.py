@@ -5,5 +5,5 @@ from ecm.tools.prettify import pretty_print
 if __name__ == "__main__":
 
     agent = GeneralPlannerAgent()
-    plan: GeneralPlannerResponse = agent.generate_plan("Buy AAA batteries on Amazon.")
+    plan: GeneralPlannerResponse = agent.invoke("Buy AAA batteries on Amazon.")
     pretty_print(plan)

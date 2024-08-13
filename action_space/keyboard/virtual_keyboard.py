@@ -262,9 +262,11 @@ def _uinput_emit_keycombo(device, events, syn=True):
     device.emit_combo(events, syn)
 
 
-def press_keys(keys):
-    """Presses the given keys as one combination.
-    @param key: A simple list of key strings, e.g. ['LEFTCTRL', 'F4']
+@ItemRegistry.alias(["hotkey", "press"])
+@ItemRegistry.register_function
+def press_keys(keys: list[str]):
+    """Presses the given keys as one combination. Note: It is vital to specify the side of the key if there are multiple, e.g. ['LEFTSHIFT', 'RIGHTCTRL'...] # noqa
+    @param key: A simple list of key strings, e.g. ['LEFTCTRL', 'F4', 'W']
     """
     events = [_uinput_translate_name(en) for en in keys]
     _uinput_emit_keycombo(_get_uinput_device_keyboard(), events)
@@ -274,7 +276,7 @@ def press_keys(keys):
 @ItemRegistry.register_function
 def write(text: str):
     """Translates ASCII text to keystrokes and sends them as events.
-    You can use '\n' for sending enter.
+    You can use '\\n' for sending enter.
     @param text: string as a unique string text to send as events to keyboard, e.g. write('Hello World!')
     """
     events = _chars_to_events(text)

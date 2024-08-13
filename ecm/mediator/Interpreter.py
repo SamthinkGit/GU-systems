@@ -21,6 +21,7 @@ Functions:
 """
 from typing import Any
 from typing import Callable
+from typing import Literal
 from typing import Optional
 
 from ecm.exelent.parser import ParsedTask
@@ -33,7 +34,11 @@ class Interpreter:
 
     def __init__(self) -> None: ...
 
-    def run(self, task: ParsedTask, callback: Optional[Callable]) -> None:
+    def run(
+        self,
+        task: ParsedTask,
+        callback: Optional[Callable | Literal["silent"]],
+    ) -> None:
         """
         Runs a parsed task (by using the schema defined in /ecm/exelent/parser.py) and
         defines a callback function where all the feedback from the execution will return.

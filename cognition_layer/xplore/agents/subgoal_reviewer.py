@@ -10,51 +10,60 @@ from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
 from cognition_layer.constants import DEFAULT_IMAGE_MODEL
 from ecm.tools.registry import ItemRegistry
+
 # ----- Required Utils ------
 
 
-class GeneralPlannerResponse(BaseModel):
+class SubgoalReviewerResponse(BaseModel):
 
-    description: str = Field(
-        description="A description of the current status of the system. Provide all relevant details such as "
-        "already open windows, relevant options, operative system, etc."
-    )
     reasoning: str = Field(
-        description="A reasoning about what the user has requested and how that goal could be reached."
+        description="A reasoning about the user status and which subgoals have been reached."
     )
-    plan: list[str] = Field(
-        description="A summarized, step by step set of sub-goals in order to complete the user request."
+    verification: list[bool] = Field(
+        description=(
+            "A set of booleans for which goals have been completed ordered sequentially. Return "
+            "for each subgoal: true if completed, else false."
+        )
     )
 
 
-class GeneralPlannerAgent:
+class ReviewerAgent:
 
     def __init__(self) -> None:
         llm = ChatOpenAI(model=DEFAULT_IMAGE_MODEL).with_structured_output(
-            GeneralPlannerResponse
+            SubgoalReviewerResponse
         )
         sys_message = """
-        You are an Expert Planning Assistant. Your task is to provide a subgoal-based
-        step-by-step plan to address the user's query.
+        You are an Expert Reviewer Assistant. Your task is to provide a list of step-by-step
+        reviews to find which subgoals have been completed.
         Note that you must follow these rules:
-        1. You have full control over the user's computer/system, and any action is available.
-        2. Only generate one plan for the given query
-        3. If necessary specify the window which must be selected to do the action
+        1. Only focus on the current status of the user and that have been already reached and should be discarded.
+        2. A subgoal cannot be completed if its previous requirements have not been reached (use deduction if needed).
+        3. Use the image provided from the user to determine the current status of the user.
         """
+
         prompt = ChatPromptTemplate(
             [SystemMessage(content=sys_message), MessagesPlaceholder("query")]
         )
 
         self.chain = prompt | llm
 
-    def invoke(self, query: str) -> GeneralPlannerResponse:
+    def invoke(self, plan: list[str], additional_info: str) -> SubgoalReviewerResponse:
         screenshot = load_image(ItemRegistry._utils["screenshot"]())
+        prompt = f"""
+        I want to reach the following set of subgoals:
+        ```{plan}```
+
+        {additional_info}
+
+        Which of these subgoals have been already completed or reached (if any)?
+        """
         response = self.chain.invoke(
             {
                 "query": [
                     ImageMessage(
                         image=screenshot,
-                        input=f"The user wants to complete the following task: ```{query}```",
+                        input=prompt,
                     ).as_human()
                 ]
             }
