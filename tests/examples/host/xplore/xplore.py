@@ -1,4 +1,5 @@
 import random
+import time
 
 import action_space.experimental.mouse.actions  # noqa
 import action_space.experimental.wait_for.actions # noqa
@@ -20,6 +21,7 @@ if __name__ == "__main__":
     print(xplore.graph.get_graph().draw_ascii())
 
     user_input = input("Xplore Graph: ")
+    time.sleep(1)
     config = {"configurable": {"thread_id": str(random.randint(5000, 15000))}}
 
     try:

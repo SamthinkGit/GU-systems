@@ -1,3 +1,5 @@
+import time
+
 import uinput
 
 from action_space.experimental.mouse.agent import MouseAgent
@@ -25,7 +27,7 @@ def click(element: str):
     """Clicks with the mouse on the specified element. Example: click('Firefox Icon') or click('Navigation Bar'). Ensure to provide an especific description if needed."""  # noqa
     MouseAgent.find(element)
     ItemRegistry._utils["send_click_event"]()
-
+    time.sleep(2)
 
 # @ItemRegistry.register_function
 # def focus(window: str):
