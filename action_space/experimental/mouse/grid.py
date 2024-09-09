@@ -1,7 +1,13 @@
 """
-This script defines classes and functions to handle a grid system over an image.
-It allows zooming into specific cells and getting the absolute position of cells
-based on hierarchical zoom operations.
+Grid | Cell
+===================
+
+The provided Grid cell is responsible of calculating and drawing
+a grid over a provided image. This grid can be zoomed with subgrids
+so sbsolute coordinates can be found with a set of cells.
+
+Each cell in a grid is considered a RelativeCell (could be a subgrid)
+until resolving the cell with the .absolute() method.
 
 [Warning] Absolute coordinates does not work with variable grid size.
 """

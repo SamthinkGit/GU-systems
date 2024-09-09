@@ -1,3 +1,18 @@
+"""
+MouseAgent
+========================
+
+The Mouse agent is responsible of using the MouseDescriptor
+tool by receiving an image and selecting the appropiate cell
+for a given element.
+
+Thus, this agent will iterate until finding the cell corresponding
+the described element, returning the absolute coordinates obtained
+using the Grid calculations.
+
+Note: For better results, the agent first realices a description of
+the screen.
+"""
 import base64
 from io import BytesIO
 

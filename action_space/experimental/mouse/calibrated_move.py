@@ -1,3 +1,22 @@
+"""
+Calibrated Move
+==============================
+This file uses the .env configuration to find a translation between uinput mouse
+traveled distance and the real movement shown in the display. With this
+equilibrium you can move the mouse throught the display to a given coordinates.
+
+Note: Pyautogui or other libraries that use absolute coord can be used in
+X11 based distros, since Ubuntu-22 Wayland window management, this libraries
+does not work when using different apps. We are working on finding a better
+approach to this.
+
+Note: This .env file has been teste on a 1920x1080 display.
+
+Insights:
+This algorithm works by shifting the mouse to the upper left corner, sending
+a high ammmount of move events. Then it keeps the count of the traveled distance
+using reactive navigation.
+"""
 import os
 import sys
 import time
@@ -22,6 +41,11 @@ MOUSE_STEP = int(os.getenv("MOUSE_STEP"))
 
 
 def move(x, y):
+    """
+    Moves the cursor to a given absolute position.
+    :param x: Horizontal coord (from 0 to MAX)
+    :param y: Vertical coord (from 0 to MAX)
+    """
     global CALIBRATED_MOUSE_DEVICE
     global UINPUT_START_TIME
 

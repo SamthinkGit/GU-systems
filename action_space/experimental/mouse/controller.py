@@ -1,3 +1,17 @@
+"""
+MouseDescriptor
+==================
+
+This class enables to control the mouse by using a grid
+from mouse.grid.
+
+With this, a position on the screen can be described with
+a set of cell-numbers such as:
+
+[Start, 4, 4, 10] -> move.
+
+See example at the end of file.
+"""
 from typing import Callable
 
 import matplotlib.pyplot as plt
