@@ -1,3 +1,24 @@
+"""
+ImageMessage
+================
+This script enhances the langchain BaseMessages with a new
+ImageMessage, which will contain an image and can be sent as
+AI/Human/System to the OpenaiAPI.
+
+Example:
+
+```python
+    prompt = ChatPromptTemplate(
+        [
+            SystemMessage(content="Im a system Message"),
+            ImageMessage(
+                image=screenshot,
+                input="Look into this image",
+            ).as_human()
+        ]
+    )
+```
+"""
 import base64
 import io
 from typing import Literal

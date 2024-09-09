@@ -1,3 +1,15 @@
+"""
+Xplore
+====================
+Xplore is a cognition layer agent that tries to generate the set
+of actions in order to complete the given goal by using a loop of
+subgoal-reaction.
+
+All the information about this agent is explained in the Wiki.
+
+An example of usage of this agent can be found at
+    /tests/examples/host/xplore/xplore.py
+"""
 from typing import Literal
 from typing import TypedDict
 

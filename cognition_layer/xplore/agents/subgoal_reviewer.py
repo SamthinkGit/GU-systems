@@ -1,3 +1,18 @@
+"""
+Xplore: Subgoal Reviewer
+========================
+This agent is responsible for reviewing the current status and find
+which subgoals have been completed. Note that subgoals are completed
+sequentially so no uncompleted subgoal could be found before a completed subgoal.
+
+All the subgoals will return True when completed, else false.
+
+Example:
+[Subgoal1, Subgoal2, Subgoal3...] -> [True, True, False, ...]
+
+The following subgoal can't be returned:
+[Subgoal1, Subgoal2, Subgoal3...] -> [False, False, True, ...]
+"""
 from langchain.pydantic_v1 import BaseModel
 from langchain.pydantic_v1 import Field
 from langchain_core.messages import SystemMessage
@@ -10,8 +25,6 @@ from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
 from cognition_layer.constants import DEFAULT_IMAGE_MODEL
 from ecm.tools.registry import ItemRegistry
-
-# ----- Required Utils ------
 
 
 class SubgoalReviewerResponse(BaseModel):

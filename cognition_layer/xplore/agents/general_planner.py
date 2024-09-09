@@ -1,3 +1,10 @@
+"""
+Xplore: General Planner
+========================
+This agent is responsible of generating a general plan to satisfy a query. This
+plan will be generated as a set of strings (plan) with a description of the
+status of the system and a reasoning on how the plan could be solved.
+"""
 from langchain.pydantic_v1 import BaseModel
 from langchain.pydantic_v1 import Field
 from langchain_core.messages import SystemMessage
@@ -10,7 +17,6 @@ from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
 from cognition_layer.constants import DEFAULT_IMAGE_MODEL
 from ecm.tools.registry import ItemRegistry
-# ----- Required Utils ------
 
 
 class GeneralPlannerResponse(BaseModel):

@@ -1,3 +1,11 @@
+"""
+Xplore: Subgoal Planner
+========================
+This agent is responsible for generating an action or set of actions
+in order to satisfy a subgoal.
+
+Note: All the actions will be loaded from the ItemRegistry.
+"""
 from langchain.pydantic_v1 import BaseModel
 from langchain.pydantic_v1 import Field
 from langchain.tools import tool as build_tool
