@@ -1,7 +1,7 @@
 """
 Xplore: General Planner
 ========================
-This agent is responsible of generating a general plan to satisfy a query. This
+This agent is responsible for generating a general plan to satisfy a query. This
 plan will be generated as a set of strings (plan) with a description of the
 status of the system and a reasoning on how the plan could be solved.
 """

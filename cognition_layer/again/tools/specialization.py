@@ -1,6 +1,7 @@
 from operator import add
 from typing import Annotated
 from typing import Callable
+from typing import Literal
 from typing import Optional
 from typing import TypedDict
 
@@ -212,7 +213,7 @@ class SpecializationGraph:
             "difference": comparator_response.reasoning,
         }
 
-    def should_retry_edge(self, state: SpecializationState):
+    def should_retry_edge(self, state: SpecializationState) -> Literal["__end__", "learn"]:
         if state["match"]:
             return "__end__"
         return "learn"
