@@ -7,6 +7,7 @@ export PYTHONPATH=$PYTHONPATH:$SOURCE
 # Colcon Build Ignores
 PYTHONWARNINGS="ignore:easy_install command is deprecated,ignore:setup.py install is deprecated,ignore:"
 export PYTHONWARNINGS
+export GU_SOURCE_DIR=$SOURCE
 
 # ROS2 sources
 workspaces_dir=$SOURCE/execution_layer/rosa/ros2/workspaces
