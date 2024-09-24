@@ -1,6 +1,6 @@
 import subprocess
 
-from ecm.tools.platform import check_distro
+from ecm.tools.get_platform import check_distro
 
 
 if check_distro() == "Ubuntu":

@@ -28,7 +28,7 @@ class Item:
     labels: list[str] = field(default_factory=list)
 
     def pretty_print(self):
-        print(f"* {Fore.LIGHTMAGENTA_EX}(ITEM): {Fore.RESET}{self.name}")
+        print(f"* {Fore.LIGHTMAGENTA_EX}(ITEM): {Fore.RESET}{self}")
 
 
 @dataclass
@@ -39,7 +39,7 @@ class Action(Item):
     is_callable: bool = True
 
     def pretty_print(self):
-        print(f"* {Fore.BLUE}(ACTION): {Fore.RESET}{self.name}")
+        print(f"* {Fore.BLUE}(ACTION): {Fore.RESET}{self}")
 
 
 class Tool(Item):
@@ -48,7 +48,7 @@ class Tool(Item):
     is_callable: bool = True
 
     def pretty_print(self):
-        print(f"* {Fore.LIGHTGREEN_EX}(TOOL): {Fore.RESET}{self.name}")
+        print(f"* {Fore.LIGHTGREEN_EX}(TOOL): {Fore.RESET}{self}")
 
 
 class ItemRegistry:
@@ -141,7 +141,7 @@ class ItemRegistry:
             reg.pretty_print()
 
     @classmethod
-    def register_function(
+    def register(
         cls,
         type: Literal["action", "tool"] = "action",
         package: Optional[str] = None,
@@ -166,48 +166,55 @@ class ItemRegistry:
                     name=name,
                     content=func,
                     description=func.__doc__,
+                    is_callable=True,
                 )
             if type == "tool":
                 item = Tool(
                     name=name,
                     content=func,
+                    is_callable=True,
                 )
 
             if package is not None:
                 cls._packages[package].append(item)
             else:
                 cls._global_items[name] = item
+            cls._update_v1_compatibility()
             return func
 
         return wrapper
 
+    # Compatibility attributes for ItemRegistryV1
+    @property
+    def _functions(self):
+        raise SystemError(
+            "ItemRegistryV2 does not implement a hash to function method."
+        )
 
-if __name__ == "__main__":
+    @property
+    def _items(self):
+        raise SystemError(
+            "ItemRegistryV2 does not implement a hash to function method."
+        )
 
-    @ItemRegistry.register_function(type="action", package="mouse")
-    def test_1():
-        """Im a test."""
+    @classmethod
+    def _update_v1_compatibility(cls):
 
-    @ItemRegistry.register_function(type="action", package="mouse")
-    def test_2():
-        """Im a test2."""
+        cls._utils = {
+            name: tool.content
+            for name, tool in ItemRegistry._global_items.items()
+            if isinstance(tool, Tool)
+        }
+        cls._names = {
+            name: action.content
+            for name, action in ItemRegistry._global_items.items()
+            if isinstance(action, Action)
+        }
 
-    @ItemRegistry.register_function(type="action")
-    def test_3():
-        """Im a test3."""
+    @classmethod
+    def register_util(cls, func):
+        return ItemRegistry.register(type="tool")(func)
 
-    @ItemRegistry.register_function(type="tool")
-    def test_4():
-        """Im a tool."""
-
-    # test1
-    registry = ItemRegistry()
-    registry2 = ItemRegistry()
-    assert id(registry) == id(registry2)
-
-    super_registry = ItemRegistry(name="super-registry")
-    assert id(super_registry) != id(registry2)
-
-    # registry.pretty_print()
-    registry.load_all()
-    ItemRegistry.summary(full=True)
+    @classmethod
+    def register_function(cls, func):
+        return ItemRegistry.register(type="action")(func)

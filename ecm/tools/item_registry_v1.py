@@ -27,6 +27,7 @@ import json
 import threading
 import types
 import uuid
+import warnings
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -36,6 +37,13 @@ from ecm.constants import ITEM_ENCODED_PREFIX
 from ecm.remote.server import EcmServer
 from ecm.shared import _MOCKS_ENABLED
 from ecm.shared import get_logger
+
+warnings.warn(
+    "ItemRegistryV1 will is deprecated and will be discontinued in future versions. "
+    "Use ecm.tools.item_registry_v2 instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 
 class ItemRegistry:
