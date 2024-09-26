@@ -1,12 +1,16 @@
 import atexit
+import functools
 import json
 import os
 import time
+from copy import deepcopy
 
 import pika
 
 from ecm.shared import get_logger
 from ecm.shared import load_env
+from ecm.tools.item_registry_v2 import ItemRegistry as ItemRegistryV2
+
 load_env()
 
 
@@ -86,3 +90,29 @@ class EcmServer:
             raise SystemError(response["exception"])
 
         return response["result"]
+
+    @classmethod
+    def wrap_item_registry(cls, registry: ItemRegistryV2 = ItemRegistryV2()):
+
+        cls._logger.warning(
+            f"All functions within `{registry.name}` registry will be executed on the clients "
+            "connected to the ECM Server."
+        )
+
+        new_items = []
+        for item in list(registry.actions.values()) + list(registry.tools.values()):
+            remote_function = functools.wraps(item.content)(
+                lambda *args, name=item.name, **kwargs: EcmServer.send_task(
+                    name, *args, **kwargs
+                )
+            )
+            cp = deepcopy(item)
+            cp.content = remote_function
+            cp.labels.append("Remote")
+            new_items.append(cp)
+
+        registry.actions = {}
+        registry.tools = {}
+
+        for item in new_items:
+            registry._load_to_correspondent(item, silent=True)

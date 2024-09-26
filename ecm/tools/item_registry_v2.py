@@ -132,7 +132,8 @@ class ItemRegistry:
     def invalidate(self, actions: bool = True, tools: bool = True):
         """Changes all registered functions into fake ones. Used for safe playing of actions."""
         self._logger.warning(
-            "Multiple functions have been invalidated. Fake functions will be run instead (Safe Use)"
+            f"Multiple functions at registry `{self.name}` have been invalidated. "
+            "Fake functions will be run instead (Safe Use)"
         )
         items_to_invalidate: list[Item] = []
         if actions:
