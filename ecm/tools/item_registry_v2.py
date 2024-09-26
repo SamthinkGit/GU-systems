@@ -1,4 +1,6 @@
+import functools
 from collections import defaultdict
+from copy import deepcopy
 from dataclasses import dataclass
 from dataclasses import field
 from typing import Any
@@ -57,6 +59,7 @@ class ItemRegistry:
     _instances: dict[str, "ItemRegistry"] = {}
     _packages: dict[str, list[Item]] = defaultdict(list)
     _global_items: dict[str, Item] = {}
+    _instance_initialization: bool = True
 
     def __new__(cls, name: str = "default"):
 
@@ -72,10 +75,12 @@ class ItemRegistry:
 
     def __init__(self, name: str = "default"):
 
-        self.name: str = name
-        self.actions: dict[str, Action] = {}
-        self.tools: dict[str, Tool] = {}
-        self.items: dict[str, Item] = {}
+        if self._instance_initialization:
+            self.name: str = name
+            self.actions: dict[str, Action] = {}
+            self.tools: dict[str, Tool] = {}
+            self.items: dict[str, Item] = {}
+            self._instance_initialization = False
 
     def pretty_print(self) -> None:
         reg_color = Fore.YELLOW if self.name == "default" else ""
@@ -88,19 +93,25 @@ class ItemRegistry:
         ):
             item.pretty_print()
 
-    def _load_to_correspondent(self, obj: Action | Tool | Item) -> None:
+    def _load_to_correspondent(
+        self, obj: Action | Tool | Item, silent: bool = False
+    ) -> None:
         if not issubclass(obj.__class__, Item):
             raise ValueError("Invalid object class passed to load.")
 
         if isinstance(obj, Action):
             self.actions[obj.name] = obj
-            self._logger.debug(f"Action {obj.name} registered.")
+            if not silent:
+                self._logger.debug(f"Action {obj.name} registered.")
         elif isinstance(obj, Tool):
             self.tools[obj.name] = obj
-            self._logger.debug(f"Tool {obj.name} registered.")
+            if not silent:
+                self._logger.debug(f"Tool {obj.name} registered.")
         else:
             self._logger.debug(f"Item {obj.name} registered.")
-            self.items[obj.name] = obj
+            if not silent:
+                self.items[obj.name] = obj
+        obj.active = True
 
     def load_package(self, package_name: str) -> None:
         if package_name not in ItemRegistry._packages.keys():
@@ -117,6 +128,35 @@ class ItemRegistry:
             self.load_package(pkg_name)
         for item in ItemRegistry._global_items.values():
             self._load_to_correspondent(item)
+
+    def invalidate(self, actions: bool = True, tools: bool = True):
+        """Changes all registered functions into fake ones. Used for safe playing of actions."""
+        self._logger.warning(
+            "Multiple functions have been invalidated. Fake functions will be run instead (Safe Use)"
+        )
+        items_to_invalidate: list[Item] = []
+        if actions:
+            items_to_invalidate.extend(list(self.actions.values()))
+        if tools:
+            items_to_invalidate.extend(list(self.tools.values()))
+
+        new_items = []
+        for item in items_to_invalidate:
+            fake_func = functools.wraps(item.content)(
+                lambda *args, name=item.name, **kwargs: print(
+                    f"{name}(args: {args}, kwargs: {kwargs})"
+                )
+            )
+            cp = deepcopy(item)
+            cp.content = fake_func
+            cp.labels.append("Invalidated")
+            new_items.append(cp)
+
+        self.actions = {}
+        self.tools = {}
+
+        for item in new_items:
+            self._load_to_correspondent(item, silent=True)
 
     @classmethod
     def summary(cls, full: bool = False) -> None:
@@ -139,6 +179,12 @@ class ItemRegistry:
 
         for reg in cls._instances.values():
             reg.pretty_print()
+
+    @classmethod
+    def flush(cls):
+        cls._instances = {}
+        cls._packages = defaultdict(list)
+        cls._global_items = {}
 
     @classmethod
     def register(
@@ -199,6 +245,7 @@ class ItemRegistry:
 
     @classmethod
     def _update_v1_compatibility(cls):
+        # TODO: Speed up this function
 
         cls._utils = {
             name: tool.content
@@ -218,3 +265,6 @@ class ItemRegistry:
     @classmethod
     def register_function(cls, func):
         return ItemRegistry.register(type="action")(func)
+
+
+ItemRegistry()

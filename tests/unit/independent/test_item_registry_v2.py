@@ -1,6 +1,18 @@
 from ecm.tools.item_registry_v2 import ItemRegistry
 
 
+def test_flush():
+    @ItemRegistry.register(type="action", package="mouse")
+    def func_1():
+        """Im a test."""
+
+    ItemRegistry.flush()
+    registry = ItemRegistry()
+    registry.load_all()
+
+    assert len(registry.actions.values()) == 0
+
+
 def test_different_workspaces():
     @ItemRegistry.register(type="action", package="mouse")
     def func_1():
@@ -24,3 +36,48 @@ def test_different_workspaces():
 
     super_registry = ItemRegistry(name="super-registry")
     assert id(super_registry) != id(registry2)
+    ItemRegistry.flush()
+
+
+def test_access():
+    @ItemRegistry.register()
+    def action_1():
+        """Im a test."""
+        ...
+
+    ItemRegistry().load_all()
+
+    assert "action_1" in list(ItemRegistry().actions.keys())
+    assert len(ItemRegistry().actions.keys()) == 1
+
+    @ItemRegistry.register(type="tool")
+    def tool_1():
+        """Im a test."""
+        ...
+
+    ItemRegistry().load_all()
+    assert "tool_1" in ItemRegistry().tools.keys()
+    assert len(ItemRegistry().tools.keys()) == 1
+    ItemRegistry.flush()
+
+
+def invalidation():
+
+    target = []
+
+    @ItemRegistry.register(type="action")
+    def func_1():
+        """Im a test."""
+        target.append("action failed")
+
+    @ItemRegistry.register(type="tool")
+    def func_2():
+        """Im a test."""
+        target.append("tool failed")
+
+    ItemRegistry().invalidate()
+    default_reg = ItemRegistry()
+    default_reg.actions["func_1"].content()
+    default_reg.tools["func_2"].content()
+
+    assert len(target) == 0
