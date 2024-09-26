@@ -1,3 +1,20 @@
+"""
+Item Registry Module
+==============================
+
+This module is designed to manage a registry of items, actions, and tools
+within a structured environment. It provides the functionality to create,
+load, and manage various components that can be called or executed.
+The `ItemRegistry` class serves as the core of this module, allowing users
+to register and utilize items effectively while keeping track of their state
+and properties.
+
+The module leverages the `dataclass` decorator to define item types,
+such as `Item`, `Action`, and `Tool`, providing a clear and concise way
+to manage the attributes associated with each type. Additionally, it
+provides mechanisms for pretty-printing item details and handling
+package loading.
+"""
 import functools
 from collections import defaultdict
 from copy import deepcopy
@@ -114,6 +131,14 @@ class ItemRegistry:
         obj.active = True
 
     def load_package(self, package_name: str) -> None:
+        """
+        Loads all items from a specified package into the registry. It ensures
+        that the package exists in the registry and calls the appropriate
+        loading methods for each item.
+
+        :param package_name: The name of the package to load items from.
+        """
+
         if package_name not in ItemRegistry._packages.keys():
             raise ValueError(f"{package_name} can't be found in ItemRegistry packages.")
 
@@ -121,16 +146,37 @@ class ItemRegistry:
             self._load_to_correspondent(item)
 
     def load(self, item_name: str):
+        """
+        Loads a specific item by its name from the global items into the
+        registry. This allows for easy access and management of registered
+        items.
+
+        :param item_name: The name of the item to load.
+        """
         self._load_to_correspondent(ItemRegistry._global_items[item_name])
 
     def load_all(self):
+        """
+        Loads all registered packages and global items into the registry
+        It iterates through the registered packages, loading their items
+        sequentially, ensuring that all items are available for use.
+        """
+
         for pkg_name in ItemRegistry._packages.keys():
             self.load_package(pkg_name)
         for item in ItemRegistry._global_items.values():
             self._load_to_correspondent(item)
 
     def invalidate(self, actions: bool = True, tools: bool = True):
-        """Changes all registered functions into fake ones. Used for safe playing of actions."""
+        """
+        Converts all registered functions into fake ones for safe testing
+        purposes. This method allows users to simulate actions and tools
+        without executing their real implementations.
+
+        :param actions: If True, all actions will be invalidated.
+        :param tools: If True, all tools will be invalidated.
+        :return: None
+        """
         self._logger.warning(
             f"Multiple functions at registry `{self.name}` have been invalidated. "
             "Fake functions will be run instead (Safe Use)"
@@ -161,6 +207,14 @@ class ItemRegistry:
 
     @classmethod
     def summary(cls, full: bool = False) -> None:
+        """
+        Prints a summary of the current state of the item registry, including
+        detected packages, unlocalized items, and instances. If the full
+        flag is set to True, it provides a more detailed overview.
+
+        :param full: A flag to specify whether to display full details.
+        :return: None
+        """
         print(pretty_head("Item Registry"))
 
         if full:
@@ -194,6 +248,17 @@ class ItemRegistry:
         package: Optional[str] = None,
         mock: bool = False,
     ):
+        """
+        This method registers a function as either an action or a tool within
+        the item registry. It wraps the function and stores it along with its
+        metadata. If mocks are enabled, it will handle them accordingly.
+
+        :param type: Specifies the type of registration ("action" or "tool").
+        :param package: The optional package name to associate with the item.
+        :param mock: A flag to determine if the function should be treated
+                    as a mock.
+        :return: The original function (idempotent).
+        """
 
         valid_types = ["action", "tool"]
         if type not in valid_types:
@@ -246,6 +311,12 @@ class ItemRegistry:
 
     @classmethod
     def _update_v1_compatibility(cls):
+        """
+        Updates the compatibility layer for ItemRegistryV1 by creating
+        mappings of tools and actions from the global items. This method
+        ensures that the registry maintains backward compatibility.
+        """
+
         # TODO: Speed up this function
 
         cls._utils = {
