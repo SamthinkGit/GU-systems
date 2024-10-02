@@ -17,6 +17,7 @@ package loading.
 """
 import functools
 from collections import defaultdict
+from collections import UserDict
 from copy import deepcopy
 from dataclasses import dataclass
 from dataclasses import field
@@ -83,8 +84,8 @@ class ItemRegistry:
         if len(cls._instances) <= 0:
             cls._instances["default"] = super().__new__(cls)
 
-        if name == "default":
-            return ItemRegistry._instances["default"]
+        if name in ItemRegistry._instances.keys():
+            return ItemRegistry._instances[name]
 
         registry = super().__new__(cls)
         cls._instances[name] = registry
@@ -337,6 +338,30 @@ class ItemRegistry:
     @classmethod
     def register_function(cls, func):
         return ItemRegistry.register(type="action")(func)
+
+
+class Storage(UserDict):
+
+    _instance_initialization: bool = True
+    _instances: dict[str, "Storage"] = {}
+
+    def __new__(cls, name: str = "default"):
+
+        if len(cls._instances) <= 0:
+            cls._instances["default"] = super().__new__(cls)
+
+        if name in Storage._instances.keys():
+            return Storage._instances[name]
+
+        storage = super().__new__(cls)
+        cls._instances[name] = storage
+        return storage
+
+    def __init__(self, name: str = "default"):
+        if self._instance_initialization:
+            super().__init__()
+            self.name: str = name
+            self._instance_initialization = False
 
 
 ItemRegistry()

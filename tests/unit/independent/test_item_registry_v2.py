@@ -1,4 +1,5 @@
 from ecm.tools.item_registry_v2 import ItemRegistry
+from ecm.tools.item_registry_v2 import Storage
 
 
 def test_flush():
@@ -81,3 +82,15 @@ def invalidation():
     default_reg.tools["func_2"].content()
 
     assert len(target) == 0
+
+
+def test_storage():
+    storage = Storage()
+    storage_2 = Storage()
+    storage_diff = Storage("different")
+
+    storage["test"] = "result"
+
+    assert storage is storage_2
+    assert storage["test"] == "result" and storage_2["test"] == "result"
+    assert "test" not in storage_diff.keys()

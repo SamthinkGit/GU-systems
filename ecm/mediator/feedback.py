@@ -26,6 +26,7 @@ class ExecutionStatus(Enum):
     SWITCH = 5
     REQUEST_TO_CONTINUE = 6
     CONTINUE = 7
+    RESULT = 8
 
 
 class Feedback:
@@ -58,8 +59,10 @@ class Feedback:
     @classmethod
     def parse(message: Any, *args, **kwargs) -> "Feedback":
         """
+        [OPTIONAL]
         This function will be called always before using any Feedback function. Use this for
         parsing any object that comes from the callback into your own Feedback implementation.
+        [Note]: This option has been implemented on  ROSA, but not on PyXcel
         Example:
 
         class MyFeedback(Feedback):
