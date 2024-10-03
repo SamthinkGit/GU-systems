@@ -15,6 +15,7 @@ from ecm.mediator.Interpreter import Interpreter
 from ecm.mediator.Interpreter import InterpreterSupports
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
+from execution_layer.pyxcel.core.scheduler import PYXCEL_SUPPORTED_SCHEDULERS
 from execution_layer.pyxcel.core.scheduler import Scheduler
 from execution_layer.pyxcel.core.scheduler import Sequential
 
@@ -42,9 +43,6 @@ class PyxcelInterpreterSupports(InterpreterSupports):
 class PyxcelInterpreter(Interpreter):
 
     _logger = get_logger("Pyxcel")
-    type_dict: dict[str, Scheduler] = {
-        "Sequential": Sequential,
-    }
     callback_dict: dict[str, ExecutionStatus] = {
         "RUNNING": ExecutionStatus.RUNNING,
         "STEP": ExecutionStatus.STEP,
@@ -100,6 +98,8 @@ class PyxcelInterpreter(Interpreter):
         self, task: ParsedTask, callback: Optional[Callable], registry: ItemRegistry
     ):
         # Note: Kwargs for types are not supported yet
+        # Also nested types with returning objects are not supported
+
         if not isinstance(task, ParsedTask):
             raise ValueError(
                 "Structure received is not a valid Task. Maybe the definition does not start with 'def'?"
@@ -140,9 +140,9 @@ class PyxcelInterpreter(Interpreter):
 
     def _get_sched_class(self, type: ParsedType) -> Type[Scheduler]:
         # Here is the list of the supported types
-        if type.name not in PyxcelInterpreterSupports.types:
+        if type.name not in PYXCEL_SUPPORTED_SCHEDULERS:
             raise KeyError(
                 f"Scheduler with type {type.name} is not supported yet with Pyxcel interpreter"
             )
 
-        return self.type_dict[type.name]
+        return PYXCEL_SUPPORTED_SCHEDULERS[type.name]

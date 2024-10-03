@@ -5,13 +5,17 @@ from abc import abstractmethod
 from typing import Any
 from typing import Callable
 from typing import Optional
+from typing import Union
 
 from ecm.exelent.parser import ParsedAction
 from ecm.mediator.feedback import ExecutionStatus
 from ecm.mediator.feedback import Feedback as FeedbackTemplate
 from ecm.shared import get_logger
+from ecm.tools.item_registry_v2 import Action
+from ecm.tools.item_registry_v2 import Item
 from ecm.tools.item_registry_v2 import ItemRegistry
 from ecm.tools.item_registry_v2 import Storage
+from ecm.tools.item_registry_v2 import Tool
 from execution_layer.pyxcel.constants import ENABLE_FEEDBACK_RESPONSE_HISTORY
 from execution_layer.pyxcel.constants import RAISE_FEEDBACK_FAILURES
 
@@ -67,14 +71,14 @@ class Scheduler(ABC):
 
     _lock = threading.Lock()
     name: str
-    actions: list[ParsedAction]
+    actions: list[Union[ParsedAction, "Scheduler"]]
     _feedback: Optional[Feedback] = None
     _thread: Optional[threading.Thread] = None
     _logger: logging.Logger
 
     def __init__(
         self,
-        actions: list[ParsedAction],
+        actions: list[Union[ParsedAction, "Scheduler"]],
         feedback_callback: Optional[Callable] = None,
         registry: ItemRegistry = ItemRegistry(),
     ) -> None:
@@ -96,6 +100,9 @@ class Scheduler(ABC):
     def clean(self):
         if self._thread is not None:
             self._thread.join()
+
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        self.run()
 
 
 class Sequential(Scheduler):
@@ -123,10 +130,20 @@ class Sequential(Scheduler):
                     success = False
                     break
 
-                action_struct = self._registry.actions.get(action.name)
-                if action_struct is None:
+                target_struct: Scheduler | Action | Tool | None = None
+
+                if isinstance(action, Scheduler):
+                    target_struct = action
+
+                if target_struct is None:
+                    target_struct = self._registry.actions.get(action.name)
+
+                if target_struct is None:
+                    target_struct = self._registry.tools.get(action.name)
+
+                if target_struct is None:
                     self._logger.debug(
-                        f"Action `{action.name}` cannot be found on the ItemRegistry, aborting..."
+                        f"Action `{target_struct}` cannot be found on the ItemRegistry, aborting..."
                     )
                     self._feedback.publish(
                         object="Abort (By Invalid Action)",
@@ -135,7 +152,7 @@ class Sequential(Scheduler):
                     success = False
                     break
 
-                if not action_struct.active:
+                if isinstance(target_struct, Item) and not target_struct.active:
                     self._logger.debug(
                         f"Action `{action.name}` has not been loaded (action inactive), aborting..."
                     )
@@ -146,7 +163,13 @@ class Sequential(Scheduler):
                     success = False
                     break
 
-                result = action_struct.content(*action.args, **action.kwargs)
+                result = None
+                if isinstance(target_struct, Item):
+                    result = target_struct.content(*action.args, **action.kwargs)
+
+                if isinstance(target_struct, Scheduler):
+                    result = target_struct.run()
+
                 if result is not None:
                     self._feedback.publish(
                         object=result, _exec_status=ExecutionStatus.RESULT
@@ -172,3 +195,10 @@ class Sequential(Scheduler):
 
     def stop(self):
         self.soft_stop = True
+
+
+# ----- YOU MUST ADD HERE ALL THEY SCHEDULER NAMES --------
+PYXCEL_SUPPORTED_SCHEDULERS: dict[str, "Scheduler"] = {
+    "Sequential": Sequential,
+}
+# ---------------------------------------------------------
