@@ -101,7 +101,6 @@ class PyxcelInterpreter(Interpreter):
         callback: Callable[..., Any] | None | Literal["silent"],
         registry: ItemRegistry = ItemRegistry(),
     ):
-
         """
         Asynchronously executes a given task or a sequence of tasks, allowing
         for feedback during execution through the provided callback. Similar
@@ -122,7 +121,12 @@ class PyxcelInterpreter(Interpreter):
             registry=registry,
         )
         seq.arun()
+        self._current_schedulers.append(seq)
         self._cleaning_schedulers.append(seq)
+
+    def stop(self):
+        for sched in self._current_schedulers:
+            sched.stop()
 
     def kill(self):
         """
