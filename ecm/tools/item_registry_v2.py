@@ -322,6 +322,13 @@ class ItemRegistry:
         cls._functions = cls._names
 
     @classmethod
+    def transfer_execution_to_client(cls):
+        raise SystemError(
+            "This function has been deprecated, use EcmServer.wrap_item_registry() "
+            "instead. It can be imported from ecm.remote.server"
+        )
+
+    @classmethod
     def register_util(cls, func):
         return ItemRegistry.register(type="tool")(func)
 
@@ -346,6 +353,7 @@ class ItemRegistry:
     @classmethod
     def alias(cls, names: list[str]):
         """Decorator to register a function with different names."""
+
         def wrapper(func: Callable):
             new_funcs = [cls._clone_function(func) for _ in names]
             for idx, name in enumerate(names):
@@ -353,6 +361,7 @@ class ItemRegistry:
                 new_funcs[idx].__name__ = name
                 cls.register_function(new_funcs[idx])
             return func
+
         return wrapper
 
 
