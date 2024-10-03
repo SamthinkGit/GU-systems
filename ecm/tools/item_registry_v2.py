@@ -16,6 +16,7 @@ provides mechanisms for pretty-printing item details and handling
 package loading.
 """
 import functools
+import types
 from collections import defaultdict
 from collections import UserDict
 from copy import deepcopy
@@ -298,18 +299,6 @@ class ItemRegistry:
         return wrapper
 
     # Compatibility attributes for ItemRegistryV1
-    @property
-    def _functions(self):
-        raise SystemError(
-            "ItemRegistryV2 does not implement a hash to function method."
-        )
-
-    @property
-    def _items(self):
-        raise SystemError(
-            "ItemRegistryV2 does not implement a hash to function method."
-        )
-
     @classmethod
     def _update_v1_compatibility(cls):
         """
@@ -330,6 +319,7 @@ class ItemRegistry:
             for name, action in ItemRegistry._global_items.items()
             if isinstance(action, Action)
         }
+        cls._functions = cls._names
 
     @classmethod
     def register_util(cls, func):
@@ -338,6 +328,32 @@ class ItemRegistry:
     @classmethod
     def register_function(cls, func):
         return ItemRegistry.register(type="action")(func)
+
+    @classmethod
+    def _clone_function(cls, func: Callable):
+        new_func = types.FunctionType(
+            func.__code__,
+            func.__globals__,
+            name=func.__name__,
+            argdefs=func.__defaults__,
+            closure=func.__closure__,
+        )
+        new_func.__dict__.update(func.__dict__)
+        new_func.__annotations__ = func.__annotations__
+        new_func.__qualname__ = func.__qualname__
+        return new_func
+
+    @classmethod
+    def alias(cls, names: list[str]):
+        """Decorator to register a function with different names."""
+        def wrapper(func: Callable):
+            new_funcs = [cls._clone_function(func) for _ in names]
+            for idx, name in enumerate(names):
+
+                new_funcs[idx].__name__ = name
+                cls.register_function(new_funcs[idx])
+            return func
+        return wrapper
 
 
 class Storage(UserDict):

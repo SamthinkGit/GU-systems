@@ -143,7 +143,8 @@ class Sequential(Scheduler):
 
                 if target_struct is None:
                     self._logger.debug(
-                        f"Action `{target_struct}` cannot be found on the ItemRegistry, aborting..."
+                        f"Action `{target_struct}` cannot be found on the ItemRegistry. (Maybe "
+                        "ItemRegistry has not been loaded?), aborting..."
                     )
                     self._feedback.publish(
                         object="Abort (By Invalid Action)",
@@ -166,6 +167,9 @@ class Sequential(Scheduler):
                 result = None
                 if isinstance(target_struct, Item):
                     result = target_struct.content(*action.args, **action.kwargs)
+                    self._logger.debug(
+                        f"Action `{action.name}`({action.args}{action.kwargs}) completed."
+                    )
 
                 if isinstance(target_struct, Scheduler):
                     result = target_struct.run()
@@ -178,7 +182,6 @@ class Sequential(Scheduler):
                 self._feedback.publish(
                     object=action.name, _exec_status=ExecutionStatus.STEP
                 )
-                self._logger.debug(f"Action `{action.name}` completed.")
 
             except Exception:
                 self._logger.error(
