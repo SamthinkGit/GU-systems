@@ -1,3 +1,18 @@
+"""
+Scheduler
+===============================
+
+This module implements a scheduler system for managing tasks and actions within
+the Pyxcel execution framework. It provides a Feedback mechanism that allows
+task execution status updates and error handling through callbacks. The core
+classes include `Feedback`, which handles the communication of execution status,
+and `Scheduler`, which serves as an abstract base class for specific scheduling
+strategies like `Sequential`.
+
+The module leverages threading to enable concurrent execution of tasks while
+maintaining a lock mechanism to ensure thread safety. It also includes the ability
+to respond to feedback events and manage a history of responses.
+"""
 import logging
 import threading
 from abc import ABC
@@ -36,6 +51,18 @@ class Feedback(FeedbackTemplate):
         _exec_status: ExecutionStatus = ExecutionStatus.RUNNING,
         **kwargs,
     ):
+        """
+        Publishes feedback for the task, invoking the feedback callback if set.
+
+        This method captures the object and execution status, then triggers
+        the feedback callback function to notify listeners. If an error occurs
+        during this process, it logs the error and may raise an exception
+        based on the configuration.
+
+        :param object: The object representing the feedback to publish.
+        :param _exec_status: The execution status of the task.
+        """
+
         if self._feedback_callback is None:
             return
         try:
@@ -51,6 +78,17 @@ class Feedback(FeedbackTemplate):
                 raise e
 
     def response(self, object: Any, _exec_status: ExecutionStatus):
+        """
+        Records the latest response for the feedback and updates the storage.
+
+        This method creates a new Feedback instance and stores it in the
+        ResponseStorage. If feedback response history tracking is enabled,
+        it appends the feedback as a list of feedback messages.
+
+        :param object: The object representing the feedback response.
+        :param _exec_status: The execution status to associate with the feedback.
+        """
+
         feedback = Feedback(task_id=self.task_id)
         feedback.object = object
         feedback._exec_status = _exec_status
@@ -88,16 +126,49 @@ class Scheduler(ABC):
         self._feedback._feedback_callback = feedback_callback
 
     @abstractmethod
-    def run(self): ...
+    def run(self):
+        """
+        Executes the scheduled actions in the defined order.
+
+        This method must be implemented by subclasses, defining the specific
+        behavior for how actions are processed during execution. It is
+        intended to be the main loop for running tasks.
+        """
+        ...
 
     @abstractmethod
-    def stop(self): ...
+    def stop(self):
+        """
+        Halts the execution of the scheduled actions.
+
+        This method must be implemented by subclasses to provide a defined
+        mechanism for stopping the execution process, ensuring that any
+        necessary cleanup is performed.
+        """
+        ...
 
     def arun(self):
+        """
+        Starts the execution of the run method in a separate thread.
+
+        This method initializes a new thread to run the scheduled tasks,
+        allowing the main program to continue executing without blocking.
+
+        :warning: The user must use Scheduler.clean() after arunning a
+        scheduler
+        """
+
         self._thread = threading.Thread(target=self.run)
         self._thread.start()
 
     def clean(self):
+        """
+        Waits for the running thread to complete.
+
+        This method ensures that the thread executing the tasks has finished
+        before proceeding, allowing for proper resource management and
+        synchronization.
+        """
         if self._thread is not None:
             self._thread.join()
 
@@ -112,6 +183,15 @@ class Sequential(Scheduler):
     soft_stop: bool = False
 
     def run(self) -> None:
+        """
+        Runs the scheduled actions sequentially and manages feedback.
+
+        This method iterates over each action, executing them in order,
+        handling any exceptions, and providing feedback on the execution
+        status. It also implements soft-stop functionality to halt execution
+        gracefully when requested.
+        """
+
         self._logger.debug(
             f"Starting Sequential Task with {len(self.actions)} actions."
         )

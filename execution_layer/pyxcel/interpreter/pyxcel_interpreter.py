@@ -1,3 +1,17 @@
+"""
+Pyxcel Interpreter Module
+==========================
+
+This module defines a Pyxcel interpreter that integrates with various schedulers
+for executing parsed Exelent language tasks. It supports both synchronous and
+asynchronous calls while providing detailed logging and feedback through
+callbacks.
+
+The Pyxcel interpreter can handle multiple types of scheduled actions
+and provides the ability to clean up resources post-execution. It also
+includes features for gracefully shutting down ongoing tasks and managing
+feedback during execution.
+"""
 from dataclasses import dataclass
 from typing import Any
 from typing import Callable
@@ -62,6 +76,16 @@ class PyxcelInterpreter(Interpreter):
         callback: Callable[..., Any] | None | Literal["silent"] = "silent",
         registry: ItemRegistry = ItemRegistry(),
     ) -> None:
+        """
+        Executes a given task or a sequence of tasks using the specified
+        callback for feedback. If the callback is set to "silent", no feedback
+        will be provided during execution.
+
+        :param task: The task or sequence of tasks to execute.
+        :param callback: The callback function to handle execution feedback.
+        :param registry: An optional item registry to manage task components.
+        :return: None, but initiates the execution of the task(s).
+        """
 
         if callback == "silent":
             callback = None
@@ -77,6 +101,17 @@ class PyxcelInterpreter(Interpreter):
         callback: Callable[..., Any] | None | Literal["silent"],
         registry: ItemRegistry = ItemRegistry(),
     ):
+
+        """
+        Asynchronously executes a given task or a sequence of tasks, allowing
+        for feedback during execution through the provided callback. Similar
+        to the run method, but designed for asynchronous operation.
+
+        :param task: The task or sequence of tasks to execute asynchronously.
+        :param callback: The callback function to handle execution feedback.
+        :param registry: An optional item registry to manage task components.
+        :return: None, but initiates the asynchronous execution of the task(s).
+        """
         if callback == "silent":
             callback = None
 
@@ -90,6 +125,13 @@ class PyxcelInterpreter(Interpreter):
         self._cleaning_schedulers.append(seq)
 
     def kill(self):
+        """
+        Cleans up all currently running schedulers and resets the interpreter
+        state. This method ensures that any remaining resources are released
+        and that the interpreter is ready for a new task execution.
+
+        This method does not take any parameters and does not return a value.
+        """
         for sched in self._cleaning_schedulers:
             sched.clean()
         self.__init__()
@@ -97,6 +139,16 @@ class PyxcelInterpreter(Interpreter):
     def _load_schedulers(
         self, task: ParsedTask, callback: Optional[Callable], registry: ItemRegistry
     ):
+        """
+        Loads the schedulers based on the provided task, extracting the
+        necessary components and preparing them for execution. It validates
+        the task structure to ensure it is appropriate for processing.
+
+        :param task: The parsed task to load schedulers from.
+        :param callback: An optional callback for feedback during execution.
+        :param registry: An item registry to manage task components.
+        :return: None, but updates the internal state with loaded schedulers.
+        """
         # Note: Kwargs for types are not supported yet
         # Also nested types with returning objects are not supported
 
@@ -119,6 +171,16 @@ class PyxcelInterpreter(Interpreter):
         callback: Optional[Callable],
         registry: ItemRegistry,
     ) -> list[Scheduler]:
+        """
+        Retrieves a scheduler instance based on the parsed structure of actions
+        and configurations. It recursively processes nested structures to build
+        the complete set of actions for execution.
+
+        :param parsed_with: The parsed structure containing actions to process.
+        :param callback: An optional callback for feedback during execution.
+        :param registry: An item registry to manage task components.
+        :return: A list of Scheduler instances ready for execution.
+        """
         actions = []
         for value in parsed_with.contains:
             if isinstance(value, ParsedWith):
@@ -139,7 +201,15 @@ class PyxcelInterpreter(Interpreter):
         return instance
 
     def _get_sched_class(self, type: ParsedType) -> Type[Scheduler]:
-        # Here is the list of the supported types
+        """
+        Determines the appropriate scheduler class based on the provided type.
+        It checks against the supported scheduler list and raises an error if
+        the type is not recognized.
+
+        :param type: The parsed type indicating the desired scheduler class.
+        :return: The scheduler class corresponding to the specified type.
+        :raises KeyError: If the type is not supported by the Pyxcel interpreter.
+        """
         if type.name not in PYXCEL_SUPPORTED_SCHEDULERS:
             raise KeyError(
                 f"Scheduler with type {type.name} is not supported yet with Pyxcel interpreter"
