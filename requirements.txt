@@ -5,8 +5,13 @@ colorlog
 colorama
 langchain
 langchain-openai
+langgraph
 agent-protocol
 agent-protocol-client
 requests
 pyautogui
-pika # Requires RabbitMQ server
+pika                    # Requires RabbitMQ server
+# python-uinput         # Only for linux?
+matplotlib
+dotenv
+grandalf

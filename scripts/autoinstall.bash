@@ -80,6 +80,7 @@ dir=$(dirname "${BASH_SOURCE[0]}")
 repository_dir=$(realpath $dir/..)
 
 pip install -r "$repository_dir/requirements.txt" --disable-pip-version-check
+pip install python-uinput
 
 log_step "Checking API KEYS..."
 if [ "$OPENAI_API_KEY" =  "" ]; then
