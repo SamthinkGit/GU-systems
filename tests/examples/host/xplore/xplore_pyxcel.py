@@ -17,6 +17,7 @@ from execution_layer.pyxcel.interpreter.pyxcel_interpreter import PyxcelInterpre
 if __name__ == "__main__":
 
     ItemRegistry().load_all()
+
     pyxcel = PyxcelInterpreter()
     xplore = Xplore(interpreter=pyxcel)
 

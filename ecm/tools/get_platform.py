@@ -1,3 +1,5 @@
+from typing import Callable, Literal, Any
+import platform
 import subprocess
 
 
@@ -8,8 +10,12 @@ def get_os_release_info():
 
 
 def check_distro():
-    os_info = get_os_release_info()
 
+    os_info = platform.system()
+    if os_info == "Windows":
+        return "Windows"
+
+    os_info = get_os_release_info()
     if "raspberry" in os_info.lower():
         return "Raspbian"
 
@@ -17,6 +23,22 @@ def check_distro():
         return "Ubuntu"
     else:
         return "Unknown"
+
+
+OsWrappedFunction = Callable[
+    [Literal["Windows", "Raspbian", "Ubuntu", "Uknown"], Any], Any
+]
+
+
+def osmethod(func: Callable) -> OsWrappedFunction:
+
+    def wrapper(*args, **kwargs):
+        distro = check_distro()
+        result = func(distro, *args, **kwargs)
+        return result
+
+    wrapper: OsWrappedFunction
+    return wrapper
 
 
 if __name__ == "__main__":

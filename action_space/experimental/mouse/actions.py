@@ -1,14 +1,9 @@
 import time
 
-import uinput
-
 from action_space.experimental.mouse.agent import MouseAgent
-from action_space.experimental.mouse.calibrated_move import CALIBRATED_MOUSE_DEVICE
-from action_space.experimental.mouse.calibrated_move import move
+from action_space.experimental.mouse.os_wrapper import move, click
 from ecm.shared import load_env  # noqa
 from ecm.tools.registry import ItemRegistry
-
-MOUSE_DEVICE = CALIBRATED_MOUSE_DEVICE
 
 
 @ItemRegistry.register_util
@@ -18,8 +13,7 @@ def move_mouse_to(x, y):
 
 @ItemRegistry.register_util
 def send_click_event():
-    MOUSE_DEVICE.emit(uinput.BTN_LEFT, 1)
-    MOUSE_DEVICE.emit(uinput.BTN_LEFT, 0)
+    click()
 
 
 @ItemRegistry.register_function
@@ -28,6 +22,7 @@ def click(element: str):
     MouseAgent.find(element)
     ItemRegistry._utils["send_click_event"]()
     time.sleep(2)
+
 
 # @ItemRegistry.register_function
 # def focus(window: str):
