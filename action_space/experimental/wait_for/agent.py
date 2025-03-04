@@ -10,7 +10,7 @@ from langchain_openai import ChatOpenAI
 from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
 from cognition_layer.constants import DEFAULT_IMAGE_MODEL
-from ecm.shared import get_logger
+from ecm.shared import get_logger, load_env
 from ecm.tools.registry import ItemRegistry
 
 
