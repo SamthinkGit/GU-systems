@@ -109,6 +109,7 @@ fi
 if ! [ "$sourcer_path" = "" ]; then
     if ! grep -q -E "source ${repository_dir}${SOURCE_CONFIG_PATH}" "$sourcer_path"; then
         echo "source ${repository_dir}${SOURCE_CONFIG_PATH}" >> $sourcer_path
+        echo "Configs saved, restart the console for applying changes."
     fi
 else
     log_step "[WARNING] $HOME/.bashrc or $HOME/.zshrc are not valid paths for auto-sourcing config. Skip"
