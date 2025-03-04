@@ -9,10 +9,8 @@ function step {
   echo -e "\033[1;33m- $1...\033[0m"
 }
 
+
 # ----- MAIN -----
-dir=$(dirname "${BASH_SOURCE[0]}")
-SOURCE=$(realpath $dir/..)
-title "GU-Systems"
 
 workspaces_dir=$SOURCE/execution_layer/rosa/ros2/workspaces
 

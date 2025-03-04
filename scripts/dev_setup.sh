@@ -1,7 +1,15 @@
 #!/bin/bash
 
+ENABLE_ROS2_SOURCING="false"
+
+# Bash Version
 dir=$(dirname "${BASH_SOURCE[0]}")
 SOURCE=$(realpath $dir/..)
+
+# Sh (not safe) version
+# dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+# SOURCE=$(realpath "$dir/..")
+
 export PYTHONPATH=$PYTHONPATH:$SOURCE
 
 # Colcon Build Ignores
@@ -10,13 +18,14 @@ export PYTHONWARNINGS
 export GU_SOURCE_DIR=$SOURCE
 
 # ROS2 sources
-workspaces_dir=$SOURCE/execution_layer/rosa/ros2/workspaces
-
-for dir in "$workspaces_dir"/*; do
-    if [ -d "$dir" ]; then
-        source "$dir/install/setup.sh"
-    fi
-done
+if [ $ENABLE_ROS2_SOURCING = "true" ]; then
+    workspaces_dir=$SOURCE/execution_layer/rosa/ros2/workspaces
+    for dir in "$workspaces_dir"/*; do
+        if [ -d "$dir" ]; then
+            source "$dir/install/setup.sh"
+        fi
+    done
+fi
 
 # -------------------------- Some dev-aliases ---------------------------------
 
