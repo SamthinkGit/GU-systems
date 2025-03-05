@@ -1,4 +1,9 @@
 import time
+from action_space.tools.image import ImageMessage
+from action_space.tools.image import load_image
+from cognition_layer.constants import DEFAULT_IMAGE_MODEL
+from ecm.shared import get_logger
+from ecm.tools.registry import ItemRegistry
 from typing import Callable
 
 from langchain.pydantic_v1 import BaseModel
@@ -6,12 +11,6 @@ from langchain.pydantic_v1 import Field
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-
-from action_space.tools.image import ImageMessage
-from action_space.tools.image import load_image
-from cognition_layer.constants import DEFAULT_IMAGE_MODEL
-from ecm.shared import get_logger, load_env
-from ecm.tools.registry import ItemRegistry
 
 
 class WaitForOutput(BaseModel):
@@ -77,6 +76,7 @@ class WaitForAgent:
                 self._logger.debug(
                     f"Condition `{condition}` has been reached. Releasing Sleep..."
                 )
+
 
 import action_space.experimental.screenshot.actions  # noqa
 

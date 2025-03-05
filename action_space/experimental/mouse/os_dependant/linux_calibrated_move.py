@@ -72,9 +72,11 @@ def move(x, y):
         distance = abs(x - pos_x) + abs(y - pos_y)
         time.sleep(0.0005)
 
+
 def click():
     CALIBRATED_MOUSE_DEVICE.emit(uinput.BTN_LEFT, 1)
     CALIBRATED_MOUSE_DEVICE.emit(uinput.BTN_LEFT, 0)
+
 
 if __name__ == "__main__":
     move(int(sys.argv[1]), int(sys.argv[2]))

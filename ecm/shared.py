@@ -1,11 +1,9 @@
-import os
 import sys
+from ecm.constants import LOG_LEVEL
 from pathlib import Path
 
 import colorlog
 import dotenv
-
-from ecm.constants import LOG_LEVEL
 
 
 class _MOCKS_ENABLED:
