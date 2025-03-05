@@ -1,7 +1,7 @@
 # <div align="center">GU-Systems</div>
 
 <div align="center">
-  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/62b27a54-c44e-4fca-92ae-12294dd6d1ee" alt="Software Architecture Diagram" width=700>
+  <img src="/media/images/poc.png" alt="GU Proof of Concept" width=700>
 
 |       |                                                                                                                                                                        |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -23,43 +23,60 @@ GU Systems is an approximation to a ECM (Execution Cognition Machine), it deploy
 
 </div>
 <div align="center">
-  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/f329e545-a2c2-4acc-aedf-d7198e82e16d" alt="GU Systems - Terminal example" width=700>
+  <img src="/media/images/terminal.gif" alt="GU Systems - Terminal example" width=700>
 </div>
 
 ## 🛠️ Installation
-This project requires both **ROS2** and **colcon build** for compilation. We are working on removing this dependency on the future. For now ensure these dependencies are installed before running [build.sh](/scripts/build.sh). For installation guides, refer to:
+# Installation Guide
 
-- ROS2: [ROS2 Installation Guide](https://docs.ros.org/en/humble/Installation.html)
-- Colcon: [Colcon Tutorial](https://colcon.readthedocs.io/en/released/user/installation.html)
+## Prerequisites
 
-*Note:* Colcon command generally you can use `colcon -h` for checking if it is already installed
+- It is **recommended** to use a Conda environment for this project. If you choose to do so, install Conda beforehand.
+- An OpenAI API key is required. Obtain one from [OpenAI](https://platform.openai.com/signup/) and store it in the `OPENAI_API_KEY` environment variable or enter it when prompted during installation.
 
-**Build Repository**
+## Installation
+First, clone the repository to your machine.
+
 ```bash
-git clone https://github.com/SamthinkGit/GU-systems.git
-cd GU-Systems
+git clone <repository_url>
+cd <repository_folder>
+```
+
+### Linux
+
+If you are using Linux, run the auto-installation script:
+
+```bash
+scripts/autoinstall.bash
+```
+
+### Windows
+
+If you are using Windows, run the PowerShell auto-installation script:
+
+```powershell
+scripts/autoinstall.ps1
+```
+
+### Linux (without Bash Support)
+
+If your Linux distribution does not support Bash, there is no auto-installer available. You must manually install the dependencies:
+
+```bash
 pip install -r requirements.txt
-./scripts/build.sh
 ```
 
-**Set up the development environment**
-```bash
-# You can add this line to your ~/.bashrc so you avoid using it each time
-source scripts/dev_setup.sh
-```
-**Set up OPENAI**
-```bash
-# You can get your OPENAI_API_KEY here: https://www.howtogeek.com/885918/how-to-get-an-openai-api-key/
-# TIP: You can also add this line to your ~/.bashrc
-export OPENAI_API_KEY='sk-...'
-```
+Additionally, configure the necessary tools manually according to the project requirements.
+
+Now you are ready to use the repository!
+
 ## 📖 Usage
 Using the ECM is as simple as running a python script!
 You can use RePlan (our best agent so far) to start sending queries to control your computer!
 
 ```bash
 # For safety reasons this does not affect your computer.
-# You can use ecm/core/run_in_host.py if you are in a safe environment.
+# You can use --host if you are in a safe environment.
 
 python ecm/core/main.py --agent RePlan
 ```
@@ -86,7 +103,7 @@ The ECM architecture is visually represented in the following diagram, highlight
 
 </div>
 <div align="center">
-  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/e3e96550-110e-4bc5-8478-81d85638de31" alt="ECM Layers Diagram" width=450>
+  <img src="/media/images/layers.png" alt="ECM Layers Diagram" width=450>
 </div>
 
 ## 📘 Documentation
