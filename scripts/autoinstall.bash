@@ -81,6 +81,10 @@ repository_dir=$(realpath $dir/..)
 
 pip install -r "$repository_dir/requirements.txt" --disable-pip-version-check
 pip install python-uinput
+pip install pre-commit
+
+log_step "Installing Pre-Commit checkers..."
+pre-commit install
 
 log_step "Checking API KEYS..."
 if [ "$OPENAI_API_KEY" =  "" ]; then

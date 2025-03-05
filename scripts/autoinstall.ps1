@@ -1,6 +1,6 @@
 # ======================================
 # GU-Systems Autoinstaller for Windows
-# ====================================== 
+# ======================================
 
 param(
     [string]$PythonVersion = "3.11",
@@ -59,6 +59,13 @@ if (Is-Yes $response) {
 
 Write-Step "Installing dependencies from requirements.txt..."
 $pipCmd = "pip install --disable-pip-version-check -r .\requirements.txt"
+Invoke-Expression $pipCmd
+
+Write-Step "Installing Pre-Commit checkers"
+$pipCmd = "pip install pre-commit"
+Invoke-Expression $pipCmd
+
+$pipCmd = "pre-commit install"
 Invoke-Expression $pipCmd
 
 Write-Step "Checking API Keys..."
