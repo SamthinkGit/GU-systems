@@ -15,6 +15,7 @@ to manage the attributes associated with each type. Additionally, it
 provides mechanisms for pretty-printing item details and handling
 package loading.
 """
+
 import functools
 import types
 from collections import defaultdict
@@ -346,8 +347,14 @@ class ItemRegistry:
             closure=func.__closure__,
         )
         new_func.__dict__.update(func.__dict__)
+        new_func.__doc__ = func.__doc__
         new_func.__annotations__ = func.__annotations__
         new_func.__qualname__ = func.__qualname__
+
+        doc = getattr(func, "__doc__", None)
+        if doc is not None:
+            new_func.__doc__ = doc
+
         return new_func
 
     @classmethod

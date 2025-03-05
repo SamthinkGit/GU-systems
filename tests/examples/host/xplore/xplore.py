@@ -2,8 +2,10 @@ import random
 import time
 
 import action_space.experimental.mouse.actions  # noqa
-import action_space.experimental.wait_for.actions # noqa
-import action_space.keyboard.virtual_keyboard  # noqa
+import action_space.experimental.wait_for.actions  # noqa
+import action_space.keyboard.actions  # noqa
+from ecm.tools.item_registry_v2 import ItemRegistry
+
 from cognition_layer.xplore.agents.xplore import Xplore
 from ecm.tools.prettify import pretty_head
 from ecm.tools.prettify import pretty_print
@@ -14,6 +16,8 @@ from execution_layer.rosa.interpreter.rosa_interpreter import RosaInterpreter
 # =====================================================
 
 if __name__ == "__main__":
+
+    ItemRegistry().load_all()
 
     rosa = RosaInterpreter()
     xplore = Xplore(interpreter=rosa)

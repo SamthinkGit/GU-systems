@@ -1,9 +1,10 @@
 import time
 
 from action_space.experimental.mouse.agent import MouseAgent
-from action_space.experimental.mouse.os_wrapper import move, click
+from action_space.experimental.mouse.os_wrapper import move, click as osclick
 from ecm.shared import load_env  # noqa
-from ecm.tools.registry import ItemRegistry
+from ecm.tools.item_registry_v2 import ItemRegistry
+from action_space.tools.wrappers import listable
 
 
 @ItemRegistry.register_util
@@ -13,12 +14,17 @@ def move_mouse_to(x, y):
 
 @ItemRegistry.register_util
 def send_click_event():
-    click()
+    osclick()
 
 
 @ItemRegistry.register_function
 def click(element: str):
     """Clicks with the mouse on the specified element. Example: click('Firefox Icon') or click('Navigation Bar'). Ensure to provide an especific description if needed."""  # noqa
+    _click(element)
+
+
+@listable
+def _click(element):
     MouseAgent.find(element)
     ItemRegistry._utils["send_click_event"]()
     time.sleep(2)

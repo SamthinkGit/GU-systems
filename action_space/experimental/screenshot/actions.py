@@ -12,7 +12,8 @@ def screenshot() -> Image.Image:
     image_path = "temp.png"
     take_screenshot(image_path)
 
-    image = Image.open(image_path)
+    with Image.open(image_path) as image:
+        image = image.copy()
     os.remove(image_path)
 
     return return_image(image)
