@@ -1,0 +1,157 @@
+"""
+FastReact Module
+==============================
+This module implements the FastReact class, which facilitates an iterative
+process to complete tasks using a cognitive memory and a set of tools. It
+uses the ChatOpenAI model and integrates with various components to manage
+tool actions and responses effectively.
+"""
+import random
+from action_space.tools.image import ImageMessage
+from action_space.tools.image import load_image
+from cognition_layer.fast_react.agents.prompt import DictFastReactResponse
+from cognition_layer.fast_react.agents.prompt import FastReactParser
+from cognition_layer.fast_react.agents.prompt import FR_PROMPT
+from cognition_layer.memory.simple import SimpleCognitiveMemory
+from cognition_layer.planex.utils.format import format_tool
+from dataclasses import dataclass
+from ecm.exelent.builder import ExelentBuilder
+from ecm.exelent.parser import ParsedTask
+from ecm.mediator.Interpreter import Interpreter
+from ecm.tools.item_registry_v2 import ItemRegistry
+from typing import Generator
+
+from langchain.tools import tool as build_tool
+from langchain_core.messages import AIMessage
+from langchain_core.messages import HumanMessage
+from langchain_core.messages import SystemMessage
+from langchain_core.tools import StructuredTool
+from langchain_openai import ChatOpenAI
+
+
+# ======================= CLASSES ============================
+@dataclass
+class FastReactResponse:
+    """
+    Represents the response from the FastReact iterative process. It includes the
+    name of the action, the content of the response, and a flag indicating whether
+    it is the last response.
+
+    :param name: The name of the action or step.
+    :param content: The content of the response.
+    :param is_last: Boolean indicating if this is the last response.
+    """
+
+    name: str
+    content: str
+    is_last: bool
+
+
+class FastReact:
+    """
+    Class that manages the FastReact iterative process.
+
+    It uses an interpreter and a registry to perform actions, maintains a memory
+    of interactions, and processes tasks through a sequence of formatted actions.
+    """
+
+    def __init__(
+        self,
+        interpreter: Interpreter,
+        registry: ItemRegistry = ItemRegistry(),
+        memory_capacity: int = 10,
+    ):
+        """
+        Initializes the FastReact instance.
+
+        :param interpreter: An instance of Interpreter for processing tasks.
+        :param registry: An instance of ItemRegistry for managing tools.
+        :param memory_capacity: Maximum number of messages to keep in memory.
+        """
+        self.chain = ChatOpenAI(model="gpt-4o-mini") | FastReactParser
+        self.memory_capacity = memory_capacity
+        self.interpreter = interpreter
+        self.registry = registry
+
+    def get_formatted_actions(self) -> list[str]:
+        """
+        Retrieves and formats the actions available in the registry.
+
+        :return: A list of formatted action strings.
+        """
+
+        actions = [action.content for action in self.registry.actions.values()]
+        tools: list[StructuredTool] = [build_tool(a) for a in actions]
+        return [format_tool(t) for t in tools]
+
+    def complete_task(self, input: str) -> Generator[FastReactResponse, None, None]:
+        """
+        Completes a given task iteratively using available tools and cognitive memory.
+
+        - Asserts that the screenshot tool is present in the registry.
+        - Formats the tools and maintains task completion state across iterations.
+
+        :param input: The task input to be processed.
+        :yield: FastReactResponse objects containing task completion states.
+        """
+
+        assert (
+            "screenshot" in self.registry.tools
+        ), "Screenshot tool must be loaded into the registry in order to use FastReact"
+
+        formatted_tools = "\n\n- ".join(self.get_formatted_actions())
+        self.memory = SimpleCognitiveMemory(
+            keep_images=False,
+            capacity=self.memory_capacity,
+            preserve=[
+                SystemMessage(content=FR_PROMPT),
+                SystemMessage(
+                    content=f"The current available actions are: {formatted_tools}\n"
+                ),
+                HumanMessage(
+                    f"The task you must complete using the JSON format is: ```{input}```"
+                ),
+            ],
+        )
+
+        task_completed = False
+        num_actions = 0
+        while not task_completed:
+
+            frame = load_image(self.registry.tools["screenshot"].content())
+            current_state = ImageMessage(
+                input="This is the current state", image=frame
+            ).as_human()
+
+            history = self.memory.messages + [current_state]
+            response: DictFastReactResponse = self.chain.invoke(history)
+
+            task_completed = response["all_tasks_completed"]
+            self.memory.update([AIMessage(content=str(response))])
+
+            task = _convert_frdict_to_exelent(response, step_idx=num_actions)
+            self.interpreter.run(task)
+
+            yield FastReactResponse(
+                name="FastReact", content=str(response), is_last=task_completed
+            )
+            num_actions += 1
+
+
+# ======================= UTILITIES ============================
+def _convert_frdict_to_exelent(
+    frdict: DictFastReactResponse, step_idx: int = random.randint(0, 1000)
+) -> ParsedTask:
+    """
+    Converts a FastReact dictionary response into an Exelent task.
+
+    :param frdict: The response dictionary from FastReact.
+    :param step_idx: An optional index for the task step.
+    :return: A ParsedTask representing the structured task.
+    """
+    builder = ExelentBuilder()
+    builder.add_task(task_name=f"fr_step_{step_idx}")
+    builder.add_type("Sequential")
+    builder.add_statement(frdict["function"].replace("\\", "\\\\"))
+    task = builder.compile()
+    return task

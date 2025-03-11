@@ -19,8 +19,12 @@ def prune_images_from_messages(messages: Sequence[BaseMessage]):
     - :return: None
     """
     for message in messages:
+        if isinstance(message.content, str):
+            continue
+
         if not isinstance(message.content, Sequence):
             continue
+
         message.content = [
             dict_msg for dict_msg in message.content if dict_msg["type"] != "image_url"
         ]
