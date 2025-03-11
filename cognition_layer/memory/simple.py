@@ -59,13 +59,7 @@ class SimpleCognitiveMemory:
         self._preserve = None
 
         if preserve is not None:
-            preserved_messages = len(preserve)
-            if preserved_messages > self.capacity:
-                raise ValueError(
-                    f"Cannot preserve {preserved_messages} with only {self.capacity} slots of capacity."
-                )
-            self.capacity -= preserved_messages
-            self._preserve = preserve
+            self.preserve(preserve)
 
     def update(self, messages: Sequence[BaseMessage]):
         """
@@ -81,6 +75,18 @@ class SimpleCognitiveMemory:
         if not self.keep_images:
             prune_images_from_messages(self._messages)
 
+    def preserve(self, messages: Sequence[BaseMessage]):
+        preserved_messages = len(messages)
+        if preserved_messages > self.capacity:
+            raise ValueError(
+                f"Cannot preserve {preserved_messages} with only {self.capacity} slots of capacity."
+            )
+        self.capacity -= preserved_messages
+        self._preserve = messages
+
+        while len(self._messages) > self.capacity:
+            self._messages.pop(0)
+
     def _add_message(self, message: BaseMessage):
         """
         - Add a message to the cognitive memory.
@@ -90,7 +96,7 @@ class SimpleCognitiveMemory:
         """
         self._messages.append(message)
 
-        if len(self._messages) > self.capacity:
+        while len(self._messages) > self.capacity:
             self._messages.pop(0)
 
     @property

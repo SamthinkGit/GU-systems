@@ -50,3 +50,7 @@ def test_memory_preservation():
 
     for msg, valid_content in zip(memory.messages, ["initial", "c", "d"]):
         assert msg.content == valid_content
+
+    memory.preserve([HumanMessage("initial"), HumanMessage("post")])
+    for msg, valid_content in zip(memory.messages, ["initial", "post", "d"]):
+        assert msg.content == valid_content
