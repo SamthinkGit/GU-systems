@@ -11,17 +11,11 @@ options for verbosity, debugging, and displaying intermediate results.
 import argparse
 import asyncio
 import atexit
+import ecm.exelent.parser as parser
+import ecm.shared
 import logging
 import multiprocessing
 import time
-
-import agent_protocol_client
-import aiohttp.client_exceptions
-import requests
-from langchain.globals import set_debug
-
-import ecm.exelent.parser as parser
-import ecm.shared
 from cognition_layer.api import CognitionMediator
 from cognition_layer.api import ServerAPI
 from cognition_layer.constants import API_ADDRESS
@@ -29,6 +23,11 @@ from cognition_layer.constants import API_PORT
 from cognition_layer.planex.utils.format import extract_python_code
 from ecm.mediator.Interpreter import Interpreter
 from ecm.shared import get_logger
+
+import agent_protocol_client
+import aiohttp.client_exceptions
+import requests
+from langchain.globals import set_debug
 
 # TOOLS
 
@@ -41,7 +40,7 @@ def clean(interpreter: Interpreter):
 
 async def main(
     cognition_layer: str = "PLANEX",
-    execution_layer: str = "ROSA",
+    execution_layer: str = "Pyxcel",
     verbose: bool = False,
 ):
     # ---- Initializing ----
@@ -60,6 +59,12 @@ async def main(
 
             interpreter_class = RosaInterpreter
 
+        case "Pyxcel":
+            from execution_layer.pyxcel.interpreter.pyxcel_interpreter import (
+                PyxcelInterpreter,
+            )
+
+            interpreter_class = PyxcelInterpreter
         case _:
             return ValueError(
                 "Execution Layer not valid, the unique supported values are: "
@@ -200,7 +205,7 @@ async def main(
 if __name__ == "__main__":
 
     # ---------- ACTION SPACE ---------
-    import action_space.keyboard.pynput  # noqa
+    import action_space.keyboard.actions  # noqa
     import action_space.window.focus  # noqa
 
     # ----------------------------------
@@ -244,13 +249,13 @@ if __name__ == "__main__":
     if args.show_exelent:
         DEBUG_SHOW_EXELENT = True
     if not args.host:
-        ItemRegistry.invalidate_all_functions()
+        ItemRegistry().invalidate()
 
     cognition_layer = args.agent if args.agent else "PLANEX"
 
     asyncio.run(
         main(
-            execution_layer="ROSA",
+            execution_layer="Pyxcel",
             cognition_layer=cognition_layer,
             verbose=args.verbose,
         )
