@@ -3,4 +3,44 @@ site_url: "https://SamthinkGit.github.io/GU-systems/"
 repo_url: "https://github.com/SamthinkGIt/GU-systems"
 docs_dir: "wiki"
 theme:
-  name: "mkdocs"
+  name: "mkdocs-material"
+nav:
+- Home: Home
+- Introduction: What-is-GU
+
+- State of Art:
+  - LLM's and Frameworks: LLMs-and-State-of-Art
+  - AgentProtocol: AgentProtocol
+  - Bibliography: Bibliography
+
+- Architecture:
+  - Theoretical Fundamentals: Theoretical-Fundamentals
+  - Architecture Overview: System-Architecture-Overview
+  - Architecture Guide: Architecture-Guide
+  - ECM Problem Analysis: ECM-Problem-Analysis
+
+- Tutorials:
+  - ItemRegistry: ItemRegistry
+  - Exelent: Exelent
+  - Interpreters: Interpreter
+  - FastAgentProtocol: FastAgentProtocol
+  - Remote Execution: Remote-Execution
+  - Cognitive Memory: SimpleCognitiveMemory
+
+- Component Insights:
+  - FastReact: FastReact
+  - Xplore: Xplore-Insights
+  - MouseAgent: MouseAgent-Insights
+  - Self Training Agents: Self‐Training-Agents
+
+- Capabilities:
+  - RosaInterpreter: ROSA-Interpreter
+  - PyxcelInterpreter: Pyxcel-Interpreter
+
+- Deprecations:
+  - ROSA Tutorial: ROSA
+  - ROSA TaskSequence Protocol: Rosa-Insights
+  - Planex Tutorial: Planex
+  - Planex Insights: Planex-Insights
+  - RePlan: RePlan-Insights
+  - Cognition Layer API: "Cognition-Layer-API-(Planex)"
