@@ -17,11 +17,6 @@ import logging
 import threading
 from abc import ABC
 from abc import abstractmethod
-from typing import Any
-from typing import Callable
-from typing import Optional
-from typing import Union
-
 from ecm.exelent.parser import ParsedAction
 from ecm.mediator.feedback import ExecutionStatus
 from ecm.mediator.feedback import Feedback as FeedbackTemplate
@@ -33,6 +28,10 @@ from ecm.tools.item_registry_v2 import Storage
 from ecm.tools.item_registry_v2 import Tool
 from execution_layer.pyxcel.constants import ENABLE_FEEDBACK_RESPONSE_HISTORY
 from execution_layer.pyxcel.constants import RAISE_FEEDBACK_FAILURES
+from typing import Any
+from typing import Callable
+from typing import Optional
+from typing import Union
 
 ResponseStorage = Storage("pyxcel-responses")
 
@@ -280,7 +279,7 @@ class Sequential(Scheduler):
         self.soft_stop = True
 
 
-# ----- YOU MUST ADD HERE ALL THEY SCHEDULER NAMES --------
+# ----- YOU MUST ADD HERE ALL THE SCHEDULER NAMES --------
 PYXCEL_SUPPORTED_SCHEDULERS: dict[str, "Scheduler"] = {
     "Sequential": Sequential,
 }
