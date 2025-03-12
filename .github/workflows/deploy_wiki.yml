@@ -68,6 +68,7 @@ jobs:
       - name: Build site
         run: mkdocs build # Generará el sitio en la carpeta "site/"
 
+
       # Paso 7: Desplegar a GitHub Pages (rama gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
