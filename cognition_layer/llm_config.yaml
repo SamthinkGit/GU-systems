@@ -1,0 +1,12 @@
+local: false
+model: "gpt-4o-mini"
+enforce_structured_output: false
+
+# Other local models (should support both Vision and Tool calling):
+# - llama-3.2-vision:8b
+# ...
+#
+# Other non-local models:
+# gpt-4o-mini
+# gpt-4o
+# ...
