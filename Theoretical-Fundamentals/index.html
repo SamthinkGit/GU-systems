@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/Theoretical-Fundamentals/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Theoretical Fundamentals - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ECM-Problem-Analysis/" class="nav-link">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastAgentProtocol/" class="nav-link">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Interpreter/" class="nav-link">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA/" class="nav-link">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Rosa-Insights/" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../System-Architecture-Overview/" class="nav-link">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../System-Architecture-Overview/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../What-is-GU/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/Theoretical-Fundamentals.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#problem-analysis-and-theoretical-approach" class="nav-link">Problem Analysis and Theoretical Approach</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#definition-of-ecms-as-an-approximation-to-the-agi-problem" class="nav-link">Definition of ECM's as an approximation to the AGI problem</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#autogpt-in-relation-with-agis-problem" class="nav-link">AutoGPT in relation with AGI's Problem</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#a-expansion-method" class="nav-link">A' Expansion Method</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="problem-analysis-and-theoretical-approach">Problem Analysis and Theoretical Approach</h2>
+<p>With the objectives established at the <a href="https://github.com/SamthinkGit/GU-systems/wiki/What-is-GU#gu-systems-objectives">Introduction</a> chapter, our focus initially is on addressing each of these objectives individually. This involves connecting LLMs (Large Language Models) to a standard user, defined as someone lacking programming skills and familiarity with non-standard software tools beyond graphical applications like office tools. This suggests developing a "black box" approach regarding both the user and the LLM itself.</p>
+<h3 id="the-agis-problem">The AGI's Problem</h3>
+<p>For obtaining the objectives stablished, it is important to dive into the concept of AGI's. <a href="https://en.wikipedia.org/wiki/Artificial_general_intelligence">AGI's (Artificial General Intelligence)</a> can understand, learn, and apply knowledge across a broad range of tasks, similarly to human intelligence. <strong>An AGI can theoretically perform any intellectual task</strong> that a human can do, applying its intelligence generally across different domains without specific training for each.</p>
+<p><strong>Implementing an AGI is practically impossible</strong>; however, we will approach the problem by axiomatizing that a human can solve any software problem <strong>p ∈ P</strong> using a knowledge source <strong>C</strong>, and a set of actions <strong>A</strong>, such that:</p>
+<blockquote>
+<p><strong>HumanSolution(p | C, A) = s</strong></p>
+</blockquote>
+<p>Where <strong>s</strong> is the solution to problem <strong>p</strong> and is also a heuristically viable solution in a Turing machine environment.</p>
+<h2 id="definition-of-ecms-as-an-approximation-to-the-agi-problem">Definition of ECM's as an approximation to the AGI problem</h2>
+<p>We can approximate the problem by considering the knowledge of an LLM as <strong>C' ≈ C</strong>, i.e., an estimator of human knowledge; and the set of programmable actions as <strong>A' ≈ A</strong>, i.e., an estimator of the action space to solve <strong>p</strong>. Therefore, the creation of an AGI implies designing an algorithm that verifies the following equality:</p>
+<blockquote>
+<p><strong>Algorithm_1(p | C', A') = s</strong></p>
+</blockquote>
+<p>Finally, since <strong>C'</strong> is already integrated knowledge in LLMs by definition and fully accessible, we only need to design an architecture that acts as an intermediary between the knowledge <strong>C'</strong> and our problem <strong>p</strong> to achieve a set of actions <strong>A'</strong>. Execution of <strong>A'</strong> should reach our solution <strong>s</strong>, verifying the following equality:</p>
+<blockquote>
+<p><strong>Algorithm_1(p | C') = λ | λ ⊂ A' ∧ Algorithm_2(λ) = s</strong></p>
+</blockquote>
+<p>From now on, we will refer the <strong>Algorithm_1 or A_1 as the Cognitive Layer</strong> of the problem, where the objective is given a set of actions A', obtain the set of actions λ ∈ A' that solve the problem; and we will refer the <strong>Algorithm_2 or A_2 as the Execution_Layer</strong> of the problem, where the objective is given a set of actions λ, execute them in order to reach the solution s.</p>
+<h3 id="objectives-simplified">Objectives Simplified</h3>
+<p>The problem of "how to implement an AGI" is now simplified into three subproblems:
+1. <strong>Send</strong> the user's problem request <strong>p</strong> into a query <strong>q</strong> that the LLM can understand <strong>q'</strong>.
+2. <strong>Convert</strong> the LLM's natural language response into a set of executable actions <strong>λ ∈ A'</strong>.
+3. <strong>Execute</strong> the set of actions <strong>λ</strong>.</p>
+<p>This approach is underpinned by the philosophy: "If a human can solve it, then an LLM should also be able to". With this idea in mind, we will refer to the implementation of an architecture that accomplish the properties stablished as an <strong>Execution-Cognitive Machine or ECM</strong></p>
+<h2 id="autogpt-in-relation-with-agis-problem">AutoGPT in relation with AGI's Problem</h2>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/03072d52-9dce-4fb7-a016-55dff8f062b2" alt="AutoGPT Logo" width=150>
+</div>
+
+<p><a href="https://github.com/Significant-Gravitas/AutoGPT">AutoGPT</a> is a Python library that uses AI Agents based on the Memory-Profile-Planning-Action (PMPA) model discussed in this paper. It allows programmers to implement agents connected via HTTP requests to GPT-OpenAI and similar models (e.g., LLAMA, even with local execution) easily and maintained by thousands of users collaboratively.</p>
+<p>A significant feature of this library is that it allows these agents to be equipped with a set of "skills" known as "actions" or "abilities," with which the agent will know how to interact and thus call sections of code that the programmer must have previously implemented in the agent.</p>
+<p>The most powerful agent model implementing this technology is @evo.ninja, which successfully stands out for its abilities to solve software tasks/problems as shown in Figure 2 (use of files, I/O, CSV reading, and query resolution...).</p>
+<p>Despite the achievements by AutoGPT, this library is far from fully integrating our ECM, as its action space <strong>A'</strong> is a considerably small subset given the set of problems <strong>p ∈ P</strong>, i.e., <strong>A' ≈ A</strong>. Therefore, the goal of GU-S will be to extend the "skills" architecture of AutoGPT to one in line with a ETM.</p>
+<h2 id="a-expansion-method">A' Expansion Method</h2>
+<p>Given the AutoGPT AGI's problem, we define the A' Expansion as an alternative to better approach this problem.</p>
+<p>Before implementing the algorithm itself, we must establish the following axiom:</p>
+<blockquote>
+<p><em>Manually programming a set of actions </em><em>A'</em><em> for the entire subset </em><em>P</em><em> is not viable due to scalability issues.</em></p>
+</blockquote>
+<p>In simple terms, "it is not feasible to program all possible actions and solutions that AutoGPT should use." Thus, GU-Systems proposes simplifying this problem to implementing a protocol with which to describe an Action Space <strong>B'</strong> robust enough so that the composition of actions in <strong>B</strong> generates a space <strong>A' ≈ A</strong>.</p>
+<p>In robotics planning problems, this issue has previously been raised, where a widespread solution even today is the use of known as <a href="https://en.wikipedia.org/wiki/Behavior_tree_(artificial_intelligence,_robotics_and_control)">BehaviorTrees</a>. These systems use a set of simple algorithms that can be combined to generate a virtually scalable action tree for any problem <strong>p</strong>.
+That is, BehaviorTrees provide us an easy solution to "How to build complex plans with simple actions." Now we just need to determine WHICH will be these "simple actions" and determine if they are robust enough to reach a solution <strong>s'</strong>.</p>
+<div align="center">
+  <img src="
+https://github.com/SamthinkGit/GU-systems/assets/92941012/7618d845-9b15-451c-af7f-ebc70b270111" alt="Behavior Tree Diagram" width=400>
+</div>
+
+<p>Thus, our actions <strong>b ∈ B</strong> are a set of commands and keystrokes (clicks, action on keyboard, etc.), and by combining these actions through a behavior tree, we can expand the action space <strong>B</strong> such that <strong>BT(B) ≈ A' ≈ A</strong>
+With this in mind, we have just made a significant approximation to the problem of ECMs, where we also obtain the following properties:</p>
+<blockquote>
+<ol>
+<li>The more generalist the set <strong>B</strong>, the greater the convergence of <strong>A'</strong> with respect to <strong>A</strong></li>
+<li>The set of actions <strong>B</strong> is scalable at the programmer level</li>
+<li>The resolution of the problem <strong>p ∈ P</strong> can be solved, regardless of the API or program with which it is interacting</li>
+</ol>
+</blockquote></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

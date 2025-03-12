@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/Interpreter/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Interpreter - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ECM-Problem-Analysis/" class="nav-link">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastAgentProtocol/" class="nav-link">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA/" class="nav-link">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Rosa-Insights/" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../System-Architecture-Overview/" class="nav-link">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Theoretical-Fundamentals/" class="nav-link">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../Home/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../ItemRegistry/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/Interpreter.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#functionalities-overview" class="nav-link">Functionalities Overview</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#using-the-interpreter" class="nav-link">Using the Interpreter</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="introduction">Introduction</h2>
+<p>The Interpreter module provides a <strong>framework for executing <a href="https://github.com/SamthinkGit/GU-systems/wiki/Exelent">Exelent</a> files</strong>. It acts as an abstract class to unify various execution layer managers. This guide will demonstrate how to use the interpreter with <a href="https://github.com/SamthinkGit/GU-systems/wiki/ROSA">ROSA</a> as an example interpreter, the same applies for later implementations such as Pyxcel.</p>
+<h2 id="functionalities-overview">Functionalities Overview</h2>
+<p>All interpreters are located in the <a href="https://github.com/SamthinkGit/GU-systems/tree/main/ecm/mediator">ecm/mediator</a> directory. For this example, we will import the RosaInterpreter as follows:</p>
+<pre><code class="language-python">from ecm.mediator.rosa_interpreter import RosaInterpreter, RosaInterpreterSupports
+</code></pre>
+<p>Each interpreter defines a support class that specifies its capabilities. You can visualize the supported properties with the following command:</p>
+<pre><code class="language-python">print(RosaInterpreterSupports())
+</code></pre>
+<p>The core functionality of interpreters is provided by the methods they implement. While interpreters can define additional methods, the predefined ones include:</p>
+<ul>
+<li><code>run</code>: Receives a ParsedTask object and executes it from start to finish. It may also accept a callback argument to define a function for receiving execution feedback.</li>
+<li><code>arun</code>: Receives a ParsedTask object and executes it asynchronously, accepting a callback argument for feedback.</li>
+<li><code>stop</code>: Stops a running task by its name.</li>
+<li><code>hard_stop</code>: Forcefully stops a running task by its name (use with caution as it may have undesirable effects).</li>
+<li><code>wait_for</code>: Waits for a specific call from the task, such as a status change or task completion.</li>
+<li><code>kill</code>: Closes the interpreter (does not ensure it is capable to be used again in the same process)</li>
+</ul>
+<h2 id="using-the-interpreter">Using the Interpreter</h2>
+<p>To use the RosaInterpreter, first initialize it:</p>
+<pre><code class="language-python">from ecm.mediator.rosa_interpreter import RosaInterpreter
+interpreter = RosaInterpreter()
+</code></pre>
+<p>To execute a task, use the <code>run</code> method. You need to parse an <a href="https://github.com/SamthinkGit/GU-systems/wiki/Exelent">Exelent</a> file with the actions to execute. Optionally, you can provide a callback function to handle task feedback. The callback implementation specifics are documented by the selected interpreter. For this example, we will use the hello_world file found in <a href="https://github.com/SamthinkGit/GU-systems/blob/main/tests/resources/hello_world.xlnt">/tests/resources/hello_world.xlnt</a>.</p>
+<pre><code class="language-python"># This is the .xlnt file
+def my_task():
+    with Sequential(on_fail=DUMP_LOGS):
+        with Sequential():
+            click(&quot;windows_icon&quot;)
+            click(&quot;notepad&quot;)
+
+        with Sequential():
+            click(&quot;window&quot;)
+            write(&quot;Hello World!&quot;)
+</code></pre>
+<p>This file defines two actions: click and write. You need to implement these actions before executing the task:</p>
+<pre><code class="language-python">from ecm.tools.registry import ItemRegistry
+
+# Note that just by registering the function will make it available for all interpreters.
+@ItemRegistry.register_function
+def click(location: str):
+    print(f&quot;Clicked {location}!&quot;)
+
+
+@ItemRegistry.register_function
+def write(text: str):
+    print(text)
+</code></pre>
+<p>With the Exelent file and the tools set up, you are ready to execute the task:</p>
+<pre><code class="language-python">import ecm.exelent.parser as parser
+from ecm.shared import get_root_path
+
+path = get_root_path() / &quot;tests&quot; / &quot;resources&quot; / &quot;hello_world.xlnt&quot;
+task = parser.parse(path)
+interpreter.run(task, callback=&quot;silent&quot;)
+</code></pre>
+<p>In this example, we pass the "silent" keyword to the callback. Each interpreter may support different keywords or objects.</p>
+<pre><code class="language-python">&gt;&gt;&gt; interpreter.run(task, callback=&quot;silent&quot;)
+Clicked windows_icon!
+Clicked notepad!
+Clicked window!
+Hello World!
+</code></pre>
+<p>After you have finished using the interpreter, some implementations require cleanup. Therefore, it is good practice to terminate the interpreter.</p>
+<pre><code class="language-python">interpreter.kill()
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>By following this guide, you now have a foundational understanding of how to utilize the Interpreter module to execute tasks parsed by the Exelent Parser. This knowledge will allow you to manage and control task execution within your projects effectively. Remember to clean up by terminating the interpreter when it's no longer needed to maintain system integrity. Happy coding!</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

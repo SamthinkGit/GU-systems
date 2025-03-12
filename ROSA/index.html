@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/ROSA/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Using ROSA (ROS Agent) - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ECM-Problem-Analysis/" class="nav-link">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastAgentProtocol/" class="nav-link">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Interpreter/" class="nav-link">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Rosa-Insights/" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../System-Architecture-Overview/" class="nav-link">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Theoretical-Fundamentals/" class="nav-link">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../ROSA-Interpreter/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../RePlan-Insights/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/ROSA.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#using-rosa-ros-agent" class="nav-link">Using ROSA (ROS Agent)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#setup-rosa" class="nav-link">Setup ROSA</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#executing-a-task" class="nav-link">Executing a Task</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#stopping-a-task" class="nav-link">Stopping a task</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#using-feedback" class="nav-link">Using Feedback</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="using-rosa-ros-agent">Using ROSA (ROS Agent)</h1>
+<h1 id="introduction">Introduction</h1>
+<p>ROSA (ROS Agent) is a crucial component in our system that simplifies the interaction with the Task Sequence Protocol (TSP) through a series of easy-to-use functions at higher levels. This guide covers the basics of how to utilize ROSA for handling tasks, executing sequences, and managing execution statuses within a test-driven development environment.</p>
+<h2 id="setup-rosa">Setup ROSA</h2>
+<p>Before executing any tasks, initialize the ROSA instance. Here's how to set up ROSA within your test environment:</p>
+<pre><code class="language-python">from execution_layer.rosa.interfaces.rosa import ROSA
+rosa = ROSA()
+</code></pre>
+<h2 id="executing-a-task">Executing a Task</h2>
+<p>To execute a task, you need to define a SequencePackage with a list of ActionPackage items that specify what actions to perform. In the following example, we will use an example function that prints <code>Waiting...</code> 3 times and finishes printing "Hello ROSA!".</p>
+<p>For this, we will use a set of functions called <code>sleep_and_print</code> included in the <a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/gateway/mocks/debug.py">mocks</a>. If you want to use your own functions, you can look at the mocks and copy the templates with your own code. </p>
+<pre><code class="language-python">from execution_layer.rosa.ros2.tools.packages import ActionPackage, SequencePackage, SequencePriority
+
+waiting = ActionPackage(
+    action_id=ItemRegistry.get_id(sleep_and_print), text=&quot;Wating...&quot;
+)
+end = ActionPackage(
+    action_id=ItemRegistry.get_id(sleep_and_print), text=&quot;Hello ROSA!&quot;
+)
+</code></pre>
+<p>Now that we have a set of actions, we must define the behavior and priority of the actions. For this, we will use a <a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/tools/packages.py">SequencePackage</a>. In this object, we will define the following properties:</p>
+<ul>
+<li><code>task_id</code>: Here you will define a name for the task. This will be used as an internal identifier of all the tasks with the same objective. Usually you should write the purpouse of your sequence, in this case <code>wait_and_print</code></li>
+<li><code>type</code>: Here you can select how to execute your set of actions. You can find all types in the <a href="https://github.com/SamthinkGit/GU-systems/tree/main/execution_layer/rosa/ros2/types">types</a> directory. However you can implement your own types, by loading them as stablished in the basic.py docs. Note that the most relevant types are the following:</li>
+<li><code>SimpleSequence</code>: Executes the sequence in order, if an action fails, it will return an ABORT code, else a SUCCESS code.</li>
+<li><code>ParallelSequence</code>: Yet not implemented.</li>
+<li><code>priority</code>: Stablishes the order in which the server will execute the tasks if multiple tasks with the same id are received. You can look at all priorities in <a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/tools/packages.py#L43">this file</a></li>
+<li><code>actions</code>: An array with all the actions you want to perform</li>
+</ul>
+<pre><code class="language-python">from execution_layer.rosa.ros2.types.basic import SimpleSequence
+
+seq = SequencePackage(
+    task_id=&quot;wait_and_print&quot;,
+    type=SimpleSequence.get_type(),
+    priority=SequencePriority.NORMAL,
+    actions=[wait_for_text, end_text],
+)
+</code></pre>
+<p>Now that you have the task defined, we will create a task in ROSA and build a function for controlling the feedback returned from the server.
+For creating a feedback manager (optional) you can define a function for managing each Feedback object received from ROSA. A feedback object contains two main properties:</p>
+<ul>
+<li><code>_exec_status</code>: This value should not be modified, it returns some information of the status of the SequenceType. The most common values are the following:</li>
+<li><code>FINISH</code>: This value is always returned when the SequenceType finishes (wether it success or fails)</li>
+<li><code>ABORT</code>: Returned when the SequenceType fails</li>
+<li><code>SUCCESS</code>: Returned when the SequenceType has ended properly</li>
+<li><code>STEP</code>: Returned between the execution of each action</li>
+<li>
+<p><code>RUNNING</code>: Returned when the feedback has asynchronously been generated by an inside action/function</p>
+</li>
+<li>
+<p><code>object</code>: This value contains any object that you can return from inside the functions executed, use it as you want.</p>
+</li>
+</ul>
+<p>As an example we will make the following controller:</p>
+<pre><code class="language-python">from execution_layer.rosa.ros2.tools.feedback import Feedback
+from execution_layer.rosa.ros2.tools.feedback import ExecutionStatus
+
+def my_controller(feedback: Feedback):
+    if feedback._exec_status == ExecutionStatus.FINISH:
+        print(&quot;Task has finished!&quot;)
+</code></pre>
+<p>Note that if you don't want to use any controller you can just use the <code>ROSA.muted_callback</code> as argument.</p>
+<p>Now that we have everything settled up, we just have to execute all with ROSA. Remember that ROSA will use a non-blocking call so if you want to wait for the execution to finish before continuing the program you can use the <code>wait_for</code> function.</p>
+<pre><code class="language-python">self.rosa.new_task(&quot;wait_and_print&quot;, feedback_callback=my_controller)
+self.rosa.execute(seq)
+self.rosa.wait_for(&quot;wait_and_print&quot;, ExecutionStatus.FINISH)
+</code></pre>
+<h2 id="stopping-a-task">Stopping a task</h2>
+<p>Whenever you have launched a task, you may want to abort the following actions. For this reason ROSA implements 2 stopping methods. Soft-Stop and Hard-Stop.</p>
+<p>A <strong>soft-stop</strong> allows the current sequence to complete gracefully before stopping, it will raise an event into the SequenceType to stop executing whenever a clean exit is possible. This exit usually happens between action steps.</p>
+<pre><code class="language-python">self.rosa.soft_stop(&quot;wait_and_print&quot;)
+self.rosa.wait_for(&quot;test_soft_stop&quot;, ExecutionStatus.FINISH)
+</code></pre>
+<p>A <strong>hard-stop</strong> immediately raises a signal to stop a task, disregarding its current state or any ongoing actions. This is a critical function for emergency situations where stopping a task as quickly as possible is necessary to prevent undesirable effects or to reset the system rapidly. However, this function should not be used unless it is stricly needed since it can end up in corrupted files or inconsistent executions.</p>
+<pre><code class="language-python">import time
+
+self.rosa._hard_stop(&quot;wait_and_print&quot;)
+time.sleep(1)  # Wait to ensure the process has been terminated
+</code></pre>
+<h2 id="using-feedback">Using Feedback</h2>
+<p>Wherever you are in python, if you want to return feedback to the SequenceType that has called you (if any) remember that you can return an object with the following structure.</p>
+<pre><code class="language-python">from execution_layer.rosa.ros2.tools.feedback import Feedback
+
+f = Feedback()  # Automatically will settle up your task_id
+f.publish(my_object)
+
+# Note: You should have built at least one ROSA instance before using feedback objects.
+</code></pre>
+<p>Now this feedback will be managed by a ROSA callback manager if it has been stablished in the task.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This tutorial provides a foundational understanding of how to interact with ROSA to execute, monitor, and manage tasks within a ROS2-enabled environment. The methods showcased help facilitate effective testing and control of asynchronous task execution, essential for robust software development. Now you are ready to implement and improve your own functionalities with ROSA as an Execution_Layer Algorithm or A_2.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

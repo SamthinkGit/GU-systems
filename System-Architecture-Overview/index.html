@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/System-Architecture-Overview/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>System Architecture Overview - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ECM-Problem-Analysis/" class="nav-link">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastAgentProtocol/" class="nav-link">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Interpreter/" class="nav-link">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA/" class="nav-link">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Rosa-Insights/" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Theoretical-Fundamentals/" class="nav-link">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../SimpleCognitiveMemory/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../Theoretical-Fundamentals/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/System-Architecture-Overview.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#system-architecture-overview" class="nav-link">System Architecture Overview</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#architecture-components" class="nav-link">Architecture Components</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#detailed-architecture-explanation" class="nav-link">Detailed Architecture Explanation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#ecmv2-architecture-expansion" class="nav-link">ECMv2 Architecture Expansion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="system-architecture-overview">System Architecture Overview</h2>
+<p>The architecture for an Execution-Cognition Machine (ECM) is modeled after understanding the necessary theory to implement it. This documentation aims to detail the system's general architecture by revisiting the formal definition of an ECM. The ECM implementation requires two algorithms that meet specific criteria to effectively translate a user's problem into executable actions using the knowledge integrated into a Large Language Model (LLM).</p>
+<p>Thus, as the formal conclusion of the <a href="https://github.com/SamthinkGit/GU-systems/wiki/Theoretical-Fundamentals#definition-of-ecms-as-an-approximation-to-the-agi-problem">theoretical approximation</a> stated, we are seaching for two algorithms that satisfy:</p>
+<blockquote>
+<p>Algorithm_1(p | C') = λ | λ ⊂ A' ∧ Algorithm_2(λ) = s</p>
+</blockquote>
+<p>In this way, the ECM architecture contains:</p>
+<ol>
+<li>
+<p><strong>Cognition Algorithm (A1)</strong>: This algorithm translates a problem ( p ) using the knowledge from an LLM ( C' ) into a subset of actions ( A' ) within a defined action set ( A' ). It reflects the ECM's "cognition" aspect.</p>
+</li>
+<li>
+<p><strong>Execution Algorithm (A2)</strong>: This algorithm takes the subset of actions ( A' ) and the problem ( p ) to produce a solution ( s' ). Since ( C' ) does not directly influence ( s' ), this algorithm can be simplified to ( A_2(p | A') = s' ). This reflects the "execution" aspect of the ECM.</p>
+</li>
+</ol>
+<h2 id="architecture-components">Architecture Components</h2>
+<p>The ECM is designed to interconnect three key modules: "Cognition", "Execution", and "Action Space". The following diagram illustrates the proposed architecture and the interconnections between these modules:</p>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/8f1d703f-0a99-459b-a8a1-8f86dbb107ba" alt="ECM Architecture" width=900>
+</div>
+
+<h2 id="detailed-architecture-explanation">Detailed Architecture Explanation</h2>
+<ul>
+<li>
+<p><strong>MCA (Main Core Agent)</strong>: This class is responsible for maintaining an event loop connecting all the main modules in the ECM. It is built with the rest of the modules with the CELB.</p>
+</li>
+<li>
+<p><strong>Action Space (B')</strong>: This is where all possible actions that the system can perform are defined. It serves as the foundational layer from which the Cognition Algorithm selects a subset of actions ( A' ).</p>
+</li>
+<li>
+<p><strong>Cognition Space(A_1)</strong>: This module processes the user-defined problem ( p ) using the integrated knowledge ( C' ) from the LLM (taking advantage of AutoGPT capabilities) to determine the appropriate actions ( A' ) from the Action Space. The output is a refined set of actions tailored to solve the problem expressed in an Exelent File. Note that all the system should be agnostic to the changes into the cognitive agent thanks to the AgentProtocol (acting as a mediator).</p>
+</li>
+<li>
+<p><strong>Execution Space(A_2)</strong>: Once the subset of actions ( A' ) is identified, this module takes over to execute these actions to achieve the desired outcome ( s' ). It operates independently of the integrated knowledge ( C' ), focusing solely on action implementation. As the moment of writing this, the responsible class for doing this is ROSA, however the implementation should be easily changed by using the mediator.</p>
+</li>
+<li>
+<p><strong>Interpreter</strong>: As a middleware betwwwn A_1 and A_2, the interpreter is the class responsible for translating the specifications written in the Exelent file from the Cognitive Module into a set of objects/commands. If the Exelent file contains a set of plugins, this should be handled too by the interpreter, returning some actions to be resolved to the MCA.</p>
+</li>
+</ul>
+<h2 id="ecmv2-architecture-expansion">ECMv2 Architecture Expansion</h2>
+<p>In the realm of artificial intelligence, the trend towards multi-agent systems reflects a move towards more distributed and specialized processing. <a href="https://en.wikipedia.org/wiki/Expert_system">Expert Agents</a> are specialized entities designed to handle specific tasks or domains, such as gaming or data analysis, with greater efficiency and expertise than a general agent could. This specialization allows for a more scalable system that can adapt and respond more dynamically to complex environments or specific user requirements.</p>
+<p>For this reason, the version V2 of the ECM aims to expand the action space ( A' ) without the need of more pre-composition or programming of each action. This concept stems from the <strong>current trend towards multi-agent architectures</strong>, where the main agent delegates the cognitive burden to specialized agents referred to as Expert Agents.</p>
+<p>In this context, the <strong>Exelent language will now need to incorporate new statements</strong> that define a set of new requests from the cognition space. These requests will be forwarded by the Main Core Agent (MCA) to the appropriate Expert Agents. For instance, if the task involves playing a video game, instead of burdening the cognition space with this task, it could redirect the request to an agent specialized in gaming.</p>
+<p>Notably, through the use of the AgentProtocol, we can employ the same interface as a mediator to maintain system stability and prevent modifications that could negatively impact the performance or functionality of the architecture. This ensures that any integration of new agents or capabilities remains plug and play, adhering to the established system architecture without disruptive changes.</p>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/ee69c194-45b6-4b38-aeeb-989625e89827" alt="ECM Architecture" width=900>
+</div>
+
+<p>With this, ECMv2's design philosophy enhances the system's adaptability and scalability by leveraging specialized expertise and maintaining a modular, plug-and-play approach through standardized protocols. This ensures that as the demands of tasks evolve, the architecture can easily integrate new capabilities without losing efficiency or operability.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

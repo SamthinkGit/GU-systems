@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/FastAgentProtocol/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>FastAgentProtocol Documentation - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ECM-Problem-Analysis/" class="nav-link">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Interpreter/" class="nav-link">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA/" class="nav-link">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Rosa-Insights/" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../System-Architecture-Overview/" class="nav-link">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Theoretical-Fundamentals/" class="nav-link">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../Exelent/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../FastReact/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/FastAgentProtocol.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#fastagentprotocol-documentation" class="nav-link">FastAgentProtocol Documentation</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#why-use-fastagentprotocol" class="nav-link">Why Use FastAgentProtocol?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#how-it-works" class="nav-link">How It Works</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#implementing-a-custom-agent-with-fastagentprotocol" class="nav-link">Implementing a Custom Agent with FastAgentProtocol</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#using-an-implemented-serverwith-fast-ap" class="nav-link">Using an implemented serverwith Fast AP</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="fastagentprotocol-documentation">FastAgentProtocol Documentation</h1>
+<p>The <code>FastAgentProtocol</code> is designed to provide a simplified, faster alternative to the previous <code>AgentProtocol</code>. It enables efficient communication between cognitive agents and the main system without the overhead of remote connections.</p>
+<h2 id="why-use-fastagentprotocol">Why Use FastAgentProtocol?</h2>
+<ul>
+<li><strong>Speed &amp; Simplicity</strong>: It removes the need for remote server connections, significantly reducing latency.</li>
+<li><strong>Standardization</strong>: All agents in the cognition layer must implement this protocol for consistent communication.</li>
+<li><strong>Flexibility</strong>: The main system no longer needs to manage execution, as the agent handles it independently.</li>
+</ul>
+<h2 id="how-it-works">How It Works</h2>
+<p>The <code>FastAgentProtocol</code> requires defining how an agent processes tasks in steps, where each step returns essential feedback to the main system.</p>
+<h3 id="key-components">Key Components</h3>
+<ul>
+<li><strong>Iterator</strong>: A function that processes input iteratively, yielding steps.</li>
+<li><strong>Content Getter</strong>: Retrieves the content of each step.</li>
+<li><strong>Is Last Getter</strong>: Determines if the current step is the final one.</li>
+<li><strong>Step Name Getter</strong> <em>(optional)</em>: Assigns a name to each step.</li>
+</ul>
+<h2 id="implementing-a-custom-agent-with-fastagentprotocol">Implementing a Custom Agent with FastAgentProtocol</h2>
+<ol>
+<li><strong>Define an Iterative Process</strong>: The agent's main function should yield steps, each containing a name, content, and finalization status.</li>
+<li><strong>Create the Protocol Server</strong>:<ul>
+<li>Use the <code>FastAgentProtocol</code> class.</li>
+<li>Define getters for step information.</li>
+</ul>
+</li>
+<li><strong>Example Custom Agent</strong></li>
+</ol>
+<pre><code class="language-python">from cognition_layer.api import FastAgentProtocol
+from ecm.mediator.Interpreter import Interpreter
+from operator import attrgetter
+
+class MyAgent:
+    def __init__(self, interpreter: Interpreter):
+        self.interpreter = interpreter
+
+    def complete_task(self, input: str):
+
+        my_agent.send_user_input(input)
+        for step in steps:
+            next_action = my_agent.next_action()
+            result = interpreter.run(next_action)
+            step = parse_result_contents(result)
+            yield step
+
+def get_fast_ap_server(interpreter: Interpreter) -&gt; FastAgentProtocol:
+    agent = MyAgent(interpreter)
+
+    return FastAgentProtocol(
+        name=&quot;My Custom Agent&quot;,
+        iterator=agent.complete_task,
+        step_name_getter=attrgetter(&quot;name&quot;),    # Equivalent to step.name
+        content_getter=attrgetter(&quot;content&quot;),   # Equivalent to step.content
+        is_last_getter=attrgetter(&quot;is_last&quot;),   # Equivalent to step.is_last
+    )
+</code></pre>
+<h2 id="using-an-implemented-serverwith-fast-ap">Using an implemented serverwith Fast AP</h2>
+<p>To use an agent with FastAgentProtocol in the main program:</p>
+<pre><code class="language-python">from cognition_layer.fast_react.api.server import get_fast_ap_server
+from cognition_layer.tools.registry import ItemRegistry
+
+server = get_fast_ap_server(interpreter=interpreter)
+
+while True:
+    query = input(&quot;Task: &quot;)
+    for step in server.send_task(query):
+        print(f&quot;Step: {step.name} -&gt; {step.content}&quot;)
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p><code>FastAgentProtocol</code> provides a unified, efficient approach to agent communication. By following the pattern of defining iterators and feedback structures, agents can seamlessly integrate with the main system while optimizing performance and reducing complexity.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

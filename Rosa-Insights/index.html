@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/Rosa-Insights/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Implementation of the Execution Layer Algorithm with ROSA ($A_2$) - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ECM-Problem-Analysis/" class="nav-link">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastAgentProtocol/" class="nav-link">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Interpreter/" class="nav-link">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA/" class="nav-link">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../System-Architecture-Overview/" class="nav-link">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Theoretical-Fundamentals/" class="nav-link">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../Remote-Execution/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../Self%E2%80%90Training-Agents/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/Rosa-Insights.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#implementation-of-the-execution-layer-algorithm-with-rosa-a_2" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#implementation-of-a_2-using-sequenceactionserver-and-ros2-rosa-approximation" class="nav-link">Implementation of $A_2$ Using SequenceActionServer and ROS2 (ROSA Approximation)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#sequenceactionserver-vs-rosa" class="nav-link">SequenceActionServer vs ROSA</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#24-rosa-and-alb" class="nav-link">2.4 ROSA and ALB</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="implementation-of-the-execution-layer-algorithm-with-rosa-a_2">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</h1>
+<p>The Execution Layer Algorithm, sometimes designated as $A_2$, plays a crucial role in the Execution-Cognition Machine (ECM) architecture. Its primary function is to transform a set of actions selected by the Cognition Algorithm ($A_1$) into executable actions that result in solving the user's problem. $A_2$ is responsible for the execution of these actions, ensuring that they are carried out in an orderly and effective manner, adapting to the needs of the problem and the execution context.</p>
+<h2 id="implementation-of-a_2-using-sequenceactionserver-and-ros2-rosa-approximation">Implementation of $A_2$ Using SequenceActionServer and ROS2 (ROSA Approximation)</h2>
+<p>For explaining the architecture of $A_2$ internals, we begin with the setup of our ECM at a low level. Since the theoretical expansion of A' should be supported by the execution layer, the following TSP protocol is proposed.</p>
+<h3 id="231-task-sequence-protocol-tsp">2.3.1 Task-Sequence Protocol (TSP)</h3>
+<p>Let's imagine the simplest case, suppose a problem ( p ∈ P ) could be solved with a single action, such as pressing the letter "K" key in the keyboard. The Task-Sequence Protocol (PTS) encapsulates this action in an object called <a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/tools/packages.py#L63">ActionPackage</a>.</p>
+<p>An <code>ActionPackage</code> consists of two key elements:</p>
+<ul>
+<li>
+<p><strong>Function</strong>: Reference to our action ( b ∈ B ), such as a keystroke. Note how this function can be passed to the ActionPackage by using the ItemRegistry. Just ensure to register the function with the appropiate decorator and then pass the id to the package.</p>
+</li>
+<li>
+<p><strong>Arguments</strong>: Here you can pass details relevant to the action, such as the specific key "K". These arguments can be passed as args or kwargs</p>
+</li>
+</ul>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/83aa3594-cfb2-45a8-b061-7a7164d7fcfd" alt="ActionPackage Structure" width=400>
+</div>
+
+<p>After we are able to make actions. We want to be able to combine them in further ways, such as compositing, so we archive the A' expansion property. For this, using ROS2 Behavior Trees (BT) directly in our ECM would be impractical, as it would force the LLM to build an XML and a set of unnecessary components. Instead, we use an approach based on <a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/tools/packages.py#L144">SequencePackages</a>.</p>
+<p>A <code>SequencePackage</code> is a set of actions with behavior defined by the <code>SequenceType</code>, which determines whether the actions should be executed in parallel, linearly, conditionally, etc. This allows for the efficient execution of the keystroke action "K".</p>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/2b25aad0-8f2b-4dcf-bc11-b8da8093e178" alt="SequencePackage Structure" width=400>
+</div>
+
+<p>When multiple sequences are related to achieving the same objective, they are encapsulated in what is called a <code>Task</code>. A task is a set of related sequences, ordered by priority (defined in each sequence individually). This allows the system to generate more complex plans that include concurrent action execution and even mechanisms for feedback, interruption, or sequence succession in a straightforward manner for the LLM. Although it is possible to send the task directly to the <code>TaskRegistry</code> controller, we will show a cleaner way to manage tasks with ROSA, so by now, just focus on on the how the priority of the task can affect the execution of the plan.</p>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/bf1111fa-cb25-4b5f-82f2-76286cdbaae9" alt="Task Priorities Structure" width=700>
+</div>
+
+<h2 id="sequenceactionserver-vs-rosa">SequenceActionServer vs ROSA</h2>
+<p>The SequenceActionServer or SAS (also called IODA as a deprecated name) is responsible for converting requests from higher levels into executable actions for the Gateway using the TSP. It's crucial to remember the separation of responsibilities at higher and lower levels:</p>
+<ul>
+<li><strong>ROSA</strong>: This layer is an interface for building request as a set of actions to be executed.</li>
+<li><strong>SAS and Lower Levels</strong>: These are responsible for HOW to execute those actions, given a plan.</li>
+</ul>
+<p>Within the question of how to execute a plan given by a higher level, we find different problems to solve, differentiated into 3 modules represented in the following diagram:</p>
+<div align="center">
+  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/51242827-1f5b-427f-8997-9dae19f382ab" alt="SAS Structure" width=400>
+</div>
+
+<ul>
+<li>
+<p><strong>ROS2 Topics</strong>: Using the communication functionalities offered by ROS2, we encapsulate all the Tasks from higher levels in JSON format, which can be read asynchronously through callbacks in the ActionClient (ROS2 Actions). In this way, all tasks will be published in the <code>/resquest</code> topic, while the feedback will be returned in <code>/feedback</code></p>
+</li>
+<li>
+<p><a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/workspaces/SequenceActionServer/src/sequence_action_server/sequence_action_server/client.py">SequenceActionClient</a>: Also known as "Request Responder," it reads the requests published on the topics and applies the TSP protocol to define which behavior to execute next (interrupt, execute, put on hold, etc.). For each sequence it decides to start, it will receive feedback produced and forward it to higher levels for processing. Responsibility: Define WHEN to execute each sequence.</p>
+</li>
+<li>
+<p><a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/workspaces/SequenceActionServer/src/sequence_action_server/sequence_action_server/server.py">SequenceActionServer</a>: Also known as "Request Controller," it receives sequences sent by the client and executes without the ability to cancel. Its responsibility is to define the type of execution according to the task's topology and its possible BT actions. Responsibility: Define WHO to call to execute the sequence.</p>
+</li>
+<li>
+<p><a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/ros2/types/basic.py">SequenceTypes</a>: Encapsulated within the "Request Controller" in the general diagram, it is responsible for defining the order and conditions of execution for each received sequence. Responsibility: Define HOW to execute the received sequence.</p>
+</li>
+<li>
+<p><strong>UPI Listener</strong>: Not shown in Figure 8, it is responsible for receiving asynchronous user requests sent from the UPI in the hardware-layer and sending them directly to higher layers via the ROS2 topics. Its response will be received in the same way as the rest of the sequences, with a different priority if necessary.</p>
+</li>
+</ul>
+<h2 id="24-rosa-and-alb">2.4 ROSA and ALB</h2>
+<p>In the previous sections, we have discussed the mechanism to implement a ECM at a low level. However, due to its complexity and level of abstraction, <a href="https://github.com/SamthinkGit/GU-systems/blob/main/execution_layer/rosa/interfaces/rosa.py">ROSA</a> (ROS Agent) was created.</p>
+<p>ROSA serves as an <strong>interface that simplifies the entire TSP</strong> into a set of simple functions to be executed by higher layers. This means it converts the rest of the objects into ROS2-Agnostic, eliminating the restrictions caused by dependency among these components. ROSA effectively turns the entire system below it into a black-box model that EXECUTES the sent commands.</p>
+<p>On the other hand, (although is not necessary to interact with) to eliminate concurrency issues and the linking of functions from lower levels to higher levels, the ALB (Application Layer Builder) is responsible for launching all ROS2 nodes and maintaining the resources used within the same memory space of a single process (multithreaded). Thus, a set of objects created by different layers can be accessed without the need to use pipelines or alternative methods to the system. The ALB will be managed by ROSA so the user doesn't have to interact with ROS2 nodes.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

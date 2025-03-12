@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/ECM-Problem-Analysis/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>ECM Problem Analysis - Execution Cognition Machine (ECM)</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Execution Cognition Machine (ECM)</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../AgentProtocol/" class="nav-link">AgentProtocol</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Architecture-Guide/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Bibliography/" class="nav-link">Bibliography</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">Cognition Layer API</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">ECM Problem Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Exelent/" class="nav-link">Exelent</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastAgentProtocol/" class="nav-link">FastAgentProtocol Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../FastReact/" class="nav-link">FastReact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Home/" class="nav-link">🌟 GU-Systems: ECM approximation to Computer Autonomous AI 🌟</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Interpreter/" class="nav-link">Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ItemRegistry/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../LLMs-and-State-of-Art/" class="nav-link">LLMs and State of Art</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../MouseAgent-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Planex/" class="nav-link">Planex as an Approximation to $A_1$</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Pyxcel-Interpreter/" class="nav-link">Pyxcel Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA-Interpreter/" class="nav-link">ROSA Interpreter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../ROSA/" class="nav-link">Using ROSA (ROS Agent)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../RePlan-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Remote-Execution/" class="nav-link">ECM Server/Client</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Rosa-Insights/" class="nav-link">Implementation of the Execution Layer Algorithm with ROSA ($A_2$)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Self%E2%80%90Training-Agents/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../SimpleCognitiveMemory/" class="nav-link">SimpleCognitiveMemory Documentation</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../System-Architecture-Overview/" class="nav-link">System Architecture Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Theoretical-Fundamentals/" class="nav-link">Theoretical Fundamentals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../What-is-GU/" class="nav-link">What is GU</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../Xplore-Insights/" class="nav-link">Introduction</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Footer/" class="nav-link"> Footer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../_Sidebar/" class="nav-link"> Sidebar</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../Cognition-Layer-API-%28Planex%29/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../Exelent/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/SamthinkGIt/GU-systems/edit/master/docs/ECM-Problem-Analysis.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#definition-of-the-problem" class="nav-link">Definition of the Problem</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#summary-table" class="nav-link">Summary Table</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#error-abstraction" class="nav-link">Error Abstraction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#summary-table_1" class="nav-link">Summary Table</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h2 id="definition-of-the-problem">Definition of the Problem</h2>
+<p>To achieve an ECM (Efficient Computation Model), it is essential to demonstrate that the following equality holds true:</p>
+<p>$$[ \text{Alg}_1(p \mid C') = { \lambda \mid \lambda \in A' \text{ and } \text{Alg}_2(\lambda)=s' } ]$$</p>
+<p><em>Note: Remember that Alg is an alias for Algorithm</em></p>
+<p>For a deep and thorough understanding of this concept, we must first define the core variables within this context:</p>
+<h3 id="1-action-space">1. <strong>Action Space</strong>:</h3>
+<p>The action space, denoted as $A$, refers to the comprehensive set of all possible actions abstracted from the framework that can be utilized to solve any given problem. Here, we distinguish three types:</p>
+<ul>
+<li><strong>$A$</strong>: This denotes all the conceivable actions that can be employed to resolve any problem. In this context, we assume that <strong>all problems are solvable</strong> using this space.</li>
+<li><strong>$A^*$</strong>: This refers to the minimal set of actions required to solve a specified problem. Thus, <strong>all problems can be solved</strong> utilizing this space. Unlike $A$, $A^*$ must be computable and Turing-Complete, ensuring that it can be executed algorithmically.</li>
+<li><strong>$A'$</strong>: This represents the set of actions contained within a particular approximation to the ECM problem. In this scenario, <strong>not all problems can be solved</strong> using this space, highlighting its limitations.</li>
+</ul>
+<h3 id="2-action-sequences">2. <strong>Action Sequences</strong>:</h3>
+<p>An action sequence, represented by $\lambda$, refers to a specific series of actions used to address and solve a particular problem. We categorize action sequences into three types:</p>
+<ul>
+<li><strong>$\lambda$</strong>: This denotes the perfect set of actions, representing the <strong>ideal combination</strong> of steps required to solve a given problem most efficiently.</li>
+<li><strong>$\lambda^*$</strong>: This refers to an optimal set of actions, which is one possible set of steps that can <strong>at least</strong> solve the problem, though it may not be the most efficient.</li>
+<li><strong>$\lambda'$</strong>: This signifies a proposed set of actions generated by an algorithm intended to solve a unique problem. This proposed set <strong>does not guarantee</strong> that the problem will be solved, indicating potential inefficiencies or gaps in the algorithm.</li>
+</ul>
+<h3 id="3-solutions">3. <strong>Solutions</strong>:</h3>
+<p>A solution, denoted by $s$, is an abstraction representing the resolution of a problem. We define solutions as follows:</p>
+<ul>
+<li><strong>$s$</strong>: This is a comprehensive solution that is capable of solving all conceivable problems.</li>
+<li><strong>$s^*$</strong>: This denotes a solution that is tailored to solve a specific, given problem.</li>
+<li><strong>$s'$</strong>: This represents a potential solution to a given problem, which is proposed but <strong>not assured</strong> to be effective or successful.</li>
+</ul>
+<h2 id="summary-table">Summary Table</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Perfect (All Problems)</th>
+<th>Optimal (One problem)</th>
+<th>Approximation (Could Fail)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Action Space</strong></td>
+<td>$$A$$</td>
+<td>$$A^*$$</td>
+<td>$$A'$$</td>
+</tr>
+<tr>
+<td><strong>Sequence</strong></td>
+<td>$$\lambda$$</td>
+<td>$$\lambda^*$$</td>
+<td>$$\lambda'$$</td>
+</tr>
+<tr>
+<td><strong>Solution</strong></td>
+<td>$$s$$</td>
+<td>$$s^*$$</td>
+<td>$$s'$$</td>
+</tr>
+</tbody>
+</table>
+<p>Note that we will sometimes use $\lambda_n$ for referring to a specific instance of $\lambda$.</p>
+<h2 id="error-abstraction">Error Abstraction</h2>
+<p>To design and optimize the problem, we need to compute some form of error to estimate and compare the behavior of the ECM. We analyze the error of the core formula by splitting it into two parts:</p>
+<ul>
+<li><strong>Cognition Space</strong>: Refers to the planning of the problem, mainly approached using NLP-based Agents.</li>
+<li><strong>Execution Space</strong>: Refers to the execution of a given plan, approached using a more deterministic framework.</li>
+</ul>
+<h3 id="cognition-space">Cognition Space</h3>
+<p>Suppose we have a problem $p$ and we want to find a sequence of actions $\lambda$ to solve it. The agent faces three main problems:</p>
+<ul>
+<li><strong>Planification</strong>: Does the agent have the knowledge/capability to solve the problem? The core issue here is the agent's reasoning about the problem and generating an approximation to the problem, independent of the tools available.</li>
+<li><strong>Reduction</strong>: How can the agent execute its plan with the given tools? The core issue here is reducing the computed actions to those the agent can use in its framework. If the framework lacks necessary tools, this step is impossible without failure.</li>
+<li><strong>Translation</strong>: How can the agent translate its reasoning into a concrete framework/language? The core issue here is translating natural language reasoning into a programmatic definition.</li>
+</ul>
+<h3 id="execution-space">Execution Space</h3>
+<p>After planning and reasoning, the steps must be executed to reach a solution. Similar to following a recipe, execution might not go as intended:</p>
+<ul>
+<li><strong>Interpretation</strong>: There could be differences between the specified plan and runtime execution. For example, the plan might specify "click the first word containing 'A'", which could result in varied interpretations.</li>
+<li><strong>Execution</strong>: Even ignoring interpretation, the planned step might raise an unforeseen exception, requiring the agent to re-plan.</li>
+</ul>
+<p>After having defined each type of error we want to make an abstraction of those errors, so we can analyze how we can make an approximation of them and know what should be improved. Let's see step by step an abstraction of each one:</p>
+<hr />
+<h3 id="planification">Planification</h3>
+<p>$$ Planificate(query) \rightarrow  \lambda_1 := [a,b,c,...] \subseteq A \mid Alg_2(\lambda_1) = s $$</p>
+<p>Let's break this equation down:
+The planification step is a function that receives a NL-query $Planificate(query)$ and returns a set of actions $[a,b,c,...]$ referred to as $\lambda_1$. This function must meet two conditions: First, $\lambda_1$ should be a subset of actions in $A$. Second, these actions should be executable to solve the query $Alg_2(\lambda_1) = s$.</p>
+<p><strong>Error</strong>:</p>
+<p>$$error_{plan} = 0 + [s - Alg_2(\lambda_1)] = Alg_2(\lambda) - Alg_2(\lambda_1)$$</p>
+<p>For computing the error, we can split the first equation into two parts. First, note that the possible error in $\lambda_1 := [a,b,c,...] \subseteq A$ is $0$ because:</p>
+<blockquote>
+<p><strong>$A$</strong> denotes all the conceivable actions that can be employed to resolve any problem.</p>
+</blockquote>
+<p>So by definition, the set of actions must be a subset of $A$. Then, we can define the error of $Alg_2(\lambda_1)$ by comparing it with its expected value $s$. If the algorithm should return $s$, the error is $s - Alg_2(\lambda_1)$.  Note that a solution $s$ can also be defined as the execution of a perfect plan, $Alg_2(\lambda)$, where $\lambda$ is the perfect plan, leading to:</p>
+<p>$$error_{plan} = Alg_2(\lambda) - Alg_2(\lambda_1)$$</p>
+<h3 id="reduction">Reduction</h3>
+<p>$$Reduce(\lambda_1) \rightarrow \lambda_2 := [x,y,...] \subseteq A^* \mid Alg_2(\lambda_2) = s^*$$</p>
+<p>The reduction error is a function that receives a plan (a sequence of NL-actions) and reduces that plan to one where all actions are a subset of $A^*$. Note how we must consider the same conditions as in the planification section.</p>
+<p><strong>Error</strong>:</p>
+<p>$$error_{reduction} = [ \lambda^* - \lambda_2 ] \cup [ Alg_2(\lambda^*) - Alg_2(\lambda_2) ]$$</p>
+<p>Following the same reasoning, we split the equation into two parts. First, there could be a gap between the optimal plan $\lambda^*$ and the generated plan $\lambda_2$, possibly due to a poor selection of tools even if planification succeeded. Second, there is the same error as previously: the plan must be executable to be valid. Since the optimal plan $\lambda^*$ is executable, the error of the second part is $Alg_2(\lambda^*) - Alg_2(\lambda_2)$.</p>
+<p>Note that the second condition uses $\lambda^*$ instead of $\lambda$ used in the planification step. This is due to the action space $A^*$, where the best solution in an optimal action space is $\lambda^*$ (not the perfect solution $\lambda$). Also, we use $\cup$ notation for joining the errors, since the relationship is not clear.</p>
+<h3 id="translation">Translation</h3>
+<p>$$Translate(\lambda_2) \rightarrow \lambda_3$$</p>
+<p>The translation step is a function that receives the reduced plan and generates an equivalent description in the framework that will use that plan. The error in this process arises from the quality loss of the original plan.</p>
+<p><strong>Error</strong>:
+$$error_{translation} = \lambda_2 - \lambda_3$$</p>
+<p>Defining the error here is straightforward (theoretically). We compare the plan specified in natural language with its programmatic description. If the match is exact, the error is $0$.</p>
+<h3 id="interpretation">Interpretation</h3>
+<p>$$Interpretate(\lambda_3) \rightarrow \lambda_4 := [x_1, y_1, ...] \subseteq A^*$$</p>
+<p>The interpretation step is the reverse of the translation step. It can be seen as an encoding-decoding process, where errors arise from recovering the encoded data without quality loss.</p>
+<p><strong>Error</strong>:</p>
+<p>$$error_{interpretation} = \lambda_3 - \lambda_4$$</p>
+<h3 id="execution">Execution</h3>
+<p>$$Execute(\lambda_4) \rightarrow s_4$$</p>
+<p>In the execution function, the next step is not defined, as execution itself is the solution. The error is defined by the framework's capacity to properly run the given steps.</p>
+<p><strong>Error</strong>:</p>
+<p>$$error_{execution} = s_4 - \lambda_4$$</p>
+<h2 id="summary-table_1">Summary Table</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Planification</td>
+<td>$$Alg_2(\lambda) - Alg_2(\lambda_1)$$</td>
+</tr>
+<tr>
+<td>Reduction</td>
+<td>$$( \lambda^* - \lambda_2 ) \cup ( Alg_2(\lambda^*) - Alg_2(\lambda_2) )$$</td>
+</tr>
+<tr>
+<td>Translation (Encoding)</td>
+<td>$$\lambda_2 - \lambda_3$$</td>
+</tr>
+<tr>
+<td>Interpretation (Decoding)</td>
+<td>$$\lambda_3 - \lambda_4$$</td>
+</tr>
+<tr>
+<td>Execution</td>
+<td>$$s_4 - \lambda_4$$</td>
+</tr>
+</tbody>
+</table></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
