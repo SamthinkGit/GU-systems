@@ -6,7 +6,7 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 
 from langchain.globals import set_debug
 
-COGNITION_LAYERS = ["fastreact", "xplore", "planexv2"]
+COGNITION_LAYERS = ["fastreact", "xplore"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
 DEFAULT_COGNITION = "fastreact"
 DEFAULT_EXECUTOR = "pyxcel"
@@ -44,6 +44,11 @@ def main(args):
             from cognition_layer.fast_react.api.server import get_fast_ap_server
 
             server = get_fast_ap_server(interpreter=interpreter)
+        case "xplore":
+            from cognition_layer.xplore.api.server import get_fast_ap_server
+
+            server = get_fast_ap_server(interpreter=interpreter)
+
         case _:
             return ValueError(
                 "Cognition Layer not valid, the unique supported values are: "

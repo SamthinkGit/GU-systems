@@ -47,7 +47,11 @@ class FastAgentProtocol(Generic[_StepType]):
 
         done = False
         while not done:
-            raw_step = next(step_iter)
+            try:
+                raw_step = next(step_iter)
+            except StopIteration:
+                break
+
             step = FastAPStep(
                 name=self.name,
                 step_name=self.step_name_getter(raw_step),
