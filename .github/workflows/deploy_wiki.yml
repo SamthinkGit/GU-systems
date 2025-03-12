@@ -24,18 +24,11 @@ jobs:
       - name: Checkout wiki content
         uses: actions/checkout@v3
         with:
-          repository: ${{ github.repository }}.wiki # Clona el repositorio "<user>/<repo>.wiki"
-          ref: main # rama por defecto de la wiki (a veces 'master' o 'main')
-          path: wiki # lo coloca en subcarpeta "wiki"
+          repository: ${{ github.repository }}.wiki
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: wiki
 
-      # Paso 3: Convertir sintaxis de enlaces de la wiki a enlaces Markdown estándar (si es necesario)
-      - name: Fix wiki links
-        run: |
-          # Reemplaza [[Page]] por [Page](Page.md) y [[Page|Texto]] por [Texto](Page.md)
-          sed -i 's/\[\[\([^|]*\)\]\]/[\1](\1.md)/g' wiki/*.md
-          sed -i 's/\[\[\([^|]*\)|\([^]]*\)\]\]/[\2](\1.md)/g' wiki/*.md
-
-      # Paso 4: Asegurar página de inicio para MkDocs
+      # Paso 3: Asegurar página de inicio para MkDocs
       - name: Prepare index page
         run: |
           if [ -f "wiki/Home.md" ]; then
@@ -54,7 +47,7 @@ jobs:
             done
           fi
 
-      # Paso 5: Instalar MkDocs (y tema Material si se desea)
+      # Paso 4: Instalar MkDocs (y tema Material si se desea)
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -64,12 +57,11 @@ jobs:
           pip install mkdocs
           pip install mkdocs-material  # opcional: instala tema Material
 
-      # Paso 6: Construir el sitio estático con MkDocs
+      # Paso 5: Construir el sitio estático con MkDocs
       - name: Build site
         run: mkdocs build # Generará el sitio en la carpeta "site/"
 
-
-      # Paso 7: Desplegar a GitHub Pages (rama gh-pages)
+      # Paso 6: Desplegar a GitHub Pages (rama gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
