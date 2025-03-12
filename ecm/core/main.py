@@ -39,7 +39,7 @@ def clean(interpreter: Interpreter):
 
 
 async def main(
-    cognition_layer: str = "PLANEX",
+    cognition_layer: str = "FastReact",
     execution_layer: str = "Pyxcel",
     verbose: bool = False,
 ):
@@ -97,6 +97,13 @@ async def main(
             execution_layer_managed_by_server = True
             interpreter = None
 
+        case "fastreact":
+            from cognition_layer.fast_react.api.server import get_server
+
+            server = get_server(interpreter_class=interpreter_class)
+            execution_layer_managed_by_server = True
+            interpreter = None
+
         case _:
             return ValueError(
                 "Cognition Layer not valid, the unique supported values are: "
@@ -105,6 +112,7 @@ async def main(
                         "PLANEX",
                         "PlanexV2",
                         "RePlan",
+                        "FastReact",
                     ]
                 )
             )
@@ -128,8 +136,9 @@ async def main(
 
         try:
             status_code = requests.get(host + "/ap/v1/agent/tasks").status_code
+            print(status_code)
         except Exception:
-            pass
+            logger.debug("API not available yet:", exc_info=True)
 
         if not info_shown:
             logger.info("Waiting for API server to be alive...")
@@ -212,9 +221,7 @@ if __name__ == "__main__":
 
     from ecm.tools.registry import ItemRegistry
 
-    argparser = argparse.ArgumentParser(
-        description="Run Planex Server with optional verbosity."
-    )
+    argparser = argparse.ArgumentParser(description="Run the ECM project.")
     argparser.add_argument(
         "--verbose", action="store_true", help="Enable verbose outputs from the agents"
     )
@@ -251,7 +258,7 @@ if __name__ == "__main__":
     if not args.host:
         ItemRegistry().invalidate()
 
-    cognition_layer = args.agent if args.agent else "PLANEX"
+    cognition_layer = args.agent if args.agent else "FastReact"
 
     asyncio.run(
         main(

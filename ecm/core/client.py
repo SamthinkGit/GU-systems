@@ -1,4 +1,4 @@
-import action_space.keyboard.virtual_keyboard  # noqa
+import action_space.keyboard.actions  # noqa
 from ecm.remote.client import EcmClient
 from ecm.shared import get_logger
 

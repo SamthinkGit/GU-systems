@@ -18,11 +18,9 @@ from cognition_layer.tools.mutable_llm import MutableChatLLM
 from dataclasses import dataclass
 from ecm.exelent.builder import ExelentBuilder
 from ecm.exelent.parser import ParsedTask
-from ecm.mediator.execution_layer_wrapper import ExecutionLayerWrapper
 from ecm.mediator.Interpreter import Interpreter
 from ecm.tools.item_registry_v2 import ItemRegistry
 from typing import Generator
-from typing import Optional
 
 from langchain.tools import tool as build_tool
 from langchain_core.messages import AIMessage
@@ -59,8 +57,7 @@ class FastReact:
 
     def __init__(
         self,
-        interpreter: Optional[Interpreter] = None,
-        execution_layer_wrapper: Optional[ExecutionLayerWrapper] = None,
+        interpreter: Interpreter = None,
         registry: ItemRegistry = ItemRegistry(),
         memory_capacity: int = 10,
     ):
@@ -75,27 +72,6 @@ class FastReact:
         self.memory_capacity = memory_capacity
         self.interpreter = interpreter
         self.registry = registry
-        if interpreter is None and execution_layer_wrapper is None:
-            raise ValueError(
-                "At least an interpreter or an execution "
-                "layer wrapper must be provided to execute exelent code."
-            )
-        if interpreter is not None and execution_layer_wrapper is not None:
-            raise ValueError(
-                "Cannot use interpreter and execution layer wrapper simultaneously."
-            )
-
-        self.run_exelent_code = None
-        if interpreter is not None:
-            self.run_exelent_code = lambda code: interpreter.run(code)
-
-        if execution_layer_wrapper is not None:
-
-            def run_exelent(code: str):
-                execution_layer_wrapper.set_exelent_code(code)
-                execution_layer_wrapper.start_execution()
-
-            self.run_exelent_code = run_exelent
 
     def get_formatted_actions(self) -> list[str]:
         """
@@ -154,7 +130,7 @@ class FastReact:
             self.memory.update([AIMessage(content=str(response))])
 
             task = _convert_frdict_to_exelent(response, step_idx=num_actions)
-            self.run_exelent_code(task)
+            self.interpreter.run(task)
 
             yield FastReactResponse(
                 name="FastReact", content=str(response), is_last=task_completed

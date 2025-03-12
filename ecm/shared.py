@@ -18,6 +18,13 @@ if "pytest" in sys.modules:
     enable_mocks()
 
 
+def default_kwargs(defaults: dict, new_kwargs: dict):
+    """Returns a dictionary containing the default kwargs
+    with the new_kwargs replaced if any."""
+    defaults.update(new_kwargs)
+    return defaults
+
+
 def get_root_path() -> Path:
     """
     Retrieves the path to the root directory of the repository.
