@@ -20,12 +20,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Set safe directory
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE/wiki
+
+
       # Paso 2: Checkout del repositorio de la Wiki en carpeta "wiki"
       - name: Checkout wiki content
         uses: actions/checkout@v3
         with:
           repository: ${{ github.repository }}.wiki
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          ref: master
           path: wiki
 
       # Paso 3: Asegurar página de inicio para MkDocs
