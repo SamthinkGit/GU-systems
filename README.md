@@ -78,7 +78,7 @@ You can use RePlan (our best agent so far) to start sending queries to control y
 # For safety reasons this does not affect your computer.
 # You can use --host if you are in a safe environment.
 
-python ecm/core/main.py --agent RePlan
+python ecm/core/main/main.py --agent fastreact
 ```
 
 ## ✨ Features
