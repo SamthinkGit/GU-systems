@@ -14,6 +14,7 @@ from cognition_layer.fast_react.agents.prompt import FastReactParser
 from cognition_layer.fast_react.agents.prompt import FR_PROMPT
 from cognition_layer.memory.simple import SimpleCognitiveMemory
 from cognition_layer.planex.utils.format import format_tool
+from cognition_layer.tools.mutable_llm import MutableChatLLM
 from dataclasses import dataclass
 from ecm.exelent.builder import ExelentBuilder
 from ecm.exelent.parser import ParsedTask
@@ -26,7 +27,6 @@ from langchain_core.messages import AIMessage
 from langchain_core.messages import HumanMessage
 from langchain_core.messages import SystemMessage
 from langchain_core.tools import StructuredTool
-from langchain_openai import ChatOpenAI
 
 
 # ======================= CLASSES ============================
@@ -68,7 +68,7 @@ class FastReact:
         :param registry: An instance of ItemRegistry for managing tools.
         :param memory_capacity: Maximum number of messages to keep in memory.
         """
-        self.chain = ChatOpenAI(model="gpt-4o-mini") | FastReactParser
+        self.chain = MutableChatLLM() | FastReactParser
         self.memory_capacity = memory_capacity
         self.interpreter = interpreter
         self.registry = registry
