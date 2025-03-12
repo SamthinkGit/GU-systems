@@ -7,7 +7,7 @@ on:
   # push:
   #   branches: [ main ]
   #   paths: [ "mkdocs.yml" ]  # por ejemplo, para re-deploy cuando cambia la config
-  # workflow_dispatch: {}      # permite ejecutarlo manualmente desde la pestaña Actions
+  workflow_dispatch: {}      # permite ejecutarlo manualmente desde la pestaña Actions
 
 permissions:
   contents: write # Necesario para poder hacer push a Pages (gh-pages branch)
