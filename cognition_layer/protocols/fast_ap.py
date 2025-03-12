@@ -55,6 +55,5 @@ class FastAgentProtocol(Generic[_StepType]):
                 is_last=self.is_last_getter(raw_step),
             )
 
-            self._logger.debug(f"Step completed successfully:\n-> {step}")
             yield step
             done = step.is_last

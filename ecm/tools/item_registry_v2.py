@@ -15,7 +15,6 @@ to manage the attributes associated with each type. Additionally, it
 provides mechanisms for pretty-printing item details and handling
 package loading.
 """
-
 import functools
 import types
 from collections import defaultdict
@@ -23,6 +22,9 @@ from collections import UserDict
 from copy import deepcopy
 from dataclasses import dataclass
 from dataclasses import field
+from ecm.shared import _MOCKS_ENABLED
+from ecm.shared import get_logger
+from ecm.tools.prettify import pretty_head
 from typing import Any
 from typing import Callable
 from typing import Literal
@@ -30,10 +32,6 @@ from typing import Optional
 
 from colorama import Fore
 from colorama import Style
-
-from ecm.shared import _MOCKS_ENABLED
-from ecm.shared import get_logger
-from ecm.tools.prettify import pretty_head
 
 
 @dataclass
@@ -49,8 +47,9 @@ class Item:
     description: str = ""
     labels: list[str] = field(default_factory=list)
 
-    def pretty_print(self):
-        print(f"* {Fore.LIGHTMAGENTA_EX}(ITEM): {Fore.RESET}{self}")
+    def pretty_print(self, full: bool = True):
+        label = self if full else f"{self.labels} {self.name} -> {self.content}"
+        print(f"* {Fore.LIGHTMAGENTA_EX}(ITEM): {Fore.RESET}{label}")
 
 
 @dataclass
@@ -60,8 +59,9 @@ class Action(Item):
     description: str
     is_callable: bool = True
 
-    def pretty_print(self):
-        print(f"* {Fore.BLUE}(ACTION): {Fore.RESET}{self}")
+    def pretty_print(self, full: bool = True):
+        label = self if full else f"{self.labels} {self.name} -> {self.content}"
+        print(f"* {Fore.BLUE}(ACTION): {Fore.RESET}{label}")
 
 
 class Tool(Item):
@@ -69,8 +69,9 @@ class Tool(Item):
     content: Callable
     is_callable: bool = True
 
-    def pretty_print(self):
-        print(f"* {Fore.LIGHTGREEN_EX}(TOOL): {Fore.RESET}{self}")
+    def pretty_print(self, full: bool = True):
+        label = self if full else f"{self.labels} {self.name} -> {self.content}"
+        print(f"* {Fore.LIGHTGREEN_EX}(TOOL): {Fore.RESET}{label}")
 
 
 class ItemRegistry:
@@ -102,7 +103,7 @@ class ItemRegistry:
             self.items: dict[str, Item] = {}
             self._instance_initialization = False
 
-    def pretty_print(self) -> None:
+    def pretty_print(self, full: bool = True) -> None:
         reg_color = Fore.YELLOW if self.name == "default" else ""
         print(f"{reg_color}{Style.BRIGHT}[{self.name}]{Style.BRIGHT}{Style.RESET_ALL}")
 
@@ -111,7 +112,7 @@ class ItemRegistry:
             + list(self.tools.values())
             + list(self.items.values())
         ):
-            item.pretty_print()
+            item.pretty_print(full)
 
     def _load_to_correspondent(
         self, obj: Action | Tool | Item, silent: bool = False
@@ -202,8 +203,10 @@ class ItemRegistry:
             cp.labels.append("Invalidated")
             new_items.append(cp)
 
-        self.actions = {}
-        self.tools = {}
+        if actions:
+            self.actions = {}
+        if tools:
+            self.tools = {}
 
         for item in new_items:
             self._load_to_correspondent(item, silent=True)
@@ -236,7 +239,7 @@ class ItemRegistry:
             print(Style.BRIGHT + "\nInstances:" + Style.RESET_ALL)
 
         for reg in cls._instances.values():
-            reg.pretty_print()
+            reg.pretty_print(full)
 
     @classmethod
     def flush(cls):
