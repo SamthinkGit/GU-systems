@@ -3,7 +3,7 @@ site_url: "https://SamthinkGit.github.io/GU-systems/"
 repo_url: "https://github.com/SamthinkGIt/GU-systems"
 docs_dir: "wiki"
 theme:
-  name: "mkdocs-material"
+  name: "material"
 nav:
 - Home: Home
 - Introduction: What-is-GU

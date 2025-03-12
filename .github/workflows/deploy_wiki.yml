@@ -59,8 +59,7 @@ jobs:
           python-version: "3.x"
       - name: Install MkDocs
         run: |
-          pip install mkdocs
-          pip install mkdocs-material  # opcional: instala tema Material
+          pip install mkdocs mkdocs-material
 
       # Paso 5: Construir el sitio estático con MkDocs
       - name: Build site
