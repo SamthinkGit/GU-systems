@@ -1,3 +1,12 @@
+"""
+Screen Wrapper
+==============================
+this module provides a full-screen window application that tracks mouse
+clicks and keyboard events. it utilizes the tkinter library for the gui
+and multiprocessing to handle events in a separate process. the events
+are recorded using dataclasses to maintain structured data for each
+event type.
+"""
 import time
 import tkinter as tk
 from dataclasses import dataclass
@@ -9,8 +18,17 @@ from typing import List
 from typing import Literal
 
 
+# ======================= CLASSES ============================
 @dataclass
 class ClickEvent:
+    """
+    ClickEvent class
+    -----------------
+    Represents a mouse click event with associated details such as
+    coordinates, button pressed, side of the screen, and timestamps
+    for press and release actions.
+    """
+
     x: int
     y: int
     button: Literal["Right", "Middle", "Left"]
@@ -21,12 +39,25 @@ class ClickEvent:
 
 @dataclass
 class KeyEvent:
+    """
+    KeyEvent class
+    ---------------
+    Represents a keyboard event with associated details such as the key
+    pressed and timestamps for press and release actions.
+    """
+
     key: str
     press_time: datetime
     release_time: datetime
 
 
 class Tracker:
+    """
+    Tracker class
+    -------------
+    Manages the storage of click and key events using multiprocessing
+    manager lists.
+    """
 
     def __init__(self, manager):
         self.clicks: List[ClickEvent] = manager.list()
@@ -34,6 +65,13 @@ class Tracker:
 
 
 class FullScreenWindow:
+    """
+    FullScreenWindow class
+    -----------------------
+    Creates a full-screen tkinter window and handles the tracking of
+    mouse clicks and keyboard events. It displays messages on the
+    window and manages event bindings for user interactions.
+    """
 
     _logger = get_logger("Window")
 
@@ -123,16 +161,22 @@ class FullScreenWindow:
         self.root.destroy()
 
 
+# ======================= UTILITIES ============================
 def sync_window_with_tracker(tracker: Tracker):
+    """Synchronizes the full-screen window with the event tracker."""
     app = FullScreenWindow(tracker)
     app.run()
 
 
+# ======================= Example Usage ============================
 if __name__ == "__main__":
     manager = Manager()
-    tracker = Tracker(manager)
+    tracker = Tracker(manager)  # Will be updated with the keys/clicks pressed
+
     p = Process(target=sync_window_with_tracker, args=(tracker,))
     p.start()
+
     print("Hello")
     time.sleep(10)
+
     p.kill()
