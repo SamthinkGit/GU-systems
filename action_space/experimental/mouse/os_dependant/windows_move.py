@@ -1,4 +1,5 @@
 import pyautogui
+pyautogui.FAILSAFE = False
 
 
 def move(x, y):
