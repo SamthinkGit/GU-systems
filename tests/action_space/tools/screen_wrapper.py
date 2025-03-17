@@ -2,6 +2,7 @@ import time
 import tkinter as tk
 from dataclasses import dataclass
 from datetime import datetime
+from ecm.shared import get_logger
 from multiprocessing import Manager
 from multiprocessing import Process
 from typing import List
@@ -33,6 +34,9 @@ class Tracker:
 
 
 class FullScreenWindow:
+
+    _logger = get_logger("Window")
+
     def __init__(self, tracker: Tracker):
         self.tracker = tracker
         self.root = tk.Tk()
@@ -57,6 +61,7 @@ class FullScreenWindow:
 
         self.current_click_time = {}
         self.current_key_time = {}
+        self.current_text_id = None
 
         self.root.bind("<ButtonPress>", self.on_click_press)
         self.root.bind("<ButtonRelease>", self.on_click_release)
@@ -64,6 +69,20 @@ class FullScreenWindow:
         self.root.bind("<KeyRelease>", self.on_key_release)
 
         self.root.bind("<Escape>", lambda e: self.close())
+
+    def show_message(self, text):
+        if self.current_text_id is not None:
+            self.canvas.delete(self.current_text_id)
+
+        self.current_text_id = self.canvas.create_text(
+            self.width // 2,
+            self.height // 2,
+            text=text,
+            fill="white",
+            font=("Arial", 50),
+        )
+
+        self.root.after(500, lambda: self.canvas.delete(self.current_text_id))
 
     def on_click_press(self, event):
         self.current_click_time[event.num] = datetime.now()
@@ -82,6 +101,7 @@ class FullScreenWindow:
             release_time=datetime.now(),
         )
         self.tracker.clicks.append(click_event)
+        self.show_message("Click")
 
     def on_key_press(self, event):
         if event.keysym not in self.current_key_time:
@@ -93,6 +113,8 @@ class FullScreenWindow:
             key=event.keysym, press_time=press_time, release_time=datetime.now()
         )
         self.tracker.keys.append(key_event)
+        self._logger.debug(f"Pressed {key_event}")
+        self.show_message(event.keysym)
 
     def run(self):
         self.root.mainloop()

@@ -1,8 +1,8 @@
 import time
 from multiprocessing import Manager
 from multiprocessing import Process
-from tests.compatibility.tools.screen_wrapper import sync_window_with_tracker
-from tests.compatibility.tools.screen_wrapper import Tracker
+from tests.action_space.tools.screen_wrapper import sync_window_with_tracker
+from tests.action_space.tools.screen_wrapper import Tracker
 
 import pytest
 
