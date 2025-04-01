@@ -9,7 +9,7 @@ that must be implemented by specific OCR algorithms.
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
-from dataclasses import Field
+from dataclasses import field
 
 from PIL import Image
 
@@ -32,7 +32,7 @@ class BoundingBox:
     center: tuple[int, int]
 
     content: str
-    additional_info: dict = Field(default_factory=dict)
+    additional_info: dict = field(default_factory=dict)
 
 
 class OcrEngine(ABC):

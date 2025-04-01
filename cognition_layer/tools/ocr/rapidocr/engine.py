@@ -1,19 +1,19 @@
 import time
 
 from PIL import Image
-from rapidocr import RapidOCR
+from rapidocr import RapidOCR as _OCR
 
 from cognition_layer.tools.ocr.template import BoundingBox
 from cognition_layer.tools.ocr.template import OcrEngine
 from ecm.shared import get_logger
 
 
-class RapidOcr(OcrEngine):
+class RapidOCR(OcrEngine):
 
     _logger = get_logger("RapidOCR")
 
     def __init__(self, *args, **kwargs):
-        self.engine = RapidOCR()
+        self.engine = _OCR()
 
     def invoke(self, image: Image.Image, *args, **kwargs) -> list[BoundingBox]:
         self._logger.debug("Running Engine")
