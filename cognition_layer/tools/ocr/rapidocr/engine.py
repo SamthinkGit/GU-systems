@@ -6,6 +6,7 @@ from rapidocr import RapidOCR as _OCR
 from cognition_layer.tools.ocr.template import BoundingBox
 from cognition_layer.tools.ocr.template import OcrEngine
 from ecm.shared import get_logger
+from ecm.shared import get_root_path
 
 
 class RapidOCR(OcrEngine):
@@ -23,6 +24,18 @@ class RapidOCR(OcrEngine):
         self._logger.debug(f"OCR completed after {end - start:.2f}s")
 
         results: list[BoundingBox] = []
+
+        debug_save_path = (
+            get_root_path()
+            / "cognition_layer"
+            / "tools"
+            / "ocr"
+            / "rapidocr"
+            / "ocr_debugging.jpg"
+        )
+        result.vis(str(debug_save_path.absolute()))
+        self._logger.debug(f"Detections saved to {debug_save_path}")
+
         for text, box in zip(result.txts, result.boxes):
             upper_left, upper_right, bottom_right, bottom_left = box
             center = (
