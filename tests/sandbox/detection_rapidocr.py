@@ -1,7 +1,7 @@
 import action_space.experimental.mouse.actions  # noqa
 import action_space.experimental.screenshot.actions  # noqa
 from action_space.tools.image import load_image
-from cognition_layer.tools.ocr.rapidocr.engine import RapidOCR
+from cognition_layer.tools.ocr.engine import OCR
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     screenshot = load_image(ItemRegistry().tools["screenshot"].content())
 
-    engine = RapidOCR()
+    engine = OCR()
     boxes = engine.invoke(screenshot)
 
     for box in boxes:
