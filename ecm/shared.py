@@ -1,9 +1,10 @@
 import sys
-from ecm.constants import LOG_LEVEL
 from pathlib import Path
 
 import colorlog
 import dotenv
+
+from ecm.constants import LOG_LEVEL
 
 
 class _MOCKS_ENABLED:
@@ -64,7 +65,6 @@ def get_logger(name: str):
 
 
 def load_env():
-    logger = get_logger("load_env")
     root = get_root_path()
     paths = [
         root / ".env",
@@ -73,12 +73,7 @@ def load_env():
     ]
 
     for path in paths:
-        result = dotenv.load_dotenv(path, override=True)
-
-        if result is False:
-            logger.warning(
-                f"Path {path} failed when trying to load enviroment variables."
-            )
+        dotenv.load_dotenv(path, override=True)
 
 
 load_env()
