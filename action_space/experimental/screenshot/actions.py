@@ -8,7 +8,7 @@ from ecm.tools.registry import ItemRegistry
 
 
 @ItemRegistry.register_util
-def screenshot() -> Image.Image:
+def screenshot() -> str:
     image_path = "temp.png"
     take_screenshot(image_path)
 
