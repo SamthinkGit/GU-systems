@@ -32,7 +32,8 @@ class Interpreter:
 
     feedback_message_class: Feedback
 
-    def __init__(self) -> None: ...
+    def __init__(self) -> None:
+        ...
 
     def run(
         self,
