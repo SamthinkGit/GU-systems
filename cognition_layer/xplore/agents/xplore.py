@@ -118,7 +118,7 @@ class Xplore:
                         "defined in the status. Skipping."
                     )
         return {
-            "step": status["step"]+1,
+            "step": status["step"] + 1,
             "current_node": "Reviewer Agent",
             "functions": [],
             "subgoals": subgoals,
