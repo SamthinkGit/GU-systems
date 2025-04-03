@@ -25,6 +25,7 @@ from dataclasses import field
 from ecm.shared import _MOCKS_ENABLED
 from ecm.shared import get_logger
 from ecm.tools.prettify import pretty_head
+from itertools import chain
 from typing import Any
 from typing import Callable
 from typing import Literal
@@ -210,6 +211,54 @@ class ItemRegistry:
 
         for item in new_items:
             self._load_to_correspondent(item, silent=True)
+
+    def get(
+        self,
+        name: str,
+        type: Literal["tool", "action", "item", "all"] = "all",
+        return_multiple: bool = False,
+    ) -> Tool | Item | Action:
+        """
+        Used for simplifiying the retrieval of entities from the registry.
+
+        Retrieves an item from the registry based on its name and type.
+        It searches through the registered actions, tools, and items,
+        returning the first match found. If multiple matches are found,
+        it can return a list of all matching items.
+
+        :param name: The name of the item to retrieve.
+        :param type: The type of item to retrieve ("tool", "action", "item", "all").
+        :param return_multiple: If True, returns a list of all matching items.
+        :return: The matching item or a list of matching items.
+        """
+        result_list = []
+
+        for item in chain(
+            self.actions.values(), self.tools.values(), self.items.values()
+        ):
+            result = None
+
+            if name.lower() in item.name.lower():
+                if (
+                    type == "all"
+                    or (type == "item" and isinstance(item, Item))
+                    or (type == "tool" and isinstance(item, Tool))
+                    or (type == "action" and isinstance(item, Action))
+                ):
+                    result = item
+
+            if result is not None:
+                result_list.append(result)
+
+        if not return_multiple and len(result_list) > 1:
+            self._logger.warning(
+                f"Multiple items found for name '{name}'. Returning the first match."
+            )
+
+        if not return_multiple:
+            return result_list[0]
+
+        return result_list
 
     @classmethod
     def summary(cls, full: bool = False) -> None:
