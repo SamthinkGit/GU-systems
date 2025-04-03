@@ -7,7 +7,7 @@ from PIL import Image
 
 
 @ItemRegistry.register_util
-def screenshot() -> bytes:
+def screenshot() -> str:
     image_path = "temp.png"
     take_screenshot(image_path)
 

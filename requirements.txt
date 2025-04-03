@@ -16,3 +16,5 @@ pika                    # Requires RabbitMQ server
 matplotlib
 dotenv
 grandalf
+
+# rapidocr              # For OCR (server)
