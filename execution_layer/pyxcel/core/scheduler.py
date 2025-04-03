@@ -35,6 +35,8 @@ from typing import Union
 
 ResponseStorage = Storage("pyxcel-responses")
 
+ASSUME_ONLY_ACTIONS = True
+
 
 class Feedback(FeedbackTemplate):
 
@@ -214,15 +216,18 @@ class Sequential(Scheduler):
                 if isinstance(action, Scheduler):
                     target_struct = action
 
-                if target_struct is None:
-                    target_struct = self._registry.actions.get(action.name)
-
-                if target_struct is None:
-                    target_struct = self._registry.tools.get(action.name)
+                if target_struct is None and not ASSUME_ONLY_ACTIONS:
+                    target_struct = self._registry.get(
+                        name=action.name, return_multiple=False
+                    )
+                if target_struct is None and ASSUME_ONLY_ACTIONS:
+                    target_struct = self._registry.get(
+                        name=action.name, type="action", return_multiple=False
+                    )
 
                 if target_struct is None:
                     self._logger.debug(
-                        f"Action `{target_struct}` cannot be found on the ItemRegistry. (Maybe "
+                        f"Action `{action.name}` cannot be found on the ItemRegistry. (Maybe "
                         "ItemRegistry has not been loaded?), aborting..."
                     )
                     self._feedback.publish(

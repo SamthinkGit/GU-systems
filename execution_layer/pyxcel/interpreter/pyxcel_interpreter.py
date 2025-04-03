@@ -13,13 +13,6 @@ includes features for gracefully shutting down ongoing tasks and managing
 feedback during execution.
 """
 from dataclasses import dataclass
-from typing import Any
-from typing import Callable
-from typing import Literal
-from typing import Optional
-from typing import Sequence
-from typing import Type
-
 from ecm.exelent.parser import ParsedAction
 from ecm.exelent.parser import ParsedTask
 from ecm.exelent.parser import ParsedType
@@ -32,6 +25,12 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 from execution_layer.pyxcel.core.scheduler import PYXCEL_SUPPORTED_SCHEDULERS
 from execution_layer.pyxcel.core.scheduler import Scheduler
 from execution_layer.pyxcel.core.scheduler import Sequential
+from typing import Any
+from typing import Callable
+from typing import Literal
+from typing import Optional
+from typing import Sequence
+from typing import Type
 
 
 @dataclass
@@ -162,7 +161,9 @@ class PyxcelInterpreter(Interpreter):
                 f"Received: {task}"
             )
         scheds = []
+        self._logger.debug(f"Building Task `{task.name}`")
         for parsed_with in task.sequence:
+            self._logger.debug(f"Building Type `{parsed_with.type.name}`")
             scheds.append(
                 self._get_sched_from_parsed_with(parsed_with, callback, registry)
             )
@@ -192,6 +193,7 @@ class PyxcelInterpreter(Interpreter):
                     self._get_sched_from_parsed_with(value, callback, registry)
                 )
             elif isinstance(value, ParsedAction):
+                self._logger.debug(f"Building Action `{value}`")
                 actions.append(value)
             else:
                 raise ValueError(

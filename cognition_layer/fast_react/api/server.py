@@ -28,7 +28,7 @@ def get_fast_ap_server(interpreter: Interpreter, **kwargs) -> FastAgentProtocol:
 
     react = FastReact(
         interpreter=interpreter,
-        **default_kwargs({"registry": ItemRegistry(), "memory_capacity": 10}, kwargs)
+        **default_kwargs({"registry": ItemRegistry(), "memory_capacity": 10, "ocr_mode": True}, kwargs)
     )
     return FastAgentProtocol(
         name="FastReact Server",

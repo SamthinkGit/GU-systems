@@ -16,6 +16,7 @@ def main():
     # ---------- ACTION SPACE ---------
     import action_space.keyboard.actions  # noqa
     import action_space.experimental.screenshot.actions  # noqa
+    import action_space.mouse.ocr_based.actions  # noqa
 
     # ----------------------------------
     ItemRegistry().load_all()

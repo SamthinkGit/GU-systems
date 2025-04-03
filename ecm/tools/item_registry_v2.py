@@ -251,8 +251,9 @@ class ItemRegistry:
                 result_list.append(result)
 
         if not return_multiple and len(result_list) > 1:
+            options = ", ".join([f"'{item.name}'" for item in result_list])
             self._logger.warning(
-                f"Multiple items found for name '{name}'. Returning the first match."
+                f"Multiple items found for name '{name}':{options} Returning the first match."
             )
 
         if not return_multiple:
