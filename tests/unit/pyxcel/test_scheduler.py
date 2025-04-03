@@ -1,6 +1,6 @@
+# flake8: noqa
 import threading
 import time
-
 from ecm.exelent.parser import ParsedAction
 from ecm.mediator.feedback import ExecutionStatus
 from ecm.tools.item_registry_v2 import ItemRegistry
