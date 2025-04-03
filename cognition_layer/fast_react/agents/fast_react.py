@@ -15,6 +15,7 @@ from cognition_layer.fast_react.agents.prompt import FR_PROMPT
 from cognition_layer.memory.simple import SimpleCognitiveMemory
 from cognition_layer.planex.utils.format import format_tool
 from cognition_layer.tools.mutable_llm import MutableChatLLM
+from cognition_layer.tools.ocr.engine import OCR
 from dataclasses import dataclass
 from ecm.exelent.builder import ExelentBuilder
 from ecm.exelent.parser import ParsedTask
@@ -60,6 +61,8 @@ class FastReact:
         interpreter: Interpreter = None,
         registry: ItemRegistry = ItemRegistry(),
         memory_capacity: int = 10,
+        ocr_mode: bool = False,
+        ocr_image_period: int = 3,
     ):
         """
         Initializes the FastReact instance.
@@ -72,6 +75,13 @@ class FastReact:
         self.memory_capacity = memory_capacity
         self.interpreter = interpreter
         self.registry = registry
+        self.ocr_mode = ocr_mode
+        self._ocr_round = 0
+        self.ocr_image_period = ocr_image_period
+
+        self.ocr = None
+        if self.ocr_mode:
+            self.ocr = OCR()
 
     def get_formatted_actions(self) -> list[str]:
         """
@@ -99,9 +109,12 @@ class FastReact:
             "screenshot" in self.registry.tools
         ), "Screenshot tool must be loaded into the registry in order to use FastReact"
 
+        self._ocr_round = 0
+        keep_images = True if self.ocr_mode else False
+
         formatted_tools = "\n\n- ".join(self.get_formatted_actions())
         self.memory = SimpleCognitiveMemory(
-            keep_images=False,
+            keep_images=keep_images,
             capacity=self.memory_capacity,
             preserve=[
                 SystemMessage(content=FR_PROMPT),
@@ -118,11 +131,7 @@ class FastReact:
         num_actions = 0
         while not task_completed:
 
-            frame = load_image(self.registry.tools["screenshot"].content())
-            current_state = ImageMessage(
-                input="This is the current state", image=frame
-            ).as_human()
-
+            current_state = self._get_current_state()
             history = self.memory.messages + [current_state]
             response: DictFastReactResponse = self.chain.invoke(history)
 
@@ -136,6 +145,43 @@ class FastReact:
                 name="FastReact", content=str(response), is_last=task_completed
             )
             num_actions += 1
+
+    def _get_current_state(self) -> ImageMessage:
+        """
+        Retrieves the current state of the task.
+        :return: An ImageMessage representing the current state.
+        """
+        frame = load_image(self.registry.tools["screenshot"].content())
+
+        if self.ocr_mode:
+
+            labels = self.ocr.invoke(frame)
+
+            explained_labels = (
+                "This is my current state.\n"
+                + "Labels detected on screen:\n"
+                + "\n".join([f"- `{label.content}` at [{label.center}]" for label in labels])
+            )
+
+            if self._ocr_round == 0:
+                message = ImageMessage(
+                    input=explained_labels + "\nI append an image of my screen.",
+                    image=frame,
+                    detail="low",
+                ).as_human()
+            else:
+                message = HumanMessage(content=explained_labels)
+
+            self._ocr_round += 1
+            if self._ocr_round >= self.ocr_image_period:
+                self._ocr_round = 0
+
+            return message
+
+        current_state = ImageMessage(
+            input="This is the current state", image=frame
+        ).as_human()
+        return current_state
 
 
 # ======================= UTILITIES ============================

@@ -8,15 +8,15 @@ from langsmith import traceable
 
 
 @traceable
-def fast_react():
+def fast_react_with_ocr():
     ItemRegistry().load_all()
 
     interpreter = PyxcelInterpreter()
-    fr = FastReact(interpreter=interpreter)
+    fr = FastReact(interpreter=interpreter, ocr_mode=True)
 
     for step in fr.complete_task("Escribe Hello World!"):
         print(step)
 
 
 if __name__ == "__main__":
-    fast_react()
+    fast_react_with_ocr()
