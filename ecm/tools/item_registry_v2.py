@@ -215,7 +215,7 @@ class ItemRegistry:
     def get(
         self,
         name: str,
-        type: Literal["tool", "action", "item", "all"] = "all",
+        type: Literal["tool", "action", "item", "any"] = "any",
         return_multiple: bool = False,
     ) -> Tool | Item | Action:
         """
@@ -240,7 +240,7 @@ class ItemRegistry:
 
             if name.lower() in item.name.lower():
                 if (
-                    type == "all"
+                    type == "any"
                     or (type == "item" and isinstance(item, Item))
                     or (type == "tool" and isinstance(item, Tool))
                     or (type == "action" and isinstance(item, Action))
