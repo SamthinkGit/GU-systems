@@ -1,12 +1,11 @@
 import time
-
-from PIL import Image
-from rapidocr import RapidOCR as _OCR
-
 from cognition_layer.tools.ocr.template import BoundingBox
 from cognition_layer.tools.ocr.template import OcrEngine
 from ecm.shared import get_logger
 from ecm.shared import get_root_path
+
+from PIL import Image
+from rapidocr import RapidOCR as _OCR
 
 
 class RapidOCR(OcrEngine):
@@ -53,5 +52,7 @@ class RapidOCR(OcrEngine):
                     additional_info={},
                 )
             )
+
+        self.storage["latest_detections"] = results
         self._logger.debug(f"{len(results)} entities detected")
         return results

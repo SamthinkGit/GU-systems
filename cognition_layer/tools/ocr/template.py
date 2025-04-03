@@ -10,6 +10,7 @@ from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
 from dataclasses import field
+from ecm.tools.item_registry_v2 import Storage
 
 from PIL import Image
 
@@ -41,9 +42,12 @@ class OcrEngine(ABC):
     for implementing specific OCR algorithms.
     """
 
+    storage: Storage = Storage(name="OCR")  # Contains only the latest detections
+
     def __init__(self, *args, **kwargs):
         """Initializes the OCR engine with optional parameters."""
-        pass
+        latest_detections: list[BoundingBox] = []
+        self.storage["latest_detections"] = latest_detections
 
     @abstractmethod
     def invoke(self, image: Image.Image, *args, **kwargs) -> list[BoundingBox]:
