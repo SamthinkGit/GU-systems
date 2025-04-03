@@ -33,7 +33,11 @@ from PIL import Image
 class ImageMessage:
 
     def __init__(
-        self, image: Image.Image, input: str = "", llm: Literal["GPT"] = "GPT"
+        self,
+        image: Image.Image,
+        input: str = "",
+        llm: Literal["GPT"] = "GPT",
+        detail: Literal["high", "low"] = "high",
     ) -> None:
         image_bytes = return_image(image)
         if llm == "GPT":
@@ -43,7 +47,7 @@ class ImageMessage:
                     "type": "image_url",
                     "image_url": {
                         "url": f"data:image/jpeg;base64,{image_bytes}",
-                        "detail": "high",
+                        "detail": detail,
                     },
                 },
             ]
