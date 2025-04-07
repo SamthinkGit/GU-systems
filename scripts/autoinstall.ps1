@@ -5,7 +5,7 @@
 param(
     [string]$PythonVersion = "3.11",
     [string]$CondaEnvName  = "ecm",
-    [string]$SourceConfigPath = "/scripts/dev_setup.sh"
+    [string]$SourceConfigPath = "/scripts/dev_setup.ps1"
 )
 
 function Write-Title($msg) {
