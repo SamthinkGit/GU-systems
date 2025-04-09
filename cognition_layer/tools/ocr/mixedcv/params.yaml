@@ -1,0 +1,8 @@
+hyperparams:
+    "sharpen": 4
+    "sal_thresh": 56
+    "min_size": 4
+    "max_size": 100
+    "big_num": 50
+    "big_blur": 5
+    "nms_iou": 0.3

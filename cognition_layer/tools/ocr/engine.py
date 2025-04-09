@@ -12,4 +12,4 @@ from cognition_layer.tools.ocr.engine import OCR
 Do not try to import directly from the engine directory, so we can keep backward
 compatibility
 """
-from cognition_layer.tools.ocr.rapidocr.engine import RapidOCR as OCR  # noqa
+from cognition_layer.tools.ocr.mixedcv.engine import MixedCV as OCR  # noqa
