@@ -56,11 +56,14 @@ class MixedCV(OcrEngine):
         opencv_image = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
 
         texts = self.textocr.invoke(image)
+        for text in texts:
+            text.additional_info["type"] = "text"
+
         icons = classic_cv_bbox_extraction(opencv_image, hyperparams)
 
         valid_icons = []
         for icon in icons:
-            if any([contained(icon, text) for text in texts]):
+            if any([contained(icon, text, tolerance=30) for text in texts]):
                 continue
 
             valid_icons.append(icon)

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from dataclasses import field
 
 import cv2
+import numpy as np
 from PIL import Image
 
 from ecm.tools.item_registry_v2 import Storage
@@ -111,3 +112,32 @@ def draw_bounding_boxes(
             cv2.line(img_out, pts[i], pts[(i + 1) % 4], color, thickness)
 
     return img_out
+
+
+def pil_to_cv2(pil_image: Image.Image) -> np.ndarray:
+    """Translates a PIL image to a cv2 image."""
+    img_np = np.array(pil_image)
+
+    # Detectar si hay canal alfa
+    if pil_image.mode == "RGBA":
+        return cv2.cvtColor(img_np, cv2.COLOR_RGBA2BGRA)
+    elif pil_image.mode == "RGB":
+        return cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+    elif pil_image.mode == "L":  # escala de grises
+        return img_np
+    else:
+        raise ValueError(f"Unsuported image type: {pil_image.mode}")
+
+
+def cv2_to_pil(cv2_image: np.ndarray) -> Image.Image:
+    """Translates a cv2 image to a PIL image."""
+    if len(cv2_image.shape) == 2:  # imagen en escala de grises
+        return Image.fromarray(cv2_image)
+    elif cv2_image.shape[2] == 4:
+        rgba_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGRA2RGBA)
+        return Image.fromarray(rgba_image)
+    elif cv2_image.shape[2] == 3:
+        rgb_image = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
+        return Image.fromarray(rgb_image)
+    else:
+        raise ValueError("Unsupported image format: expected 3 or 4 channels")

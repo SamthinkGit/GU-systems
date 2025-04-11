@@ -83,11 +83,11 @@ def classic_cv_bbox_extraction(image, hyperparams: dict) -> list[BoundingBox]:
         x, y, w, h = box
         bnding_boxes.append(
             BoundingBox(
-                top_left=(x, y),
-                top_right=(x + w, y),
-                bottom_left=(x, y + h),
-                bottom_right=(x + w, y + h),
-                center=((x + x + w) // 2, (y + y + h) // 2),
+                top_left=(int(x), int(y)),
+                top_right=(int(x + w), int(y)),
+                bottom_left=(int(x), int(y + h)),
+                bottom_right=(int(x + w), int(y + h)),
+                center=(int((x + x + w) // 2), int((y + y + h) // 2)),
                 content="",
                 additional_info={"type": "icon"},
             )
