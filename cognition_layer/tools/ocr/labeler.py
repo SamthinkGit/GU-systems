@@ -1,6 +1,7 @@
 import string
 from itertools import count
 from itertools import product
+from typing import Callable
 from typing import Generator
 from typing import Literal
 
@@ -40,6 +41,7 @@ class Labeler:
         font_scale: float = 0.5,
         font_thickness: int = 2,
         font_color: tuple[int, int, int] | Literal["random"] = "random",
+        filter: Callable = lambda x: True,
     ) -> Image:
         """
         Draw bounding boxes on the image.
@@ -50,6 +52,9 @@ class Labeler:
         cvimage = pil_to_cv2(self.image)
 
         for label, box in self.labelled_boxes.items():
+            if not filter(box):
+                continue
+
             result_color = color
             if font_color == "random" or color == "random":
                 result_color = get_random_color()
@@ -89,7 +94,7 @@ class Labeler:
         Freeze the current instance of the Labeler class.
         :return: The frozen instance of the Labeler class.
         """
-        self._latest_instance = self
+        Labeler._latest_instance = self
         return self
 
     @classmethod
@@ -108,6 +113,7 @@ class Labeler:
         icon_size: int = 80,
         header_height: int = 20,
         font_size: int = 12,
+        filter: Callable = lambda x: True,
     ) -> Image.Image:
         """
         Create a board of icons with labels.
@@ -121,6 +127,8 @@ class Labeler:
         processed_icons = []
 
         for label, bbox in self.labelled_boxes.items():
+            if not filter(bbox):
+                continue
 
             x_min = min(bbox.top_left[0], bbox.bottom_left[0])
             x_max = max(bbox.top_right[0], bbox.bottom_right[0])
