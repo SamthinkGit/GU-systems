@@ -13,12 +13,13 @@ class DictFastReactResponse(TypedDict):
 
 
 class JsonFastReactResponse(BaseModel):
+    previous_actions: str = Field(description="A small summary of previous AI actions (Look into functions used in AI messages)")
     reasoning: str = Field(description="A reasoning for solving the task")
     function: str = Field(
         description="The function with pythonic notation. E.g: myfunc(2, 3, 'foo')"
     )
     all_tasks_completed: bool = Field(
-        description="True if and only if all tasks from the user have been completed"
+        description="(true/false) [with lowercase] true if and only if all tasks from the user have been completed"
     )
 
 

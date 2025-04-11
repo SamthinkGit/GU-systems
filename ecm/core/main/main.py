@@ -1,10 +1,12 @@
 import argparse
-import ecm.shared
 import logging
-from ecm.shared import get_logger
-from ecm.tools.item_registry_v2 import ItemRegistry
 
 from langchain.globals import set_debug
+from langsmith import traceable
+
+import ecm.shared
+from ecm.shared import get_logger
+from ecm.tools.item_registry_v2 import ItemRegistry
 
 COGNITION_LAYERS = ["fastreact", "xplore"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
@@ -16,7 +18,7 @@ def main():
     # ---------- ACTION SPACE ---------
     import action_space.keyboard.actions  # noqa
     import action_space.experimental.screenshot.actions  # noqa
-    import action_space.mouse.ocr_based.actions  # noqa
+    import action_space.mouse.labelled_ocr.actions  # noqa
 
     # ----------------------------------
     ItemRegistry().load_all()
@@ -112,11 +114,15 @@ def main():
     logger.debug("Initialization finished. Starting...")
     ItemRegistry().summary()
 
+    @traceable
+    def execute_user_query(query: str):
+        for step in server.send_task(query):
+            logger.debug(f"Step completed successfully:\n-> {step}")
+
     # -------- Running Tasks -------
     while True:
         query = input("Request a Task: ")
-        for step in server.send_task(query):
-            logger.debug(f"Step completed successfully:\n-> {step}")
+        execute_user_query(query)
 
 
 if __name__ == "__main__":

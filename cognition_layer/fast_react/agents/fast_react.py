@@ -7,6 +7,17 @@ uses the ChatOpenAI model and integrates with various components to manage
 tool actions and responses effectively.
 """
 import random
+from dataclasses import dataclass
+from typing import Generator
+from typing import Literal
+
+from langchain.tools import tool as build_tool
+from langchain_core.messages import AIMessage
+from langchain_core.messages import BaseMessage
+from langchain_core.messages import HumanMessage
+from langchain_core.messages import SystemMessage
+from langchain_core.tools import StructuredTool
+
 from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
 from cognition_layer.fast_react.agents.prompt import DictFastReactResponse
@@ -16,18 +27,11 @@ from cognition_layer.memory.simple import SimpleCognitiveMemory
 from cognition_layer.planex.utils.format import format_tool
 from cognition_layer.tools.mutable_llm import MutableChatLLM
 from cognition_layer.tools.ocr.engine import OCR
-from dataclasses import dataclass
+from cognition_layer.tools.ocr.labeler import Labeler
 from ecm.exelent.builder import ExelentBuilder
 from ecm.exelent.parser import ParsedTask
 from ecm.mediator.Interpreter import Interpreter
 from ecm.tools.item_registry_v2 import ItemRegistry
-from typing import Generator
-
-from langchain.tools import tool as build_tool
-from langchain_core.messages import AIMessage
-from langchain_core.messages import HumanMessage
-from langchain_core.messages import SystemMessage
-from langchain_core.tools import StructuredTool
 
 
 # ======================= CLASSES ============================
@@ -63,6 +67,7 @@ class FastReact:
         memory_capacity: int = 10,
         ocr_mode: bool = False,
         ocr_image_period: int = 3,
+        ocr_type: Literal["text", "labelled"] = "labelled",
     ):
         """
         Initializes the FastReact instance.
@@ -78,6 +83,7 @@ class FastReact:
         self.ocr_mode = ocr_mode
         self._ocr_round = 0
         self.ocr_image_period = ocr_image_period
+        self.ocr_type = ocr_type
 
         self.ocr = None
         if self.ocr_mode:
@@ -110,7 +116,10 @@ class FastReact:
         ), "Screenshot tool must be loaded into the registry in order to use FastReact"
 
         self._ocr_round = 0
-        keep_images = True if self.ocr_mode else False
+
+        keep_images = False
+        if self.ocr_mode and self.ocr_type == "text":
+            keep_images = True
 
         formatted_tools = "\n\n- ".join(self.get_formatted_actions())
         self.memory = SimpleCognitiveMemory(
@@ -119,7 +128,7 @@ class FastReact:
             preserve=[
                 SystemMessage(content=FR_PROMPT),
                 SystemMessage(
-                    content=f"The current available actions are: {formatted_tools}\n"
+                    content=f"The current available actions are:\n\n- {formatted_tools}\n"
                 ),
                 HumanMessage(
                     f"The task you must complete using the JSON format is: ```{input}```"
@@ -132,11 +141,12 @@ class FastReact:
         while not task_completed:
 
             current_state = self._get_current_state()
-            history = self.memory.messages + [current_state]
+            history = self.memory.messages + current_state
             response: DictFastReactResponse = self.chain.invoke(history)
+            formatted_response = f"```json\n{response}\n```"
 
             task_completed = response["all_tasks_completed"]
-            self.memory.update([AIMessage(content=str(response))])
+            self.memory.update([AIMessage(content=formatted_response)])
 
             task = _convert_frdict_to_exelent(response, step_idx=num_actions)
             self.interpreter.run(task)
@@ -146,42 +156,78 @@ class FastReact:
             )
             num_actions += 1
 
-    def _get_current_state(self) -> ImageMessage:
+    def _get_current_state(self) -> list[BaseMessage]:
         """
         Retrieves the current state of the task.
         :return: An ImageMessage representing the current state.
         """
         frame = load_image(self.registry.tools["screenshot"].content())
+        if self.ocr_type == "text":
 
-        if self.ocr_mode:
+            if self.ocr_mode:
 
-            labels = self.ocr.invoke(frame)
+                labels = self.ocr.invoke(frame)
 
-            explained_labels = (
-                "This is my current state.\n"
-                + "Labels detected on screen:\n"
-                + "\n".join([f"- `{label.content}` at [{label.center}]" for label in labels])
+                explained_labels = (
+                    "This is my current state.\n"
+                    + "Labels detected on screen:\n"
+                    + "\n".join(
+                        [f"- `{label.content}` at [{label.center}]" for label in labels]
+                    )
+                )
+
+                if self._ocr_round == 0:
+                    message = ImageMessage(
+                        input=explained_labels + "\nI append an image of my screen with the text's labelled.",
+                        image=frame,
+                        detail="low",
+                    ).as_human()
+                else:
+                    message = HumanMessage(content=explained_labels)
+
+                self._ocr_round += 1
+                if self._ocr_round >= self.ocr_image_period:
+                    self._ocr_round = 0
+
+                return [message]
+
+            current_state = ImageMessage(
+                input="This is the current state", image=frame
+            ).as_human()
+            return [current_state]
+
+        elif self.ocr_type == "labelled":
+            bboxes = self.ocr.invoke(frame)
+            labeler = Labeler(frame, bboxes)
+            labeler.freeze()
+
+            text_descriptions: list[str] = []
+            for label, bbox in labeler.labelled_boxes.items():
+                if bbox.additional_info.get("type", "null") == "text":
+                    text_descriptions.append(f"'{label}': '{bbox.content}'")
+
+            icon_board = labeler.board(
+                filter=lambda bbox: bbox.additional_info.get("type", "null") == "icon"
             )
 
-            if self._ocr_round == 0:
-                message = ImageMessage(
-                    input=explained_labels + "\nI append an image of my screen.",
-                    image=frame,
-                    detail="low",
-                ).as_human()
-            else:
-                message = HumanMessage(content=explained_labels)
+            text_labels_description = "\n".join(text_descriptions)
 
-            self._ocr_round += 1
-            if self._ocr_round >= self.ocr_image_period:
-                self._ocr_round = 0
+            labels_message = ImageMessage(
+                image=icon_board,
+                input=(
+                    f"The following <text> labels were detected:\n\n{text_labels_description}."
+                    "\nI also append an image with the correspondent labels for each clickable <icon> detected."
+                    "\nYou can use any of these labels to click on them."
+                ),
+                detail="high",
+            ).as_human()
 
-            return message
-
-        current_state = ImageMessage(
-            input="This is the current state", image=frame
-        ).as_human()
-        return current_state
+            state_message = ImageMessage(
+                input="This is my current state, ensure to analyse what you see in your reasoning",
+                image=frame,
+                detail="low",
+            ).as_human()
+            return [state_message, labels_message]
 
 
 # ======================= UTILITIES ============================

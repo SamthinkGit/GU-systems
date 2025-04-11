@@ -42,7 +42,7 @@ class Labeler:
         font_thickness: int = 2,
         font_color: tuple[int, int, int] | Literal["random"] = "random",
         filter: Callable = lambda x: True,
-    ) -> Image:
+    ) -> Image.Image:
         """
         Draw bounding boxes on the image.
         :param color: Color of the bounding boxes (default is red).
@@ -109,10 +109,10 @@ class Labeler:
 
     def board(
         self,
-        columns: int = 20,
-        icon_size: int = 80,
+        columns: int = 14,
+        icon_size: int = 40,
         header_height: int = 20,
-        font_size: int = 12,
+        font_size: int = 16,
         filter: Callable = lambda x: True,
     ) -> Image.Image:
         """
