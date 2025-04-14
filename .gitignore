@@ -4,6 +4,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
 # C extensions
 *.so
 
@@ -234,3 +235,7 @@ _templates/
 # Doxygen
 docs/
 .test_file
+
+
+# Images
+cognition_layer/tools/ocr/rapidocr/ocr_debugging.jpg
