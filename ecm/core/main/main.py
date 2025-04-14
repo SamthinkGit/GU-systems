@@ -8,7 +8,7 @@ import ecm.shared
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 
-COGNITION_LAYERS = ["fastreact", "xplore"]
+COGNITION_LAYERS = ["fastreact", "xplore", "vfr"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
 DEFAULT_COGNITION = "fastreact"
 DEFAULT_EXECUTOR = "pyxcel"
@@ -95,10 +95,16 @@ def main():
 
     logger.debug(f"Running {args.executor} as Execution Layer")
     match args.agent.lower():
+        case "vfr":
+            from cognition_layer.visual_fast_react.api.server import get_fast_ap_server
+
+            server = get_fast_ap_server(interpreter=interpreter)
+
         case "fastreact":
             from cognition_layer.fast_react.api.server import get_fast_ap_server
 
             server = get_fast_ap_server(interpreter=interpreter)
+
         case "xplore":
             from cognition_layer.xplore.api.server import get_fast_ap_server
 
