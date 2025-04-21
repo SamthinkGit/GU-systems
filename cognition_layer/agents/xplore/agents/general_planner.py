@@ -5,18 +5,18 @@ This agent is responsible for generating a general plan to satisfy a query. This
 plan will be generated as a set of strings (plan) with a description of the
 status of the system and a reasoning on how the plan could be solved.
 """
-import action_space.experimental.screenshot.actions  # noqa
-from action_space.tools.image import ImageMessage
-from action_space.tools.image import load_image
-from cognition_layer.constants import DEFAULT_IMAGE_MODEL
-from ecm.tools.registry import ItemRegistry
-
 from langchain.pydantic_v1 import BaseModel
 from langchain.pydantic_v1 import Field
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.prompts import MessagesPlaceholder
 from langchain_openai import ChatOpenAI
+
+import action_space.experimental.screenshot.actions  # noqa
+from action_space.tools.image import ImageMessage
+from action_space.tools.image import load_image
+from cognition_layer.constants import DEFAULT_IMAGE_MODEL
+from ecm.tools.registry import ItemRegistry
 
 
 class GeneralPlannerResponse(BaseModel):
