@@ -21,6 +21,8 @@ if __name__ == "__main__":
         if bbox.additional_info.get("type", "null") == "text":
             logger.info(f"{label} ->\t{bbox.content}")
 
+    labeler.draw().show()
+
     board = labeler.board(
         filter=lambda bbox: bbox.additional_info.get("type", "null") == "icon"
     )

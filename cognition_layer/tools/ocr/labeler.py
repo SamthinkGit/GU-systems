@@ -174,6 +174,25 @@ class Labeler:
 
         return table
 
+    def get_labelled_crops(
+        self, filter: Callable = lambda x: True
+    ) -> dict[str, tuple[BoundingBox, Image.Image]]:
+        labelled_crops = {}
+
+        for label, bbox in self.labelled_boxes.items():
+            if not filter(bbox):
+                continue
+
+            x_min = min(bbox.top_left[0], bbox.bottom_left[0])
+            x_max = max(bbox.top_right[0], bbox.bottom_right[0])
+            y_min = min(bbox.top_left[1], bbox.top_right[1])
+            y_max = max(bbox.bottom_left[1], bbox.bottom_right[1])
+
+            cropped = self.image.crop((x_min, y_min, x_max, y_max))
+            labelled_crops[label] = (bbox, cropped)
+
+        return labelled_crops
+
     @staticmethod
     def stream_labels() -> Generator[str, None, None]:
         """
