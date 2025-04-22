@@ -22,9 +22,6 @@ from collections import UserDict
 from copy import deepcopy
 from dataclasses import dataclass
 from dataclasses import field
-from ecm.shared import _MOCKS_ENABLED
-from ecm.shared import get_logger
-from ecm.tools.prettify import pretty_head
 from itertools import chain
 from typing import Any
 from typing import Callable
@@ -33,6 +30,10 @@ from typing import Optional
 
 from colorama import Fore
 from colorama import Style
+
+from ecm.shared import _MOCKS_ENABLED
+from ecm.shared import get_logger
+from ecm.tools.prettify import pretty_head
 
 
 @dataclass
@@ -296,6 +297,25 @@ class ItemRegistry:
         cls._instances = {}
         cls._packages = defaultdict(list)
         cls._global_items = {}
+
+    @staticmethod
+    def require_dependencies(*packages: str, storage_key: str = "default") -> Callable:
+        def decorator(func: Callable) -> Callable:
+            def wrapper(*args, **kwargs):
+                registry = ItemRegistry(storage_key)
+                missing_packages = [
+                    pkg for pkg in packages if pkg not in registry._packages.keys()
+                ]
+                if len(missing_packages) > 0:
+                    raise ImportError(
+                        f"Missing required packages: {', '.join(missing_packages)}"
+                    )
+
+                return func(*args, **kwargs)
+
+            return wrapper
+
+        return decorator
 
     @classmethod
     def register(

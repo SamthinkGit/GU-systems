@@ -117,7 +117,7 @@ def visual_analyzer_node(state: VfrState) -> dict:
 
     response: VisualAnalyzerResponse = llm.invoke(prompt)
     state["memory"].update([AIMessage(content=response.summary)])
-    return {"screen_focus": response.screen_focus, "latest_symmary": response.summary}
+    return {"screen_focus": response.screen_focus, "latest_summary": response.summary}
 
 
 def fast_react_node(state: VfrState) -> dict:
