@@ -1,9 +1,11 @@
+import base64
+import os
 import re
-import tempfile
 import time
+from io import BytesIO
 from typing import Literal
 
-import replicate
+import requests
 from PIL import Image
 from PIL import ImageDraw
 
@@ -17,29 +19,46 @@ _logger = get_logger("Molmo")
 def description2coordinates(image: Image, description: str) -> list[PointDict]:
     """Given an image and a description, return the coordinates of the point in the image using the MolMo model."""
 
-    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
-        image.save(tmp.name)
+    buffered = BytesIO()
 
-        _logger.debug(
-            f"Querying MolMo with image {tmp.name} and description '{description}'"
-        )
-        start = time.perf_counter()
-        output = replicate.run(
-            "zsxkib/molmo-7b:76ebd700864218a4ca97ac1ccff068be7222272859f9ea2ae1dd4ac073fa8de8",
-            input={
-                "text": f"Point to `{description}`",
-                "image": open(tmp.name, "rb"),
-                "top_k": 5,
-                "top_p": 1,
-                "temperature": 1,
-                "length_penalty": 1,
-                "max_new_tokens": 50,
-            },
-            wait=10,
-        )
-        end = time.perf_counter()
-        _logger.debug(f"MolMo took {end - start:.2f} seconds to process the image")
+    image.save(buffered, format="PNG")
+    image_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    image_data_url = f"data:image/png;base64,{image_base64}"
 
+    _logger.debug(f"Querying MolMo with description '{description}'")
+
+    # Prepare headers and payload
+    api_token = os.getenv("REPLICATE_API_TOKEN")
+    headers = {
+        "Authorization": f"Bearer {api_token}",
+        "Content-Type": "application/json",
+        "Prefer": "wait",
+    }
+
+    payload = {
+        "version": "76ebd700864218a4ca97ac1ccff068be7222272859f9ea2ae1dd4ac073fa8de8",
+        "input": {
+            "text": f"Point to {description}",
+            "image": image_data_url,
+            "top_k": 5,
+            "top_p": 1,
+            "temperature": 0.6,
+            "length_penalty": 1,
+            "max_new_tokens": 100,
+        },
+    }
+
+    # Send POST request
+    start = time.perf_counter()
+    response = requests.post(
+        "https://api.replicate.com/v1/predictions", json=payload, headers=headers
+    )
+    end = time.perf_counter()
+
+    # Return the response
+    output = response.json()["output"]
+    _logger.debug(f"Completed after {end - start:.2f} seconds to process the image")
+    _logger.debug(f"Response from MolMo: {output}")
     return parse_multiple_points(output)
 
 
@@ -55,7 +74,9 @@ def parse_multiple_points(text: str) -> list[PointDict]:
     return points
 
 
-def proportion2pixels(image: Image.Image, x_pct: float, y_pct: float) -> tuple[int, int]:
+def proportion2pixels(
+    image: Image.Image, x_pct: float, y_pct: float
+) -> tuple[int, int]:
     """Convert a percentage of the image size to absolute pixel coordinates."""
     x_abs = int(x_pct / 100 * image.width)
     y_abs = int(y_pct / 100 * image.height)
@@ -70,5 +91,9 @@ def draw_point_on_image(image: Image.Image, x_abs: int, y_abs: int) -> Image.Ima
 
     draw = ImageDraw.Draw(result)
     draw.ellipse((x_abs - r, y_abs - r, x_abs + r, y_abs + r), fill="red")
-    draw.ellipse((x_abs - r_outside, y_abs - r_outside, x_abs + r_outside, y_abs + r_outside), outline="red", width=2)
+    draw.ellipse(
+        (x_abs - r_outside, y_abs - r_outside, x_abs + r_outside, y_abs + r_outside),
+        outline="red",
+        width=2,
+    )
     return result

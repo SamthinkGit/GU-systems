@@ -5,14 +5,16 @@ from cognition_layer.tools.ocr.image_edition import relative_coords_to_absolute
 from cognition_layer.tools.vision.molmo.description2coordinates import (
     draw_point_on_image,
 )
+from cognition_layer.tools.vision.molmo.description2coordinates import proportion2pixels
 
 if __name__ == "__main__":
 
-    side = "right"
+    side = "top left"
     original = load_image(screenshot())
     cropped = partial_image(original, side)
 
-    relative_coords = (100, 100)
+    proportion_coords = (26.5, 4.5)
+    relative_coords = proportion2pixels(cropped, *proportion_coords)
     absolute_coords = relative_coords_to_absolute(*relative_coords, original, side)
 
     draw_point_on_image(cropped, *relative_coords).show()
