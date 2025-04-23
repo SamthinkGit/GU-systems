@@ -32,13 +32,13 @@ def description2coordinates(image: Image, description: str) -> list[PointDict]:
     headers = {
         "Authorization": f"Bearer {api_token}",
         "Content-Type": "application/json",
-        "Prefer": "wait",
+        "Prefer": "wait=10",
     }
 
     payload = {
         "version": "76ebd700864218a4ca97ac1ccff068be7222272859f9ea2ae1dd4ac073fa8de8",
         "input": {
-            "text": f"Point to {description}",
+            "text": f"Find one point to {description}",
             "image": image_data_url,
             "top_k": 5,
             "top_p": 1,
@@ -51,7 +51,10 @@ def description2coordinates(image: Image, description: str) -> list[PointDict]:
     # Send POST request
     start = time.perf_counter()
     response = requests.post(
-        "https://api.replicate.com/v1/predictions", json=payload, headers=headers
+        "https://api.replicate.com/v1/predictions",
+        json=payload,
+        headers=headers,
+        timeout=20,
     )
     end = time.perf_counter()
 

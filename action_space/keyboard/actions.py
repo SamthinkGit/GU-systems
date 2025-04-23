@@ -1,13 +1,13 @@
-from ecm.tools.item_registry_v2 import ItemRegistry
-from ecm.tools.get_platform import osmethod
 from action_space.tools.wrappers import listable
+from ecm.tools.get_platform import osmethod
+from ecm.tools.item_registry_v2 import ItemRegistry
 
 
 @ItemRegistry.alias(["hotkey", "press"])
 @ItemRegistry.register(type="action")
 def press_keys(keys: list[str]):
-    """Presses the given keys as one combination. Note: It is vital to specify the side of the key if there are multiple, e.g. ['LEFTSHIFT', 'RIGHTCTRL'...] # noqa
-    @param key: A simple list of key strings, e.g. ['LEFTCTRL', 'F4', 'W']
+    """Presses the given keys as one combination. Note: It is vital to specify the side of the key if there are multiple, e.g. ['LEFTSHIFT', 'RIGHTCTRL', ...] # noqa
+    @param key: A simple list of key strings, e.g. ['LEFTCTRL', 'F4', 'W'] or ['WIN', 'D'].
     """
     _press_keys(keys)
 
@@ -26,7 +26,7 @@ def _press_keys(os, keys):
 @ItemRegistry.register(type="action")
 def write(text: str):
     """Translates ASCII text to keystrokes and sends them as events.
-    You can use '\\n' for sending enter.
+    Note: Use press_keys for sending enter, here only send text as a string.
     @param text: string as a unique string text to send as events to keyboard, e.g. write('Hello World!')
     """
     _write(text)
