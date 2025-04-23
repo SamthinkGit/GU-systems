@@ -26,4 +26,5 @@ query.
 {history}
 ```
 
+{additional_rules}
 """

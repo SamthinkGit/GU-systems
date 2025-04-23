@@ -6,6 +6,7 @@ from typing import Literal
 
 from langchain.tools import tool as build_tool
 from langchain_core.messages import AIMessage
+from langchain_core.messages import BaseMessage
 from langchain_core.messages import HumanMessage
 from langchain_core.messages import SystemMessage
 from langchain_core.messages.utils import get_buffer_string
@@ -141,7 +142,7 @@ class MinimalVFR:
             cognition_state.set(key, value)
         return cognition_state
 
-    def _get_next_prompt(self) -> str:
+    def _get_next_prompt(self) -> list[BaseMessage]:
         screenshot = load_image(self.registry.get("screenshot", type="tool").content())
         screenshot = partial_image(
             screenshot, position=self.cognition_state.get("screen_focus")
@@ -152,6 +153,7 @@ class MinimalVFR:
             tools=self.formatted_tools,
             history=get_buffer_string(self.memory.messages),
             cognition_state=self.cognition_state.summary(),
+            additional_rules="",
         )
         prompt = [ImageMessage(image=screenshot, input=instructions).as_human()]
         return prompt
@@ -170,14 +172,16 @@ class MinimalVFR:
                 ]
             )
 
-    def complete_task(self, input: str) -> Generator[VFRFeedbackStep, None, None]:
-
+    def _initialize_agent_task(self, input):
         self.cognition_state = self._get_initial_cognition_state()
         self.formatted_tools = "\n\n- ".join(self.get_formatted_actions())
         self.memory = SimpleCognitiveMemory(
             capacity=self.memory_capacity, keep_images=False
         )
         self.memory.update([HumanMessage(content=input)])
+
+    def complete_task(self, input: str) -> Generator[VFRFeedbackStep, None, None]:
+        self._initialize_agent_task(input)
         exit = False
 
         while not exit:

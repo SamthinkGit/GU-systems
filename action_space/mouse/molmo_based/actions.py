@@ -25,6 +25,7 @@ def click_on(
 ) -> str:
     """Clicks with the mouse on given a specified description and location.
     Example: click_on('Firefox Icon in the Windows bar', 'bottom')
+    Note: Please focus the screen where you want to click before executing this action.
     Use me only when you are sure that the element is on the screen and which element you want to click.
     """
 
@@ -49,6 +50,7 @@ def double_click_on(
 ) -> str:
     """Double clicks with the mouse on given a specified description and location.
     Example: double_click_on('Close window button', 'top right')
+    Note: Please focus the screen where you want to click before executing this action.
     Use me only when you are sure that the element is on the screen and which element you want to click.
     """
     return _double_click_on_(prompt, location)
