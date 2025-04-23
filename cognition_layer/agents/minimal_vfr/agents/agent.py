@@ -1,11 +1,13 @@
 import random
 from dataclasses import dataclass
+from typing import Any
 from typing import Generator
 from typing import Literal
 
 from langchain.tools import tool as build_tool
 from langchain_core.messages import AIMessage
 from langchain_core.messages import HumanMessage
+from langchain_core.messages import SystemMessage
 from langchain_core.messages.utils import get_buffer_string
 from langchain_core.tools import StructuredTool
 from pydantic import BaseModel
@@ -22,10 +24,18 @@ from cognition_layer.tools.ocr.image_edition import partial_image
 from cognition_layer.tools.ocr.image_edition import resize_image
 from ecm.exelent.builder import ExelentBuilder
 from ecm.exelent.parser import ParsedTask
+from ecm.mediator.feedback import ExecutionStatus
+from ecm.mediator.feedback import Feedback
 from ecm.mediator.Interpreter import Interpreter
 from ecm.tools.item_registry_v2 import ItemRegistry
 
 IMAGE_QUALITY = 0.4
+
+
+@dataclass
+class TaskSummary:
+    success: bool = False
+    result: Any = None
 
 
 @dataclass
@@ -92,6 +102,7 @@ class MinimalVFR:
         self.registry = registry
         self.interpreter = interpreter
         self.memory_capacity = memory_capacity
+        self.latest_task: TaskSummary = None
 
     def get_formatted_actions(self) -> list[str]:
         """
@@ -101,6 +112,18 @@ class MinimalVFR:
         actions = [action.content for action in self.registry.actions.values()]
         tools: list[StructuredTool] = [build_tool(a) for a in actions]
         return [format_tool(t) for t in tools]
+
+    def retrieve_task_result(self, feedback: Feedback):
+        assert (
+            self.latest_task is not None
+        ), "No task has been initialized executed yet."
+        self.latest_task: TaskSummary
+
+        if feedback._exec_status == ExecutionStatus.SUCCESS:
+            self.latest_task.success = True
+
+        if feedback._exec_status == ExecutionStatus.RESULT:
+            self.latest_task.result = feedback.object
 
     def complete_task(self, input: str) -> Generator[VFRFeedbackStep, None, None]:
         cognition_state = CognitionState(VFR_CognitionState)
@@ -137,8 +160,16 @@ class MinimalVFR:
             response: VFR_Response = self.llm.invoke(prompt)
             if response.function != "Empty":
                 task = _convert_response_to_exelent(response)
-                self.interpreter.run(task)
-                memory.update([AIMessage(content=str(response))])
+                self.latest_task = TaskSummary()
+                self.interpreter.run(task, callback=self.retrieve_task_result)
+                memory.update(
+                    [
+                        AIMessage(content=str(response)),
+                        SystemMessage(
+                            content=f"`{response.function}` returned the following summary: `{self.latest_task}`"
+                        ),
+                    ]
+                )
 
             cognition_state.set("scratchpad", response.reasoning)
 
