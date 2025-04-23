@@ -13,7 +13,7 @@ from langchain_core.tools import StructuredTool
 from pydantic import BaseModel
 from pydantic import Field
 
-from action_space.meta.state import CognitionState
+from action_space.meta.cognition_state.state import CognitionState
 from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
 from cognition_layer.agents.minimal_vfr.agents.prompt import MINVFR_PROMPT
@@ -103,6 +103,9 @@ class MinimalVFR:
         self.interpreter = interpreter
         self.memory_capacity = memory_capacity
         self.latest_task: TaskSummary = None
+        self.cognition_state = None
+        self.formatted_tools = None
+        self.memory = None
 
     def get_formatted_actions(self) -> list[str]:
         """
@@ -125,7 +128,7 @@ class MinimalVFR:
         if feedback._exec_status == ExecutionStatus.RESULT:
             self.latest_task.result = feedback.object
 
-    def complete_task(self, input: str) -> Generator[VFRFeedbackStep, None, None]:
+    def _get_initial_cognition_state(self) -> CognitionState:
         cognition_state = CognitionState(VFR_CognitionState)
         initial_state = {
             "goal": input,
@@ -136,44 +139,56 @@ class MinimalVFR:
         }
         for key, value in initial_state.items():
             cognition_state.set(key, value)
+        return cognition_state
 
-        formatted_tools = "\n\n- ".join(self.get_formatted_actions())
-        memory = SimpleCognitiveMemory(capacity=self.memory_capacity, keep_images=False)
-        memory.update([HumanMessage(content=input)])
+    def _get_next_prompt(self) -> str:
+        screenshot = load_image(self.registry.get("screenshot", type="tool").content())
+        screenshot = partial_image(
+            screenshot, position=self.cognition_state.get("screen_focus")
+        )
+        screenshot = resize_image(screenshot, IMAGE_QUALITY)
+
+        instructions = MINVFR_PROMPT.format(
+            tools=self.formatted_tools,
+            history=get_buffer_string(self.memory.messages),
+            cognition_state=self.cognition_state.summary(),
+        )
+        prompt = [ImageMessage(image=screenshot, input=instructions).as_human()]
+        return prompt
+
+    def _execute_response_from_agent(self, response: VFR_Response) -> None:
+        if response.function != "Empty":
+            task = _convert_response_to_exelent(response)
+            self.latest_task = TaskSummary()
+            self.interpreter.run(task, callback=self.retrieve_task_result)
+            self.memory.update(
+                [
+                    AIMessage(content=str(response)),
+                    SystemMessage(
+                        content=f"`{response.function}` returned the following summary: `{self.latest_task}`"
+                    ),
+                ]
+            )
+
+    def complete_task(self, input: str) -> Generator[VFRFeedbackStep, None, None]:
+
+        self.cognition_state = self._get_initial_cognition_state()
+        self.formatted_tools = "\n\n- ".join(self.get_formatted_actions())
+        self.memory = SimpleCognitiveMemory(
+            capacity=self.memory_capacity, keep_images=False
+        )
+        self.memory.update([HumanMessage(content=input)])
         exit = False
+
         while not exit:
 
-            screenshot = load_image(
-                self.registry.get("screenshot", type="tool").content()
-            )
-            screenshot = partial_image(
-                screenshot, position=cognition_state.get("screen_focus")
-            )
-            screenshot = resize_image(screenshot, IMAGE_QUALITY)
-
-            instructions = MINVFR_PROMPT.format(
-                tools=formatted_tools,
-                history=get_buffer_string(memory.messages),
-                cognition_state=cognition_state.summary(),
-            )
-            prompt = [ImageMessage(image=screenshot, input=instructions).as_human()]
+            prompt = self._get_next_prompt()
             response: VFR_Response = self.llm.invoke(prompt)
-            if response.function != "Empty":
-                task = _convert_response_to_exelent(response)
-                self.latest_task = TaskSummary()
-                self.interpreter.run(task, callback=self.retrieve_task_result)
-                memory.update(
-                    [
-                        AIMessage(content=str(response)),
-                        SystemMessage(
-                            content=f"`{response.function}` returned the following summary: `{self.latest_task}`"
-                        ),
-                    ]
-                )
 
-            cognition_state.set("scratchpad", response.reasoning)
+            self._execute_response_from_agent(response)
 
-            obj = cognition_state.get("objective_completed")
+            self.cognition_state.set("scratchpad", response.reasoning)
+            obj = self.cognition_state.get("objective_completed")
             exit = (obj) or (isinstance(obj, str) and obj.lower() == "true")
 
             yield VFRFeedbackStep(
