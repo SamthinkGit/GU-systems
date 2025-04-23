@@ -15,6 +15,8 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 ADDITIONAL_RULES_PROMPT = """
 Note: Generally is a good idea to ask for a screenshot of the screen before starting the planning,
 then, you should ask for a screenshot of the screen when actions fails and reason about why.
+Note2: You cannot interact or wait to the user, you must be autonomous until completing the task or exiting.
+
 """
 PARTIAL_QUALITY = 0.2
 FULLSCREEEN_QUALITY = 0.1

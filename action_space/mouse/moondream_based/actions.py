@@ -12,10 +12,11 @@ def click_on(
     prompt: str,
 ) -> str:
     """Clicks with the mouse on given a specified description and location.
-    Example: click_on('Outlook')
-    Exmple: click_on('miaw.png label')
-    Example: click_on('Close window')
+    Example: click_on('Outlook icon on the windows bottom bar')
+    Exmple: click_on('miaw.png label in the square of the app')
+    Example: click_on('Close window at the top right')
     Use me only when you are sure that the element is easily locable on the screen and which element you want to click.
+    Note: This tool could return false positives
     """
 
     return _click_on(prompt)
@@ -26,14 +27,15 @@ def double_click_on(
     prompt: str,
 ) -> str:
     """Double Clicks with the mouse on given a specified description and location.
-    Example: double_click_on('Outlook')
-    Exmple: double_click_on('miaw.png label')
-    Example: double_click_on('Close window')
+    Example: double_click_on('Outlook icon on the windows bottom bar')
+    Exmple: double_click_on('miaw.png label in the square of the app')
+    Example: double_click_on('Close window at the top right')
     Use me only when you are sure that the element is easily locable on the screen and which element you want to click.
+    Note: This tool could return false positives, please verify the result.
     """
 
     result = _click_on(prompt)
-    if result != "Success":
+    if "Succes" not in result:
         return result
     osclick()
 
@@ -42,9 +44,12 @@ def double_click_on(
 def _click_on(prompt):
     screenshot = load_image(ItemRegistry().get("screenshot", type="tool").content())
     try:
-        x, y = query_point(screenshot, prompt)
+        x, y, confident = query_point(screenshot, prompt)
     except ValueError:
         return f"Moondream could not find any point for the prompt '{prompt}'."
     osmove(x, y)
     osclick()
+    if not confident:
+        return "Succesfully clicked, but multiple results have been matched, please verify the result."
+
     return "Success"
