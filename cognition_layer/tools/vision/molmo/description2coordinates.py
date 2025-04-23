@@ -62,6 +62,11 @@ def description2coordinates(image: Image, description: str) -> list[PointDict]:
     output = response.json()["output"]
     _logger.debug(f"Completed after {end - start:.2f} seconds to process the image")
     _logger.debug(f"Response from MolMo: {output}")
+
+    if output is None:
+        _logger.debug("MolMo returned None, no points found.")
+        return []
+
     return parse_multiple_points(output)
 
 

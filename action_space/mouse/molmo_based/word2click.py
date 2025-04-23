@@ -9,8 +9,12 @@ from action_space.tools.terminal import clear_terminal
 from cognition_layer.tools.ocr.image_edition import partial_image
 from cognition_layer.tools.ocr.image_edition import relative_coords_to_absolute
 from cognition_layer.tools.ocr.image_edition import resize_image
-from cognition_layer.tools.vision.molmo.description2coordinates import description2coordinates
-from cognition_layer.tools.vision.molmo.description2coordinates import draw_point_on_image
+from cognition_layer.tools.vision.molmo.description2coordinates import (
+    description2coordinates,
+)
+from cognition_layer.tools.vision.molmo.description2coordinates import (
+    draw_point_on_image,
+)
 from cognition_layer.tools.vision.molmo.description2coordinates import proportion2pixels
 from ecm.shared import get_root_path
 
@@ -18,14 +22,21 @@ MOLMO_QUALITY = 1
 
 
 def _click_on_(prompt, location):
-    coords = _find_point_on_screen(prompt, location)
+    try:
+        coords = _find_point_on_screen(prompt, location)
+    except ValueError:
+        return f"MolMo could not find any point for the prompt '{prompt}' in the location '{location}'."
     osmove(coords[0], coords[1])
     osclick()
     return "Successfully clicked on the element."
 
 
 def _double_click_on_(prompt, location):
-    coords = _find_point_on_screen(prompt, location)
+    try:
+        coords = _find_point_on_screen(prompt, location)
+    except ValueError:
+        return f"MolMo could not find any point for the prompt '{prompt}' in the location '{location}'."
+
     osmove(coords[0], coords[1])
     osclick()
     osclick()
@@ -67,7 +78,9 @@ def _find_point_on_screen(
 
     points = description2coordinates(cropped, prompt)
     if len(points) == 0:
-        raise ValueError(f"Could not find the point '{prompt}' in the image.")
+        raise ValueError(
+            f"MolMo could not find any point for the prompt '{prompt}' in the location '{location}'."
+        )
 
     proportion_coords = (points[0]["x"], points[0]["y"])
     relative_coords = proportion2pixels(cropped, *proportion_coords)
