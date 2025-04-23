@@ -1,4 +1,4 @@
-from action_space.meta.state import _cognition_state_setter
+from action_space.meta.cognition_state.state import _cognition_state_setter
 from ecm.tools.item_registry_v2 import ItemRegistry
 
 PKG_NAME = "meta"
