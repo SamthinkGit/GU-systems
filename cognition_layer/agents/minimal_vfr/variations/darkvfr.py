@@ -5,7 +5,6 @@ from langchain_core.messages.utils import get_buffer_string
 
 from action_space.tools.image import ImageMessage
 from action_space.tools.image import load_image
-from cognition_layer.agents.minimal_vfr.agents.agent import IMAGE_QUALITY
 from cognition_layer.agents.minimal_vfr.agents.agent import MinimalVFR
 from cognition_layer.agents.minimal_vfr.agents.prompt import MINVFR_PROMPT
 from cognition_layer.tools.ocr.image_edition import partial_image
@@ -17,6 +16,7 @@ ADDITIONAL_RULES_PROMPT = """
 Note: Generally is a good idea to ask for a screenshot of the screen before starting the planning,
 then, you should ask for a screenshot of the screen when actions fails and reason about why.
 """
+PARTIAL_QUALITY = 0.2
 FULLSCREEEN_QUALITY = 0.1
 
 
@@ -54,7 +54,7 @@ class DarkVFR(MinimalVFR):
             quality = (
                 FULLSCREEEN_QUALITY
                 if self.cognition_state.get("screen_focus") == "fullscreen"
-                else IMAGE_QUALITY
+                else PARTIAL_QUALITY
             )
             screenshot = resize_image(screenshot, quality)
             prompt.append(

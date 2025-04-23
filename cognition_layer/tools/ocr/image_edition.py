@@ -48,8 +48,8 @@ def partial_image(
 
 
 def resize_image(image: Image.Image, percent: int) -> Image.Image:
-    if not (0.1 <= percent <= 1):
-        raise ValueError("Percentaje should be between 0.1 and 1")
+    if not (0 < percent <= 1):
+        raise ValueError("Percentaje should be between 0 and 1")
 
     width, height = image.size
     new_width = int(width * percent)
