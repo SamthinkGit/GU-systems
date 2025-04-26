@@ -1,0 +1,5 @@
+LATEST_COGNITION_LAYER = "DarkVFR"
+LATEST_EXECUTION_LAYER = "Pyxcel"
+
+EXECUTION_LAYER_OPTIONS = ["Pyxcel", "All"]
+COGNITION_LAYER_OPTIONS = ["DarkVFR", "VisualFastReact", "FastReact", "All"]
