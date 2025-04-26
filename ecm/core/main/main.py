@@ -8,7 +8,7 @@ import ecm.shared
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 
-COGNITION_LAYERS = ["fastreact", "xplore", "vfr"]
+COGNITION_LAYERS = ["fastreact", "xplore", "vfr", "darkvfr"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
 DEFAULT_COGNITION = "fastreact"
 DEFAULT_EXECUTOR = "pyxcel"
@@ -16,10 +16,16 @@ DEFAULT_EXECUTOR = "pyxcel"
 
 def main():
     # ---------- ACTION SPACE ---------
-    import action_space.keyboard.actions  # noqa
-    import action_space.experimental.screenshot.actions  # noqa
-    import action_space.mouse.labelled_ocr.actions  # noqa
+    # import action_space.keyboard.actions  # noqa
+    # import action_space.experimental.screenshot.actions  # noqa
+    # import action_space.mouse.labelled_ocr.actions  # noqa
 
+    import action_space.experimental.screenshot.actions  # noqa
+    import action_space.keyboard.actions  # noqa
+    import action_space.meta.cognition_state.actions  # noqa
+    import action_space.meta.fake.actions  # noqa
+    import action_space.mouse.molmo_based.actions # noqa
+    import action_space.vision.moondream.actions  # noqa
     # ----------------------------------
     ItemRegistry().load_all()
 
@@ -95,18 +101,27 @@ def main():
 
     logger.debug(f"Running {args.executor} as Execution Layer")
     match args.agent.lower():
+        case "darkvfr":
+            from cognition_layer.agents.minimal_vfr.api.darkvfr_server import (
+                get_fast_ap_server,
+            )
+
+            server = get_fast_ap_server(interpreter=interpreter)
+
         case "vfr":
-            from cognition_layer.visual_fast_react.api.server import get_fast_ap_server
+            from cognition_layer.agents.visual_fast_react.api.server import (
+                get_fast_ap_server,
+            )
 
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "fastreact":
-            from cognition_layer.fast_react.api.server import get_fast_ap_server
+            from cognition_layer.agents.fast_react.api.server import get_fast_ap_server
 
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "xplore":
-            from cognition_layer.xplore.api.server import get_fast_ap_server
+            from cognition_layer.agents.xplore.api.server import get_fast_ap_server
 
             server = get_fast_ap_server(interpreter=interpreter)
 
