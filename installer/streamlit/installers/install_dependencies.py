@@ -1,13 +1,18 @@
+from functools import cache
 from typing import Literal
 
 import streamlit as st
 from config import get_repository_root_path
 from installers.description import InstallerDescription
 from installers.description import run_command_live
+from installers.persistent_shell import PersistentShell
 
 
 def check_dependencies(
-    type: Literal["cognition", "execution", "ecm"], module: str
+    shell: PersistentShell,
+    type: Literal["cognition", "execution", "ecm"],
+    module: str,
+    write_output_with_st: bool = False,
 ) -> tuple[bool, list[str]]:
 
     directory_name = None
@@ -26,7 +31,7 @@ def check_dependencies(
         / "streamlit"
         / "dependencies"
         / directory_name
-        / f"requirements_{module}.txt"
+        / f"requirements_{module.lower()}.txt"
     )
     dependencies = []
     for line in path.read_text().splitlines():
@@ -34,9 +39,7 @@ def check_dependencies(
             continue
         dependencies.append(line.split("==")[0])
 
-    exit_code, result = run_command_live(
-        ["python", "-m", "pip", "list"], write_output_with_st=False
-    )
+    exit_code, result = get_pip_list(shell, write_output_with_st)
     if exit_code != 0:
         raise RuntimeError(f"Error checking dependencies for {module} in {type} layer.")
     if result == "":
@@ -45,11 +48,11 @@ def check_dependencies(
         )
     installed_dependencies = []
     for line in result.splitlines():
-        installed_dependencies.append(line.split()[0])
+        installed_dependencies.append(line.split()[0].lower())
 
     not_installed = []
     for dependency in dependencies:
-        if dependency not in installed_dependencies:
+        if get_fixed_package_name(dependency.lower()) not in installed_dependencies:
             not_installed.append(dependency)
 
     if not_installed:
@@ -85,7 +88,7 @@ def _install_cognition_layer_dependencies(
     )
 
     for layer in description.cognition_layers + "base":
-        requirements_path = f"{cognition_path}/requirements_{layer}.txt"
+        requirements_path = f"{cognition_path}/requirements_{layer.lower()}.txt"
         exit_code, _ = run_command_live(
             ["pip", "install", "-r", requirements_path], write_output_with_st
         )
@@ -114,7 +117,7 @@ def _install_execution_layer_dependencies(
     )
 
     for layer in description.execution_layers:
-        requirements_path = f"{execution_path}/requirements_{layer}.txt"
+        requirements_path = f"{execution_path}/requirements_{layer.lower()}.txt"
         exit_code, _ = run_command_live(
             ["pip", "install", "-r", requirements_path], write_output_with_st
         )
@@ -140,7 +143,7 @@ def _install_ecm_dependencies(
     )
 
     for layer in description.ecm_dependencies:
-        requirements_path = f"{ecm_path}/requirements_{layer}.txt"
+        requirements_path = f"{ecm_path}/requirements_{layer.lower()}.txt"
         exit_code, _ = run_command_live(
             ["pip", "install", "-r", requirements_path], write_output_with_st
         )
@@ -152,3 +155,32 @@ def _install_ecm_dependencies(
             return False
 
     return True
+
+
+def get_fixed_package_name(package_name: str) -> str:
+    match package_name:
+        case "onnxruntime-tools":
+            return "onnxruntime"
+        case "langchain_openai":
+            return "langchain-openai"
+        case "langchain_ollama":
+            return "langchain-ollama"
+    return package_name
+
+
+def reload_pip_list_cache() -> None:
+    """
+    Reload the pip list cache.
+    """
+    get_pip_list.cache_clear()
+
+
+@cache
+def get_pip_list(
+    shell: PersistentShell, write_output_with_st: bool = False
+) -> list[str]:
+    """
+    Get the list of installed packages.
+    """
+    shell.send_command("python -m pip list")
+    return shell.read_output(write_output_with_st=write_output_with_st)

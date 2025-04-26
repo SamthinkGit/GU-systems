@@ -1,8 +1,13 @@
 import streamlit as st
+from config import COGNITION_LAYER_OPTIONS
+from config import ECM_OPTIONS
+from config import EXECUTION_LAYER_OPTIONS
 from installers.conda import activate_conda_environment
 from installers.conda import check_conda_installation
 from installers.conda import get_conda_envs
 from installers.conda import get_current_conda_env
+from installers.install_dependencies import check_dependencies
+from installers.install_dependencies import reload_pip_list_cache
 from installers.persistent_shell import PersistentShell
 
 
@@ -25,6 +30,7 @@ def init():
         st.session_state.conda_envs = []
         st.session_state.current_conda_env = "None"
 
+    load_dependencies_summary()
     frame.empty()
 
 
@@ -37,10 +43,41 @@ def reload_conda():
 
 def set_conda_env():
     env = st.session_state.conda_env_select
-    activate_conda_environment(st.session_state.shell, env, write_output_with_st=False)
-    st.session_state.current_conda_env = get_current_conda_env(
-        st.session_state.shell, write_output_with_st=False
-    )
+    if env.lower() == "none":
+        shell: PersistentShell = st.session_state.shell
+        shell.send_command("conda deactivate")
+        st.session_state.current_conda_env = "None"
+    else:
+        activate_conda_environment(
+            st.session_state.shell, env, write_output_with_st=False
+        )
+        st.session_state.current_conda_env = get_current_conda_env(
+            st.session_state.shell, write_output_with_st=False
+        )
+
+    load_dependencies_summary()
+
+
+def load_dependencies_summary():
+    reload_pip_list_cache()
+    shell = st.session_state.shell
+    cognition_options = [val for val in COGNITION_LAYER_OPTIONS if val.lower() != "all"]
+    execution_options = [val for val in EXECUTION_LAYER_OPTIONS if val.lower() != "all"]
+    data = {
+        type: {
+            name: {
+                "installed": check_dependencies(shell, type, name)[0],
+                "missing": check_dependencies(shell, type, name)[1],
+            }
+            for name in options
+        }
+        for type, options in [
+            ("cognition", cognition_options),
+            ("execution", execution_options),
+            ("ecm", ECM_OPTIONS),
+        ]
+    }
+    st.session_state.dependencies_summary = data
 
 
 def load_conda_selection_section():
@@ -83,7 +120,7 @@ def load_conda_selection_section():
             disabled=not conda_available,
             key="conda_env_select",
             on_change=set_conda_env,
-            index=envs.index(st.session_state.current_conda_env)
+            index=envs.index(st.session_state.current_conda_env),
         )
 
     c1, c2 = st.columns(2)
@@ -95,6 +132,55 @@ def load_conda_selection_section():
         )
 
     st.divider()
+    st.subheader("Cognition Layer")
+    cognition_options = [val for val in COGNITION_LAYER_OPTIONS if val.lower() != "all"]
+    execution_options = [val for val in EXECUTION_LAYER_OPTIONS if val.lower() != "all"]
+    for layer in cognition_options:
+        c1, c2 = st.columns(2)
+        with c1:
+            st.write(f"**{layer}**")
+        with c2:
+            disabled = st.session_state.dependencies_summary["cognition"][layer][
+                "installed"
+            ]
+            label = ":blue[Installed]" if disabled else "Install"
+            st.toggle(
+                label,
+                disabled=disabled,
+                key=f"cognition_{layer}",
+            )
+
+    st.subheader("Execution Layer")
+    for layer in execution_options:
+        c1, c2 = st.columns(2)
+        with c1:
+            st.write(f"**{layer}**")
+        with c2:
+            disabled = st.session_state.dependencies_summary["execution"][layer][
+                "installed"
+            ]
+            label = ":blue[Installed]" if disabled else "Install"
+            st.toggle(
+                label,
+                disabled=disabled,
+                key=f"execution_{layer}",
+            )
+
+    st.subheader("Core Components")
+    for component in ECM_OPTIONS:
+        c1, c2 = st.columns(2)
+        with c1:
+            st.write(f"**{component}**")
+        with c2:
+            disabled = st.session_state.dependencies_summary["ecm"][component][
+                "installed"
+            ]
+            label = ":blue[Installed]" if disabled else "Install"
+            st.toggle(
+                label,
+                disabled=disabled,
+                key=f"ecm_{component}",
+            )
 
 
 def load_debug_tab():
@@ -116,6 +202,16 @@ def load_debug_tab():
                 st.session_state.shell, write_output_with_st=True
             )
             st.write("Parsed env:", env)
+    st.divider()
+    st.subheader("Dependencies")
+    check_dependencies_output = st.button(
+        "Check dependencies",
+        help="Check if all dependencies are installed.",
+    )
+    if check_dependencies_output:
+        container = st.container(border=True)
+        with container:
+            st.json(st.session_state.dependencies_summary)
 
 
 def load_config_tab():
