@@ -1,0 +1,154 @@
+from typing import Literal
+
+import streamlit as st
+from config import get_repository_root_path
+from installers.description import InstallerDescription
+from installers.description import run_command_live
+
+
+def check_dependencies(
+    type: Literal["cognition", "execution", "ecm"], module: str
+) -> tuple[bool, list[str]]:
+
+    directory_name = None
+    match type:
+        case "cognition":
+            directory_name = "cognition_layer"
+        case "execution":
+            directory_name = "execution_layer"
+        case "ecm":
+            directory_name = "ecm"
+        case _:
+            raise ValueError(f"Invalid type: {type}")
+    path = (
+        get_repository_root_path()
+        / "installer"
+        / "streamlit"
+        / "dependencies"
+        / directory_name
+        / f"requirements_{module}.txt"
+    )
+    dependencies = []
+    for line in path.read_text().splitlines():
+        if line.startswith("#"):
+            continue
+        dependencies.append(line.split("==")[0])
+
+    exit_code, result = run_command_live(
+        ["python", "-m", "pip", "list"], write_output_with_st=False
+    )
+    if exit_code != 0:
+        raise RuntimeError(f"Error checking dependencies for {module} in {type} layer.")
+    if result == "":
+        raise RuntimeError(
+            "pip list returned empty result. Please check your Python installation."
+        )
+    installed_dependencies = []
+    for line in result.splitlines():
+        installed_dependencies.append(line.split()[0])
+
+    not_installed = []
+    for dependency in dependencies:
+        if dependency not in installed_dependencies:
+            not_installed.append(dependency)
+
+    if not_installed:
+        return False, not_installed
+    return True, []
+
+
+def install_dependencies(
+    description: InstallerDescription, write_output_with_st: bool = True
+) -> bool:
+
+    if (
+        not _install_cognition_layer_dependencies(description, write_output_with_st)
+        or not _install_execution_layer_dependencies(description, write_output_with_st)
+        or not _install_ecm_dependencies(description, write_output_with_st)
+    ):
+        return False
+
+
+def _install_cognition_layer_dependencies(
+    description: InstallerDescription, write_output_with_st: bool = True
+) -> bool:
+    """
+    Install the dependencies for the cognition layer.
+    """
+
+    cognition_path = (
+        get_repository_root_path()
+        / "installer"
+        / "streamlit"
+        / "dependencies"
+        / "cognition_layer"
+    )
+
+    for layer in description.cognition_layers + "base":
+        requirements_path = f"{cognition_path}/requirements_{layer}.txt"
+        exit_code, _ = run_command_live(
+            ["pip", "install", "-r", requirements_path], write_output_with_st
+        )
+        if exit_code != 0:
+            st.error(
+                f"Error installing the dependencies for the cognition layer {layer}."
+                " Please check the requirements file."
+            )
+            return False
+    return True
+
+
+def _install_execution_layer_dependencies(
+    description: InstallerDescription, write_output_with_st: bool = True
+) -> bool:
+    """
+    Install the dependencies for the cognition layer.
+    """
+
+    execution_path = (
+        get_repository_root_path()
+        / "installer"
+        / "streamlit"
+        / "dependencies"
+        / "execution_layer"
+    )
+
+    for layer in description.execution_layers:
+        requirements_path = f"{execution_path}/requirements_{layer}.txt"
+        exit_code, _ = run_command_live(
+            ["pip", "install", "-r", requirements_path], write_output_with_st
+        )
+        if exit_code != 0:
+            st.error(
+                f"Error installing the dependencies for the execution layer {layer}."
+                " Please check the requirements file."
+            )
+            return False
+
+    return True
+
+
+def _install_ecm_dependencies(
+    description: InstallerDescription, write_output_with_st: bool = True
+) -> bool:
+    """
+    Install the dependencies for the cognition layer.
+    """
+
+    ecm_path = (
+        get_repository_root_path() / "installer" / "streamlit" / "dependencies" / "ecm"
+    )
+
+    for layer in description.ecm_dependencies:
+        requirements_path = f"{ecm_path}/requirements_{layer}.txt"
+        exit_code, _ = run_command_live(
+            ["pip", "install", "-r", requirements_path], write_output_with_st
+        )
+        if exit_code != 0:
+            st.error(
+                f"Error installing the dependencies for the execution layer {layer}."
+                " Please check the requirements file."
+            )
+            return False
+
+    return True

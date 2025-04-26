@@ -24,7 +24,7 @@ def load_welcome_page():
     st.title("Welcome to the ECM Installer 🚀")
 
     st.write(
-    """This installer will guide you through setting up the Execution Cognition Machine (ECM).
+        """This installer will guide you through setting up the Execution Cognition Machine (ECM).
     Please choose the section that best fits your role:"""
     )
 
@@ -43,23 +43,18 @@ def load_welcome_page():
         """
     - Install only the client, only the host, or both, depending on your development needs.
     - Advanced configuration options available.
+    - Update your existing ECM installation to the latest version.
     """
     )
 
-    st.subheader("🔹 Update")
-    st.write(
-        """
-    - Update your existing ECM installation to the latest version.
-    - Maintain compatibility with the newest features and improvements.
-    """
-    )
+    st.divider()
 
     st.info(
         "👈 Please select a section from the sidebar to start your installation or update process."
     )
 
 
-pages = ["Welcome", "Standard User", "Developer", "Update"]
+pages = ["Welcome", "Standard User", "Developer"]
 if "page" not in st.session_state:
     print_welcome_message_to_terminal()
     st.session_state.page = "Welcome"
@@ -86,5 +81,3 @@ if st.session_state.page == "Standard User":
     load_standard_tab()
 if st.session_state.page == "Developer":
     st.title("Developer Installer")
-if st.session_state.page == "Update":
-    st.title("Update")
