@@ -1,3 +1,14 @@
+"""
+description2coordinates
+==============================
+This module provides tools for interacting with the MolMo model to extract
+coordinates from an image based on a textual description. It includes
+functions for parsing model outputs, converting proportions to pixels,
+and visualizing points on images.
+
+The module is designed to work with the MolMo API and includes utilities
+for preparing API requests, parsing responses, and drawing results on images.
+"""
 import base64
 import os
 import re
@@ -11,13 +22,35 @@ from PIL import ImageDraw
 
 from ecm.shared import get_logger
 
-PointDict = dict[Literal["x", "y", "alt", "text"], float | str]
+# ======================= CONSTANTS ============================
 
+PointDict = dict[Literal["x", "y", "alt", "text"], float | str]
 _logger = get_logger("Molmo")
 
 
+# ======================= UTILITIES ============================
 def description2coordinates(image: Image, description: str) -> list[PointDict]:
-    """Given an image and a description, return the coordinates of the point in the image using the MolMo model."""
+    """
+    Given an image and a description, return the coordinates of the point
+    in the image using the MolMo model.
+
+    Args:
+        image (Image): The input image to analyze.
+        description (str): The textual description to locate points.
+
+    Returns:
+        list[PointDict]: A list of dictionaries containing point data
+        (x, y, alt-text, and text).
+
+    Warnings:
+        Ensure the REPLICATE_API_TOKEN environment variable is set before
+        calling this function.
+
+    Examples:
+        >>> from PIL import Image
+        >>> img = Image.open("example.png")
+        >>> description2coordinates(img, "the center of the object")
+    """
 
     buffered = BytesIO()
 
@@ -71,7 +104,20 @@ def description2coordinates(image: Image, description: str) -> list[PointDict]:
 
 
 def parse_multiple_points(text: str) -> list[PointDict]:
-    """Parse the output of the MolMo model to extract multiple points."""
+    """
+    Parse the output of the MolMo model to extract multiple points.
+
+    Args:
+        text (str): The raw output string from the MolMo model.
+
+    Returns:
+        list[PointDict]: A list of dictionaries containing parsed point data.
+
+    Examples:
+        >>> parse_multiple_points('<point x="10" y="20" alt="label">label</point>')
+        [{'x': 10.0, 'y': 20.0, 'alt': 'high', 'text': 'label'}]
+    """
+
     pattern = r'<point x="([\d\.]+)" y="([\d\.]+)" alt="([^"]*)">(.+?)</point>'
     matches = re.findall(pattern, text)
 
@@ -85,14 +131,43 @@ def parse_multiple_points(text: str) -> list[PointDict]:
 def proportion2pixels(
     image: Image.Image, x_pct: float, y_pct: float
 ) -> tuple[int, int]:
-    """Convert a percentage of the image size to absolute pixel coordinates."""
+    """
+    Convert a percentage of the image size to absolute pixel coordinates.
+
+    Args:
+        image (Image.Image): The input image.
+        x_pct (float): The x-coordinate as a percentage of the image width.
+        y_pct (float): The y-coordinate as a percentage of the image height.
+
+    Returns:
+        tuple[int, int]: The absolute pixel coordinates (x, y).
+
+    Examples:
+        >>> img = Image.new("RGB", (100, 200))
+        >>> proportion2pixels(img, 50, 50)
+        (50, 100)
+    """
     x_abs = int(x_pct / 100 * image.width)
     y_abs = int(y_pct / 100 * image.height)
     return (x_abs, y_abs)
 
 
 def draw_point_on_image(image: Image.Image, x_abs: int, y_abs: int) -> Image.Image:
-    """Draw a point on the image at the given percentage coordinates."""
+    """
+    Draw a point on the image at the given absolute pixel coordinates.
+
+    Args:
+        image (Image.Image): The input image.
+        x_abs (int): The x-coordinate in pixels.
+        y_abs (int): The y-coordinate in pixels.
+
+    Returns:
+        Image.Image: A copy of the image with the point drawn.
+
+    Examples:
+        >>> img = Image.new("RGB", (100, 100))
+        >>> draw_point_on_image(img, 50, 50).show()
+    """
     r = 5
     r_outside = 10
     result = image.copy().convert("L").convert("RGB")

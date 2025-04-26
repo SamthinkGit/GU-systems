@@ -1,5 +1,16 @@
+"""
+FastAgentProtocol
+==============================
+This module provides the `FastAgentProtocol` class, a simplified and
+synchronous protocol for managing agent tasks. Unlike its predecessor
+(Agent Protocol), this implementation does not rely on REST APIs, making
+it easier to integrate into synchronous workflows.
+
+To use this protocol, implement an iterator that defines the steps for
+your agent. Once the iterator is ready, you can connect it to the main
+application and start processing tasks.
+"""
 from dataclasses import dataclass
-from ecm.shared import get_logger
 from typing import Callable
 from typing import ClassVar
 from typing import Generator
@@ -7,11 +18,24 @@ from typing import Generic
 from typing import Optional
 from typing import TypeVar
 
+from ecm.shared import get_logger
+
 _StepType = TypeVar("_StepType")
 
 
+# ======================= CLASSES ============================
 @dataclass
 class FastAPStep:
+    """
+    Represents a single step in the FastAgentProtocol process.
+
+    Attributes:
+        name (str): The name of the protocol or agent.
+        content (str): The content or payload of the step.
+        is_last (bool): Indicates whether this is the last step in the process.
+        step_name (Optional[str]): The name of the step, if applicable.
+    """
+
     name: str
     content: str
     is_last: bool
@@ -19,6 +43,13 @@ class FastAPStep:
 
 
 class FastAgentProtocol(Generic[_StepType]):
+    """
+    A simplified and synchronous protocol for managing agent tasks.
+
+    This class allows users to define a sequence of steps for an agent
+    using an iterator. It processes each step and yields results until
+    the task is complete.
+    """
 
     _logger: ClassVar = get_logger("FastAP")
 
@@ -30,6 +61,26 @@ class FastAgentProtocol(Generic[_StepType]):
         is_last_getter: Callable[[_StepType], bool],
         step_name_getter: Optional[Callable[[_StepType], str]] = None,
     ) -> None:
+        """
+        Initializes the FastAgentProtocol with the required components.
+
+        Args:
+            name (str): The name of the protocol or agent.
+
+            iterator (Callable[[str], _StepType]): A callable that returns
+                an iterator for processing steps.
+
+            content_getter (Callable[[_StepType], str]): A callable to
+                extract content from a step.
+
+            is_last_getter (Callable[[_StepType], bool]): A callable to
+                determine if a step is the last one.
+
+            step_name_getter (Optional[Callable[[_StepType], str]]): A
+                callable to extract the step name, if applicable. Defaults
+                to a lambda returning "null".
+
+        """
 
         self.name = name
         self.iterator = iterator
@@ -41,6 +92,25 @@ class FastAgentProtocol(Generic[_StepType]):
             self.step_name_getter = lambda x: "null"
 
     def send_task(self, input: str) -> Generator[FastAPStep, None, None]:
+        """
+        Processes a task by iterating through its steps and yielding results.
+
+        Args:
+            input (str): The input string to initialize the task.
+
+        Yields:
+            FastAPStep: The current step being processed.
+
+        Examples:
+            >>> protocol = FastAgentProtocol(
+            ...     name="ExampleProtocol",
+            ...     iterator=my_iterator,
+            ...     content_getter=lambda step: step.content,
+            ...     is_last_getter=lambda step: step.is_last,
+            ... )
+            >>> for step in protocol.send_task("this is my prompt to the agent"):
+            ...     print(step)
+        """
 
         self._logger.debug(f"New task started: `{input}`")
         step_iter = self.iterator(input)

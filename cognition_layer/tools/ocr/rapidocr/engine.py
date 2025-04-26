@@ -1,21 +1,70 @@
+"""
+RapidOCR Engine Module
+==============================
+This module provides an implementation of the RapidOCR engine, which is
+used for Optical Character Recognition (OCR) tasks. It leverages the
+RapidOCR library to process images and extract text along with bounding
+box information. The module also includes logging and debugging features
+to track OCR operations and save detection results.
+"""
+# ======================= IMPORTS ============================
 import time
+
+from PIL import Image
+from rapidocr import RapidOCR as _OCR
+
 from cognition_layer.tools.ocr.template import BoundingBox
 from cognition_layer.tools.ocr.template import OcrEngine
 from ecm.shared import get_logger
 from ecm.shared import get_root_path
 
-from PIL import Image
-from rapidocr import RapidOCR as _OCR
 
-
+# ======================= CLASSES ============================
 class RapidOCR(OcrEngine):
+    """
+    Implementation of the RapidOCR engine.
+
+    This class implements the `OcrEngine` base class and provides functionality
+    to perform OCR on images using the RapidOCR library.
+    """
 
     _logger = get_logger("RapidOCR")
 
     def __init__(self, *args, **kwargs):
+        """
+        Initializes the RapidOCR engine.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         self.engine = _OCR()
 
     def invoke(self, image: Image.Image, *args, **kwargs) -> list[BoundingBox]:
+        """
+        Processes an image to perform OCR and extract text with bounding boxes.
+
+        Args:
+            image (Image.Image): The input image to process.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            list[BoundingBox]: A list of bounding boxes containing detected
+            text and their corresponding positions.
+
+        Warnings:
+            RapidOCR may return mixed texts in the same bounding box.
+            Ensure to handle such cases in the application logic.
+
+        Examples:
+            >>> from PIL import Image
+            >>> image = Image.open("example.jpg")
+            >>> ocr_engine = RapidOCR()
+            >>> detections = ocr_engine.invoke(image)
+            >>> for detection in detections:
+            ...     print(detection.content, detection.center)
+        """
         self._logger.debug("Running Engine")
         start = time.perf_counter()
         result = self.engine(image)

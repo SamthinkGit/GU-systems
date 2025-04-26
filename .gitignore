@@ -239,3 +239,6 @@ docs/
 
 # Images
 cognition_layer/tools/ocr/rapidocr/ocr_debugging.jpg
+
+# Copilot
+.copilot-instructions.md

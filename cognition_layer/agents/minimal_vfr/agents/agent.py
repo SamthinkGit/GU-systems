@@ -1,3 +1,32 @@
+"""
+MinimalVFR Agent
+==============================
+This module implements the MinimalVFR agent, a minimalist and simple agent
+designed for the cognition layer. The agent uses vision (V) and a FastReact
+(FR) approach to process tasks. It is designed to be modular, allowing for
+easy modification into variants by separating its functionality into
+overridable functions.
+
+The agent operates by receiving a prompt, taking screenshots of the screen
+at each step, passing the screenshots to an AI (with reduced quality to save
+tokens), and finally executing FastReact. FastReact uses Structured Output
+to reason and execute functions, which are then passed to the interpreter.
+Additionally, the agent returns a state that can be implemented in the
+FastProtocol.
+
+Summary of Functions
+----------------------------------------------------------------------------------------------------------------
+| Function Name                  | Description                                                                 |
+|--------------------------------|-----------------------------------------------------------------------------|
+| get_formatted_actions          | Retrieves and formats the actions available in the registry.               |
+| retrieve_task_result           | Updates the latest task summary based on the feedback received.            |
+| complete_task                  | Completes a task based on the given input prompt.                          |
+| _get_initial_cognition_state   | Initializes the cognition state with default values.                       |
+| _get_next_prompt               | Generates the next prompt for the AI based on the current state.           |
+| _execute_response_from_agent   | Executes the response received from the AI agent.                          |
+| _initialize_agent_task         | Initializes the agent's task with the given input.                         |
+| _convert_response_to_exelent   | Converts a FastReact dictionary response into an Exelent task.             |
+"""
 import random
 from dataclasses import dataclass
 from typing import Any
@@ -35,6 +64,14 @@ IMAGE_QUALITY = 0.4
 
 @dataclass
 class TaskSummary:
+    """
+    Represents a summary of a task's execution.
+
+    Attributes:
+        success (bool): Indicates whether the task was successful.
+        result (Any): The result of the task execution.
+    """
+
     success: bool = False
     result: Any = None
 
@@ -42,13 +79,12 @@ class TaskSummary:
 @dataclass
 class VFRFeedbackStep:
     """
-    Represents the response from the FastReact iterative process. It includes the
-    name of the action, the content of the response, and a flag indicating whether
-    it is the last response.
+    Represents the response from the FastReact iterative process.
 
-    :param name: The name of the action or step.
-    :param content: The content of the response.
-    :param is_last: Boolean indicating if this is the last response.
+    Attributes:
+        name (str): The name of the action or step.
+        content (str): The content of the response.
+        is_last (bool): Indicates if this is the last response.
     """
 
     name: str
@@ -91,6 +127,13 @@ class VFR_CognitionState(BaseModel):
 
 
 class MinimalVFR:
+    """
+    A minimalist agent for the cognition layer using vision and FastReact.
+
+    This agent is designed to process tasks by taking screenshots, reasoning
+    with AI, and executing structured functions. It is modular and can be
+    extended or modified into variants.
+    """
 
     @ItemRegistry.require_dependencies("screenshot", "meta")
     def __init__(
@@ -99,6 +142,14 @@ class MinimalVFR:
         registry: ItemRegistry = ItemRegistry(),
         memory_capacity: int = 10,
     ):
+        """
+        Initializes the MinimalVFR agent.
+
+        Args:
+            interpreter (Interpreter): The interpreter for executing tasks.
+            registry (ItemRegistry): The registry containing tools and actions.
+            memory_capacity (int): The capacity of the agent's memory.
+        """
         self.llm = MutableChatLLM().with_structured_output(VFR_Response)
         self.registry = registry
         self.interpreter = interpreter
@@ -111,13 +162,27 @@ class MinimalVFR:
     def get_formatted_actions(self) -> list[str]:
         """
         Retrieves and formats the actions available in the registry.
-        :return: A list of formatted action strings.
+
+        Returns:
+            list[str]: A list of formatted action strings.
+
+        Examples:
+            >>> agent.get_formatted_actions()
+            ['Action do_something: do_something(*args, **kwargs)', ...]
         """
         actions = [action.content for action in self.registry.actions.values()]
         tools: list[StructuredTool] = [build_tool(a) for a in actions]
         return [format_tool(t) for t in tools]
 
     def retrieve_task_result(self, feedback: Feedback):
+        """
+        Updates the latest task summary based on the feedback received.
+        Using this function enables the agent to retrieve the result andç
+        possible errors from the interpreter.
+
+        Args:
+            feedback (Feedback): The feedback object containing execution status.
+        """
         assert (
             self.latest_task is not None
         ), "No task has been initialized executed yet."
@@ -130,6 +195,12 @@ class MinimalVFR:
             self.latest_task.result = feedback.object
 
     def _get_initial_cognition_state(self) -> CognitionState:
+        """
+        Initializes the cognition state with default values.
+
+        Returns:
+            CognitionState: The initial cognition state.
+        """
         cognition_state = CognitionState(VFR_CognitionState)
         initial_state = {
             "goal": input,
@@ -143,6 +214,12 @@ class MinimalVFR:
         return cognition_state
 
     def _get_next_prompt(self) -> list[BaseMessage]:
+        """
+        Generates the next prompt for the AI based on the current state.
+
+        Returns:
+            list[BaseMessage]: A list of messages forming the prompt.
+        """
         screenshot = load_image(self.registry.get("screenshot", type="tool").content())
         screenshot = partial_image(
             screenshot, position=self.cognition_state.get("screen_focus")
@@ -159,6 +236,12 @@ class MinimalVFR:
         return prompt
 
     def _execute_response_from_agent(self, response: VFR_Response) -> None:
+        """
+        Executes the response received from the AI agent.
+
+        Args:
+            response (VFR_Response): The structured response from the AI.
+        """
         if response.function != "Empty":
             task = _convert_response_to_exelent(response)
             self.latest_task = TaskSummary()
@@ -173,6 +256,12 @@ class MinimalVFR:
             )
 
     def _initialize_agent_task(self, input):
+        """
+        Initializes the agent's task with the given input.
+
+        Args:
+            input (str): The input prompt for the task.
+        """
         self.cognition_state = self._get_initial_cognition_state()
         self.formatted_tools = "\n\n- ".join(self.get_formatted_actions())
         self.memory = SimpleCognitiveMemory(
@@ -181,6 +270,20 @@ class MinimalVFR:
         self.memory.update([HumanMessage(content=input)])
 
     def complete_task(self, input: str) -> Generator[VFRFeedbackStep, None, None]:
+        """
+        Completes a task based on the given input prompt.
+
+        Args:
+            input (str): The input prompt describing the task.
+
+        Yields:
+            VFRFeedbackStep: Steps of the task execution process.
+
+        Examples:
+            >>> for step in agent.complete_task("Organize files"):
+            ...     print(step)
+            VFRFeedbackStep(name='MinimalVFR', content='...', is_last=False)
+        """
         self._initialize_agent_task(input)
         exit = False
 
@@ -200,19 +303,32 @@ class MinimalVFR:
             )
 
 
+# ======================= UTILITIES ============================
+
+
 def _convert_response_to_exelent(
     frdict: VFR_Response, step_idx: int = random.randint(0, 1000)
 ) -> ParsedTask:
     """
     Converts a FastReact dictionary response into an Exelent task.
 
-    :param frdict: The response dictionary from FastReact.
-    :param step_idx: An optional index for the task step.
-    :return: A ParsedTask representing the structured task.
+    Args:
+        frdict (VFR_Response): The response dictionary from FastReact.
+        step_idx (int): An optional index for the task step.
+
+    Returns:
+        ParsedTask: A structured task representation.
+
+    Examples:
+        >>> response = VFR_Response(reasoning="...", function="myfunc(1, 2)")
+        >>> task = _convert_response_to_exelent(response)
+        >>> print(task)
+        ParsedTask(...)
     """
     builder = ExelentBuilder()
     builder.add_task(task_name=f"minimal_vfr_step_{step_idx}")
     builder.add_type("Sequential")
     builder.add_statement(frdict.function.replace("\\", "\\\\"))
+
     task = builder.compile()
     return task
