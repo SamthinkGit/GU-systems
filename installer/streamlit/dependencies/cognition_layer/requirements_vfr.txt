@@ -1,0 +1,5 @@
+langgraph
+rapidocr
+onnxruntime
+onnxruntime-tools
+opencv-contrib-python

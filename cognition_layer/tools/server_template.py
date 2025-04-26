@@ -16,9 +16,16 @@ the mediator in cognition_layer.api.CognitionMediator
 from typing import Callable
 from typing import Optional
 
-from agent_protocol import Agent
-from agent_protocol import Step
-from agent_protocol import Task
+from cognition_layer.api import ENABLE_BACKWARD_COMPATIBILITY
+
+if ENABLE_BACKWARD_COMPATIBILITY:
+    from agent_protocol import Agent
+    from agent_protocol import Step
+    from agent_protocol import Task
+else:
+    Agent = lambda *args, **kwargs: None  # noqa
+    Step = lambda *args, **kwargs: None  # noqa
+    Task = lambda *args, **kwargs: None  # noqa
 
 from cognition_layer.api import ServerAPI
 from cognition_layer.constants import API_PORT
@@ -98,7 +105,9 @@ class ServerFromIterator(ServerAPI):
 
             # Initialize the iterator
             if step.name == "start":
-                ServerFromIterator.iterator_step = ServerFromIterator.iterator(step.input)
+                ServerFromIterator.iterator_step = ServerFromIterator.iterator(
+                    step.input
+                )
 
             # Obtain step
             message = (

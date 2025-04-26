@@ -112,7 +112,7 @@ class FastReact:
         """
 
         assert (
-            "screenshot" in self.registry.tools
+            "screenshot.screenshot" in self.registry.tools
         ), "Screenshot tool must be loaded into the registry in order to use FastReact"
 
         self._ocr_round = 0
@@ -161,7 +161,7 @@ class FastReact:
         Retrieves the current state of the task.
         :return: An ImageMessage representing the current state.
         """
-        frame = load_image(self.registry.tools["screenshot"].content())
+        frame = load_image(self.registry.get("screenshot", "tool").content())
         if self.ocr_type == "text":
 
             if self.ocr_mode:
