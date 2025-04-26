@@ -10,24 +10,11 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 
 COGNITION_LAYERS = ["fastreact", "xplore", "vfr", "darkvfr"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
-DEFAULT_COGNITION = "fastreact"
+DEFAULT_COGNITION = "DarkVFR"
 DEFAULT_EXECUTOR = "pyxcel"
 
 
 def main():
-    # ---------- ACTION SPACE ---------
-    # import action_space.keyboard.actions  # noqa
-    # import action_space.experimental.screenshot.actions  # noqa
-    # import action_space.mouse.labelled_ocr.actions  # noqa
-
-    import action_space.experimental.screenshot.actions  # noqa
-    import action_space.keyboard.actions  # noqa
-    import action_space.meta.cognition_state.actions  # noqa
-    import action_space.meta.fake.actions  # noqa
-    import action_space.mouse.molmo_based.actions # noqa
-    import action_space.vision.moondream.actions  # noqa
-    # ----------------------------------
-    ItemRegistry().load_all()
 
     argparser = argparse.ArgumentParser(description="Run the ECM project.")
     argparser.add_argument(
@@ -68,15 +55,6 @@ def main():
     )
     args = argparser.parse_args()
 
-    if args.debug:
-        ecm.shared.LOG_LEVEL = logging.DEBUG
-    if args.langchain_debug:
-        set_debug(True)
-    if not args.host:
-        ItemRegistry().invalidate(tools=False)
-
-    logger = get_logger("main")
-
     # ----- Settling Layers ----
     match args.executor.lower():
         case "rosa":
@@ -99,25 +77,36 @@ def main():
                 + str(EXECUTION_LAYERS)
             )
 
-    logger.debug(f"Running {args.executor} as Execution Layer")
     match args.agent.lower():
         case "darkvfr":
             from cognition_layer.agents.minimal_vfr.api.darkvfr_server import (
                 get_fast_ap_server,
             )
+            from cognition_layer.agents.minimal_vfr.supported_actions import (
+                load_darkvfr_supported_actions,
+            )
 
+            load_darkvfr_supported_actions()
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "vfr":
             from cognition_layer.agents.visual_fast_react.api.server import (
                 get_fast_ap_server,
             )
+            from cognition_layer.agents.visual_fast_react.supported_actions import (
+                load_vfr_supported_actions,
+            )
 
+            load_vfr_supported_actions()
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "fastreact":
             from cognition_layer.agents.fast_react.api.server import get_fast_ap_server
+            from cognition_layer.agents.fast_react.supported_actions import (
+                load_fastreact_supported_actions
+            )
 
+            load_fastreact_supported_actions()
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "xplore":
@@ -131,6 +120,18 @@ def main():
                 + str(COGNITION_LAYERS)
             )
 
+    logger = get_logger("main")
+    logger.debug(f"Running {args.agent} as Cognition Layer")
+    logger.debug(f"Running {args.executor} as Execution Layer")
+
+    if args.debug:
+        ecm.shared.LOG_LEVEL = logging.DEBUG
+    if args.langchain_debug:
+        set_debug(True)
+    if not args.host:
+        ItemRegistry().invalidate(tools=False)
+
+    ItemRegistry().load_all()
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug("Initialization finished. Starting...")
     ItemRegistry().summary()
