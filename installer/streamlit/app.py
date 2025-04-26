@@ -1,4 +1,5 @@
 import streamlit as st
+from src.developer_tab import load_developer_tab
 from src.standard_tab import load_standard_tab
 
 
@@ -80,4 +81,4 @@ if st.session_state.page == "Welcome":
 if st.session_state.page == "Standard User":
     load_standard_tab()
 if st.session_state.page == "Developer":
-    st.title("Developer Installer")
+    load_developer_tab()

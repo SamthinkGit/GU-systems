@@ -5,7 +5,6 @@ from src.installation_options import get_execution_layer_options
 
 
 def load_selection_tab():
-    st.header("Default Installation")
     with st.form(key="easy_install_form", border=False):
         st.write("The following components will be installed for using the ECM.")
         st.write("Usually, you want to select only the latest version.")
@@ -75,6 +74,7 @@ def load_selection_tab():
     if submit_button:
         st.success(f"Installing...")
 
+
 def load_help_tab():
     st.title("Help - Frequently Asked Questions")
 
@@ -125,7 +125,8 @@ def load_help_tab():
         )
 
     with st.expander("🔹 What happens if I choose to install in a Conda environment?"):
-        st.markdown("""
+        st.markdown(
+            """
         If you choose the option to install in a **Conda environment**:
 
         - A new environment named **`ecm`** will be created automatically.
@@ -139,7 +140,8 @@ def load_help_tab():
         ```
 
         **Note:** Conda must be installed on your system before using this option.
-        """)
+        """
+        )
 
     st.info(
         "If you have further questions, please check the official documentation or contact support."
@@ -147,6 +149,7 @@ def load_help_tab():
 
 
 def load_standard_tab():
+    st.header("Default Installation")
     config, help = st.tabs(["Selection", "Help"])
     with config:
         load_selection_tab()

@@ -37,7 +37,9 @@ def detect_os() -> str:
         raise ValueError(f"Unsupported OS: {os_name}")
 
 
-def run_command_live(cmd: list[str], write_output_with_st: bool = True) -> int:
+def run_command_live(
+    cmd: list[str], write_output_with_st: bool = True
+) -> tuple[int, str]:
     use_shell = os.name == "nt"
     system_encoding = locale.getpreferredencoding()
 
