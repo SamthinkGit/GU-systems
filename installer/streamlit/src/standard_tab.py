@@ -32,7 +32,7 @@ def load_selection_tab():
                 label_visibility="collapsed",
             )
         install_with_conda = st.checkbox(
-            "Install in a conda environment (Not mandatory)"
+            "Install in a conda environment (conda must be installed)",
         )
 
         st.divider()

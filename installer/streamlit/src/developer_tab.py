@@ -2,6 +2,8 @@ import streamlit as st
 from config import COGNITION_LAYER_OPTIONS
 from config import ECM_OPTIONS
 from config import EXECUTION_LAYER_OPTIONS
+from config import LATEST_COGNITION_LAYER
+from config import LATEST_EXECUTION_LAYER
 from installers.conda import activate_conda_environment
 from installers.conda import check_conda_installation
 from installers.conda import get_conda_envs
@@ -30,7 +32,10 @@ def init():
         st.session_state.conda_envs = []
         st.session_state.current_conda_env = "None"
 
-    load_dependencies_summary()
+    try:
+        load_dependencies_summary()
+    except IndexError:
+        st.error("Error loading dependencies summary. Please refresh the app (F5).")
     frame.empty()
 
 
@@ -132,9 +137,20 @@ def load_conda_selection_section():
         )
 
     st.divider()
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**Install Everything!**")
+    with c2:
+        default = st.toggle("Add", key="install_all")
+
+    st.divider()
+
+    c1, *_, c2 = st.columns(4)
     st.subheader("Cognition Layer")
     cognition_options = [val for val in COGNITION_LAYER_OPTIONS if val.lower() != "all"]
     execution_options = [val for val in EXECUTION_LAYER_OPTIONS if val.lower() != "all"]
+    st.markdown(f"Latest: `{LATEST_COGNITION_LAYER}`")
     for layer in cognition_options:
         c1, c2 = st.columns(2)
         with c1:
@@ -148,9 +164,12 @@ def load_conda_selection_section():
                 label,
                 disabled=disabled,
                 key=f"cognition_{layer}",
+                value=not disabled and default,
             )
 
+    st.markdown("> Base cognition layer is needed for all cognition layers.")
     st.subheader("Execution Layer")
+    st.markdown(f"Latest: `{LATEST_EXECUTION_LAYER}`")
     for layer in execution_options:
         c1, c2 = st.columns(2)
         with c1:
@@ -164,6 +183,7 @@ def load_conda_selection_section():
                 label,
                 disabled=disabled,
                 key=f"execution_{layer}",
+                value=not disabled and default,
             )
 
     st.subheader("Core Components")
@@ -180,7 +200,58 @@ def load_conda_selection_section():
                 label,
                 disabled=disabled,
                 key=f"ecm_{component}",
+                value=not disabled and default,
             )
+
+    st.divider()
+    st.subheader("Client/Host Templates")
+    st.markdown(
+        "> This mode is still not implemented. Future versions will have this feature."
+    )
+
+    st.divider()
+    st.subheader("Environment")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**Add repository to PYTHONPATH**")
+    with c2:
+        st.toggle("Add", disabled=False, key="pythonpath", value=default)
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**Install Precommit tools (Needed for pushing to github)**")
+    with c2:
+        st.toggle("Add", disabled=False, key="precommit", value=default)
+
+    st.divider()
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**Add API keys to dotenv**")
+    with c2:
+        st.toggle("Add", disabled=False, key="dotenv", value=default)
+
+    st.text_input(
+        "OpenAI API Key",
+        type="password",
+        help="Enter your OpenAI API key here.",
+        placeholder="sk-...",
+    )
+    st.text_input(
+        "Replicate API Key",
+        type="password",
+        help="Enter your Replicate API key here.",
+        placeholder="r8_...",
+    )
+    st.text_input(
+        "Moondream API Key",
+        type="password",
+        help="Enter your Moondream API key here.",
+        placeholder="...",
+    )
+
+    st.button(
+        "Install", help="Install all the selected components.", use_container_width=True
+    )
 
 
 def load_debug_tab():
