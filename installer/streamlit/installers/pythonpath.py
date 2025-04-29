@@ -58,23 +58,27 @@ def get_documents_folder():
 def _add_to_pythonpath_windows(directory: Path):
 
     documents_folder = get_documents_folder()
-    profile = documents_folder / "WindowsPowerShell" / "profile.ps1"
-    path_line = (
-        f'\n# Added by ECM Installer\n$env:PYTHONPATH += ";{directory.resolve()}"\n'
-    )
+    profiles = [
+        documents_folder / "WindowsPowerShell" / "profile.ps1",
+        documents_folder / "PowerShell" / "profile.ps1"
+    ]
+    for profile in profiles:
+        path_line = (
+            f'\n# Added by ECM Installer\n$env:PYTHONPATH += ";{directory.resolve()}"\n'
+        )
 
-    if not profile.parent.exists():
-        profile.parent.mkdir(parents=True, exist_ok=True)
+        if not profile.parent.exists():
+            profile.parent.mkdir(parents=True, exist_ok=True)
 
-    if profile.exists():
-        content = profile.read_text(encoding="utf-8")
-        if str(directory.resolve()) in content:
-            return True
-    else:
-        content = ""
-        profile.touch()
+        if profile.exists():
+            content = profile.read_text(encoding="utf-8")
+            if str(directory.resolve()) in content:
+                return True
+        else:
+            content = ""
+            profile.touch()
 
-    profile.write_text(content + path_line, encoding="utf-8")
+        profile.write_text(content + path_line, encoding="utf-8")
     return True
 
 

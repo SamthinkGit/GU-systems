@@ -180,11 +180,12 @@ def load_installation_success_tab():
         f"""
     cd '{get_repository_root_path().resolve().absolute()}'
     conda activate {description.conda_path} # only if using conda
-    python ecm/core/main/main.py --host --agent {description.cognition_layers[0]}
+    python ecm/core/main/main.py --host --agent {description.cognition_layers[0].lower()}
             """,
         language="bash",
     )
     st.balloons()
+    st.info("The changes will take effect in the next **new** shell session.")
     st.write("You can now close the shell to exit the installer.")
 
 
