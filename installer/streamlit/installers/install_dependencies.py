@@ -1,4 +1,3 @@
-from functools import cache
 from typing import Literal
 
 import streamlit as st
@@ -8,7 +7,7 @@ from installers.persistent_shell import PersistentShell
 
 
 def check_dependencies(
-    shell: PersistentShell,
+    pip_list: str,
     type: Literal["cognition", "execution", "ecm"],
     module: str,
 ) -> tuple[bool, list[str]]:
@@ -37,16 +36,11 @@ def check_dependencies(
             continue
         dependencies.append(line.split("==")[0])
 
-    exit_code, result = get_pip_list(shell)
-    if exit_code != 0:
-        raise RuntimeError(f"Error checking dependencies for {module} in {type} layer.")
-    if result == "":
-        raise RuntimeError(
-            "pip list returned empty result. Please check your Python installation."
-        )
     installed_dependencies = []
-    for line in result.splitlines():
-        installed_dependencies.append(line.split()[0].lower())
+    for line in pip_list.splitlines():
+        words = line.split()
+        if len(words) == 2:
+            installed_dependencies.append(line.split()[0].lower())
 
     not_installed = []
     for dependency in dependencies:
@@ -173,14 +167,6 @@ def get_fixed_package_name(package_name: str) -> str:
     return package_name
 
 
-def reload_pip_list_cache() -> None:
-    """
-    Reload the pip list cache.
-    """
-    get_pip_list.cache_clear()
-
-
-@cache
 def get_pip_list(shell: PersistentShell) -> list[str]:
     """
     Get the list of installed packages.

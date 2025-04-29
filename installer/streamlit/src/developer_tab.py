@@ -13,7 +13,7 @@ from installers.conda import get_current_conda_env
 from installers.description import detect_os
 from installers.description import InstallerDescription
 from installers.install_dependencies import check_dependencies
-from installers.install_dependencies import reload_pip_list_cache
+from installers.install_dependencies import get_pip_list
 from installers.persistent_shell import PersistentShell
 
 
@@ -35,12 +35,7 @@ def init():
             st.session_state.conda_envs = []
             st.session_state.current_conda_env = "None"
 
-        try:
-            load_dependencies_summary()
-        except IndexError:
-            st.error(
-                "Dependencies summary not loaded. Please refresh the app in the browser to continue (F5)."
-            )
+        load_dependencies_summary()
     frame.empty()
 
 
@@ -67,15 +62,17 @@ def set_conda_env():
 
 
 def load_dependencies_summary():
-    reload_pip_list_cache()
     shell = st.session_state.shell
+    exit_code, pip_list = get_pip_list(shell)
+    if exit_code != 0:
+        raise RuntimeError(f"Pip list returned exit code {exit_code}.")
     cognition_options = [val for val in COGNITION_LAYER_OPTIONS if val.lower() != "all"]
     execution_options = [val for val in EXECUTION_LAYER_OPTIONS if val.lower() != "all"]
     data = {
         type: {
             name: {
-                "installed": check_dependencies(shell, type, name)[0],
-                "missing": check_dependencies(shell, type, name)[1],
+                "installed": check_dependencies(pip_list, type, name)[0],
+                "missing": check_dependencies(pip_list, type, name)[1],
             }
             for name in options
         }
