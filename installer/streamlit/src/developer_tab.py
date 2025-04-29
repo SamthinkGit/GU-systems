@@ -8,6 +8,7 @@ from installers.conda import activate_conda_environment
 from installers.conda import check_conda_installation
 from installers.conda import get_conda_envs
 from installers.conda import get_current_conda_env
+from installers.description import detect_os
 from installers.description import InstallerDescription
 from installers.install_dependencies import check_dependencies
 from installers.install_dependencies import reload_pip_list_cache
@@ -26,9 +27,7 @@ def init():
 
     if installed:
         st.session_state.conda_envs = get_conda_envs()
-        st.session_state.current_conda_env = get_current_conda_env(
-            shell
-        )
+        st.session_state.current_conda_env = get_current_conda_env(shell)
     else:
         st.session_state.conda_envs = []
         st.session_state.current_conda_env = "None"
@@ -54,9 +53,7 @@ def set_conda_env():
         shell.send_command("conda deactivate")
         st.session_state.current_conda_env = "None"
     else:
-        activate_conda_environment(
-            st.session_state.shell, env
-        )
+        activate_conda_environment(st.session_state.shell, env)
         st.session_state.current_conda_env = get_current_conda_env(
             st.session_state.shell
         )
@@ -86,7 +83,7 @@ def load_dependencies_summary():
     st.session_state.dependencies_summary = data
 
 
-def load_conda_selection_section():
+def load_config_tab():
     c1, *_, c2 = st.columns(4)
     with c1:
         st.subheader("Conda Environment")
@@ -118,7 +115,7 @@ def load_conda_selection_section():
 
     with c2:
         envs = ["None"] + st.session_state.conda_envs
-        st.selectbox(
+        conda_path_key = st.selectbox(
             "",
             options=envs,
             label_visibility="collapsed",
@@ -151,6 +148,11 @@ def load_conda_selection_section():
     st.subheader("Cognition Layer")
     cognition_options = [val for val in COGNITION_LAYER_OPTIONS if val.lower() != "all"]
     execution_options = [val for val in EXECUTION_LAYER_OPTIONS if val.lower() != "all"]
+
+    selected_cognition_options = []
+    selected_execution_options = []
+    selected_ecm_options = []
+
     st.markdown(f"Latest: `{LATEST_COGNITION_LAYER}`")
     for layer in cognition_options:
         c1, c2 = st.columns(2)
@@ -161,12 +163,14 @@ def load_conda_selection_section():
                 "installed"
             ]
             label = ":blue[Installed]" if disabled else "Install"
-            st.toggle(
+            add = st.toggle(
                 label,
                 disabled=disabled,
                 key=f"cognition_{layer}",
                 value=not disabled and default,
             )
+            if add:
+                selected_cognition_options.append(layer)
 
     st.markdown("> Base cognition layer is needed for all cognition layers.")
     st.subheader("Execution Layer")
@@ -180,12 +184,14 @@ def load_conda_selection_section():
                 "installed"
             ]
             label = ":blue[Installed]" if disabled else "Install"
-            st.toggle(
+            add = st.toggle(
                 label,
                 disabled=disabled,
                 key=f"execution_{layer}",
                 value=not disabled and default,
             )
+            if add:
+                selected_execution_options.append(layer)
 
     st.subheader("Core Components")
     for component in ECM_OPTIONS:
@@ -197,12 +203,14 @@ def load_conda_selection_section():
                 "installed"
             ]
             label = ":blue[Installed]" if disabled else "Install"
-            st.toggle(
+            add = st.toggle(
                 label,
                 disabled=disabled,
                 key=f"ecm_{component}",
                 value=not disabled and default,
             )
+            if add:
+                selected_ecm_options.append(component)
 
     st.divider()
     st.subheader("Client/Host Templates")
@@ -216,34 +224,44 @@ def load_conda_selection_section():
     with c1:
         st.markdown("**Add repository to PYTHONPATH**")
     with c2:
-        st.toggle("Add", disabled=False, key="pythonpath", value=default)
+        pythonpath_enabled_key = st.toggle(
+            "Add", disabled=False, key="pythonpath", value=default
+        )
 
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("**Install Precommit tools (Needed for pushing to github)**")
     with c2:
-        st.toggle("Add", disabled=False, key="precommit", value=default)
+        precommit_enabled_key = st.toggle(
+            "Add", disabled=False, key="precommit", value=default
+        )
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**Pull to latest version (experimental)**")
+    with c2:
+        git_pull_key = st.toggle("Add", disabled=False, key="git_pull", value=False)
 
     st.divider()
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("**Add API keys to dotenv**")
     with c2:
-        st.toggle("Add", disabled=False, key="dotenv", value=default)
+        add_api_keys_key = st.toggle("Add", disabled=False, key="dotenv", value=default)
 
-    st.text_input(
+    openai_pass = st.text_input(
         "OpenAI API Key",
         type="password",
         help="Enter your OpenAI API key here.",
         placeholder="sk-...",
     )
-    st.text_input(
+    replicate_pass = st.text_input(
         "Replicate API Key",
         type="password",
         help="Enter your Replicate API key here.",
         placeholder="r8_...",
     )
-    st.text_input(
+    moondream_pass = st.text_input(
         "Moondream API Key",
         type="password",
         help="Enter your Moondream API key here.",
@@ -255,16 +273,27 @@ def load_conda_selection_section():
     )
     if install:
         st.session_state.page = "_confirm_install"
-        st.session_state.installation_description = InstallerDescription(
-            cognition_layers=["darkvfr"],
-            execution_layers=["pyxcel"],
-            ecm_dependencies=["base", "devel"],
-            os="windows",
-            api_keys={},
-            install_with_conda=True,
-            conda_path="test-ecm",
-            precommit=True
+        description = InstallerDescription(
+            cognition_layers=selected_cognition_options,
+            execution_layers=selected_execution_options,
+            ecm_dependencies=selected_ecm_options,
+            os=detect_os(),
+            api_keys=(
+                {
+                    "OPENAI_API_KEY": openai_pass,
+                    "REPLICATE_API_TOKEN": replicate_pass,
+                    "MOONDREAM_API_KEY": moondream_pass,
+                }
+                if add_api_keys_key
+                else {}
+            ),
+            install_with_conda=conda_path_key != "None",
+            conda_path=conda_path_key,
+            precommit=precommit_enabled_key,
+            git_pull=git_pull_key,
+            setup_python_path=pythonpath_enabled_key,
         )
+        st.session_state.installation_description = description
         st.rerun()
 
 
@@ -283,9 +312,7 @@ def load_debug_tab():
         container = st.container(border=True)
         with container:
             st.markdown("Running: `conda info`")
-            env = get_current_conda_env(
-                st.session_state.shell
-            )
+            env = get_current_conda_env(st.session_state.shell)
             st.write("Parsed env:", env)
     st.divider()
     st.subheader("Dependencies")
@@ -293,14 +320,11 @@ def load_debug_tab():
         "Check dependencies",
         help="Check if all dependencies are installed.",
     )
+
     if check_dependencies_output:
         container = st.container(border=True)
         with container:
             st.json(st.session_state.dependencies_summary)
-
-
-def load_config_tab():
-    load_conda_selection_section()
 
 
 def load_developer_tab():

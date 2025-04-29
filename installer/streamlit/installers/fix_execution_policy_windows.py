@@ -23,10 +23,6 @@ def fix_execution_policy_permanent() -> bool:
     if os.name != "nt":
         return True
 
-    current_policy = get_current_execution_policy()
-    if current_policy.lower() == "remotesigned":
-        return True
-
     if not is_admin():
         raise PermissionError(
             "Administrator privileges required to change Execution Policy permanently."

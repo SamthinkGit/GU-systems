@@ -4,7 +4,6 @@ from typing import Literal
 import streamlit as st
 from config import get_repository_root_path
 from installers.description import InstallerDescription
-from installers.description import run_command_live
 from installers.persistent_shell import PersistentShell
 
 
@@ -60,19 +59,29 @@ def check_dependencies(
 
 
 def install_dependencies(
-    description: InstallerDescription
+    shell: PersistentShell, description: InstallerDescription
 ) -> bool:
 
+    shell.send_command(
+        f"cd '{get_repository_root_path().resolve().absolute() / 'installer' / 'streamlit'}'"
+    )
+    exit_code, _ = shell.read_output()
+    if exit_code != 0:
+        st.error(
+            "Error changing directory to the installer. Please check your Python installation."
+        )
+        return False
     if (
-        not _install_cognition_layer_dependencies(description)
-        or not _install_execution_layer_dependencies(description)
-        or not _install_ecm_dependencies(description)
+        not _install_cognition_layer_dependencies(shell, description)
+        or not _install_execution_layer_dependencies(shell, description)
+        or not _install_ecm_dependencies(shell, description)
     ):
         return False
+    return True
 
 
 def _install_cognition_layer_dependencies(
-    description: InstallerDescription
+    shell: PersistentShell, description: InstallerDescription
 ) -> bool:
     """
     Install the dependencies for the cognition layer.
@@ -86,11 +95,10 @@ def _install_cognition_layer_dependencies(
         / "cognition_layer"
     )
 
-    for layer in description.cognition_layers + "base":
+    for layer in description.cognition_layers + ["base"]:
         requirements_path = f"{cognition_path}/requirements_{layer.lower()}.txt"
-        exit_code, _ = run_command_live(
-            ["pip", "install", "-r", requirements_path]
-        )
+        shell.send_command(f"pip install -r {requirements_path}")
+        exit_code, _ = shell.read_output()
         if exit_code != 0:
             st.error(
                 f"Error installing the dependencies for the cognition layer {layer}."
@@ -101,7 +109,7 @@ def _install_cognition_layer_dependencies(
 
 
 def _install_execution_layer_dependencies(
-    description: InstallerDescription
+    shell: PersistentShell, description: InstallerDescription
 ) -> bool:
     """
     Install the dependencies for the cognition layer.
@@ -117,9 +125,8 @@ def _install_execution_layer_dependencies(
 
     for layer in description.execution_layers:
         requirements_path = f"{execution_path}/requirements_{layer.lower()}.txt"
-        exit_code, _ = run_command_live(
-            ["pip", "install", "-r", requirements_path]
-        )
+        shell.send_command(f"pip install -r {requirements_path}")
+        exit_code, _ = shell.read_output()
         if exit_code != 0:
             st.error(
                 f"Error installing the dependencies for the execution layer {layer}."
@@ -131,7 +138,7 @@ def _install_execution_layer_dependencies(
 
 
 def _install_ecm_dependencies(
-    description: InstallerDescription
+    shell: PersistentShell, description: InstallerDescription
 ) -> bool:
     """
     Install the dependencies for the cognition layer.
@@ -143,9 +150,8 @@ def _install_ecm_dependencies(
 
     for layer in description.ecm_dependencies:
         requirements_path = f"{ecm_path}/requirements_{layer.lower()}.txt"
-        exit_code, _ = run_command_live(
-            ["pip", "install", "-r", requirements_path]
-        )
+        shell.send_command(f"pip install -r {requirements_path}")
+        exit_code, _ = shell.read_output()
         if exit_code != 0:
             st.error(
                 f"Error installing the dependencies for the execution layer {layer}."
@@ -175,9 +181,7 @@ def reload_pip_list_cache() -> None:
 
 
 @cache
-def get_pip_list(
-    shell: PersistentShell
-) -> list[str]:
+def get_pip_list(shell: PersistentShell) -> list[str]:
     """
     Get the list of installed packages.
     """

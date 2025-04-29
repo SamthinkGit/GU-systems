@@ -15,6 +15,8 @@ class InstallerDescription:
     os: Literal["windows", "linux", "raspbian"]
     install_with_conda: bool
     conda_path: str = "ecm"
+    git_pull: bool = False
+    setup_python_path: bool = True
 
 
 def detect_os() -> str:

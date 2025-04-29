@@ -1,11 +1,19 @@
 import streamlit as st
+from config import get_repository_root_path
+from installers.api_keys import add_to_dotenv
 from installers.conda import activate_conda_environment
 from installers.conda import check_conda_installation
 from installers.conda import create_conda_environment
 from installers.conda import get_conda_envs
 from installers.conda import get_current_conda_env
 from installers.description import InstallerDescription
+from installers.fix_execution_policy_windows import fix_execution_policy_permanent
+from installers.git import git_update
+from installers.install_dependencies import install_dependencies
 from installers.persistent_shell import PersistentShell
+from installers.precommit import configure_precommit
+from installers.precommit import install_precommit
+from installers.pythonpath import add_to_pythonpath
 
 MAX_CONDA_RETRIES = 5
 PYTHON_VERSION = "3.10"
@@ -26,13 +34,17 @@ def load_confirm_install_tab():
     st.rerun()
 
 
+def log_starting_tab(tab_name: str):
+    print("=" * 20 + f" {tab_name} " + "=" * 20)
+
+
 def load_install_tab():
     st.subheader("Installation in progress...")
     st.write(
         "You can debug the output of the installation in the shell running streamlit."
     )
     description: InstallerDescription = st.session_state.installation_description
-    container = st.container(height=600, border=True)
+    container = st.container(height=500, border=True)
 
     def stop_shell_function():
         if "shell" in st.session_state:
@@ -58,11 +70,25 @@ def load_install_tab():
             st.session_state.shell = shell
             st.success("Shell initialized successfully.")
 
+        if description.git_pull:
+            log_starting_tab("Updating repository")
+            with st.expander(label="**Updating repository**", expanded=True):
+                success = git_update(shell)
+                if not success:
+                    st.error(
+                        "Failed to update the repository. Please check the logs in the shell."
+                    )
+                    return
+                st.success("Repository updated successfully.")
+
         expander = st.expander(label="**Checking conda environment**", expanded=True)
         log_starting_tab("Checking conda environment")
         with expander:
             success = load_conda_env(shell, description)
             if not success:
+                st.error(
+                    "Failed to load conda environment. Please check the installation."
+                )
                 return
             if success and description.install_with_conda:
                 st.success("Conda environment loaded successfully.")
@@ -70,10 +96,92 @@ def load_install_tab():
                 st.success(
                     "No conda environment required. Proceeding with installation."
                 )
+        expander = st.expander("**Installing Python dependencies**", expanded=True)
+        with expander:
+            log_starting_tab("Installing Python dependencies")
+            with st.spinner("Installing...", show_time=True):
+                success = install_dependencies(shell, description=description)
+            if not success:
+                st.error(
+                    "Failed to install Python dependencies. Please check the logs in the shell."
+                )
+                return
+            st.success("All python dependencies installed successfully.")
+
+        if description.os.lower == "windows":
+            expander = st.expander("**Fixing windows policy**", expanded=True)
+            log_starting_tab("Fixing windows policy")
+            with expander:
+                try:
+                    success = fix_execution_policy_permanent()
+                except PermissionError:
+                    st.error(
+                        "Administrator privileges required to change Execution Policy permanently."
+                        "\nPlease re-run the installer as Administrator."
+                    )
+                if not success:
+                    st.error(
+                        "Failed to fix the execution policy. Please check the logs in the shell."
+                    )
+                    return
+                st.success("Windows execution policy fixed successfully.")
+
+        if description.precommit:
+            expander = st.expander("**Installing pre-commit**", expanded=True)
+            log_starting_tab("Installing pre-commit")
+            with expander:
+                with st.spinner("Installing...", show_time=True):
+                    success = install_precommit(shell)
+                if not success:
+                    st.error(
+                        "Failed to install pre-commit. Please check the logs in the shell."
+                    )
+                    return
+                with st.spinner("Configuring Precommit...", show_time=True):
+                    success = configure_precommit(shell)
+                if not success:
+                    st.error(
+                        "Failed to configure pre-commit. Please check the logs in the shell."
+                    )
+                    return
+                st.success("Pre-commit installed and configured successfully.")
+
+        if len(description.api_keys) > 0:
+            expander = st.expander("**Setting up API keys**", expanded=True)
+            with expander:
+                log_starting_tab("Setting up API keys")
+                for key, val in description.api_keys.items():
+                    add_to_dotenv(
+                        key, val, dotenv_path=get_repository_root_path() / ".env"
+                    )
+
+        if description.setup_python_path:
+            expander = st.expander("**Setting up Python path**", expanded=True)
+            with expander:
+                os = "Windows" if description.os == "windows" else "LinuxLike"
+                add_to_pythonpath(get_repository_root_path(), os)
+                st.success("Python path added successfully.")
+        st.session_state.page = "_installation_success"
+        st.rerun()
 
 
-def log_starting_tab(tab_name: str):
-    print("=" * 20 + f" {tab_name} " + "=" * 20)
+def load_installation_success_tab():
+    description: InstallerDescription = st.session_state.installation_description
+    st.subheader("Installation completed successfully!")
+    st.write(
+        "You can now start using the installed packages and tools. "
+        "If you encounter any issues, please check the logs in the shell."
+    )
+    st.markdown("Use the following command to start the ECM:")
+    st.code(
+        f"""
+    cd '{get_repository_root_path().resolve().absolute()}'
+    conda activate {description.conda_path} # only if using conda
+    python ecm/core/main/main.py --agent {description.cognition_layers[0]}
+            """,
+        language="bash",
+    )
+    st.balloons()
 
 
 def load_conda_env(shell: PersistentShell, description: InstallerDescription):
