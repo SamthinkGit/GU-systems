@@ -86,6 +86,7 @@ def load_dependencies_summary():
 
 
 def load_config_tab():
+
     c1, *_, c2 = st.columns(4)
     with c1:
         st.subheader("Conda Environment")

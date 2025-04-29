@@ -59,6 +59,11 @@ def activate_conda_environment(
     shell: PersistentShell, env_name: str
 ) -> tuple[bool, str]:
     """Activate a conda environment."""
+    shell.send_command("conda init")
+    success, output = shell.read_output()
+    if success != 0:
+        return False, output
+
     shell.send_command("conda info")
     success, output = shell.read_output()
     if success != 0:

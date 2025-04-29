@@ -91,9 +91,8 @@ def _install_cognition_layer_dependencies(
 
     for layer in description.cognition_layers + ["base"]:
         requirements_path = f"{cognition_path}/requirements_{layer.lower()}.txt"
-        shell.send_command(f"pip install -r {requirements_path}")
-        exit_code, _ = shell.read_output()
-        if exit_code != 0:
+        success = pip_install(shell, requirements_path, description)
+        if not success:
             st.error(
                 f"Error installing the dependencies for the cognition layer {layer}."
                 " Please check the requirements file."
@@ -119,9 +118,8 @@ def _install_execution_layer_dependencies(
 
     for layer in description.execution_layers:
         requirements_path = f"{execution_path}/requirements_{layer.lower()}.txt"
-        shell.send_command(f"pip install -r {requirements_path}")
-        exit_code, _ = shell.read_output()
-        if exit_code != 0:
+        success = pip_install(shell, requirements_path, description)
+        if not success:
             st.error(
                 f"Error installing the dependencies for the execution layer {layer}."
                 " Please check the requirements file."
@@ -144,9 +142,8 @@ def _install_ecm_dependencies(
 
     for layer in description.ecm_dependencies:
         requirements_path = f"{ecm_path}/requirements_{layer.lower()}.txt"
-        shell.send_command(f"pip install -r {requirements_path}")
-        exit_code, _ = shell.read_output()
-        if exit_code != 0:
+        success = pip_install(shell, requirements_path, description)
+        if not success:
             st.error(
                 f"Error installing the dependencies for the execution layer {layer}."
                 " Please check the requirements file."
@@ -173,3 +170,32 @@ def get_pip_list(shell: PersistentShell) -> list[str]:
     """
     shell.send_command("python -m pip list")
     return shell.read_output()
+
+
+def pip_install(
+    shell: PersistentShell, requirements: str, description: InstallerDescription
+):
+    pip = "pip"
+    flags = ""
+    if description.install_with_conda:
+
+        if shell.is_windows:
+            env_name = "$env:CONDA_PREFIX"
+        else:
+            env_name = "$CONDA_PREFIX"
+
+        shell.send_command(f"echo {env_name}")
+        exit_code, conda_prefix = shell.read_output()
+        conda_prefix = conda_prefix.split("\n")[-4].strip()
+
+        if shell.is_windows:
+            pip = f"{conda_prefix}\\Scripts\\pip.exe"
+        else:
+            pip = f"{conda_prefix}/bin/pip"
+        flags = "--ignore-installed"
+
+    shell.send_command(f"{pip} install {flags} -r {requirements}")
+    exit_code, _ = shell.read_output()
+    if exit_code != 0:
+        return False
+    return True
