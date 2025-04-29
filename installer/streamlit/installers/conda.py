@@ -59,7 +59,13 @@ def activate_conda_environment(
     shell: PersistentShell, env_name: str
 ) -> tuple[bool, str]:
     """Activate a conda environment."""
-    shell.send_command("conda init")
+    if not shell.is_windows:
+        shell.send_command('eval "$(conda shell.bash hook)"')
+        success, output = shell.read_output()
+        if success != 0:
+            return False, output
+
+    shell.send_command("conda init --all")
     success, output = shell.read_output()
     if success != 0:
         return False, output

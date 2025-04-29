@@ -186,7 +186,11 @@ def pip_install(
 
         shell.send_command(f"echo {env_name}")
         exit_code, conda_prefix = shell.read_output()
-        conda_prefix = conda_prefix.split("\n")[-4].strip()
+        if shell.is_windows:
+            conda_prefix = conda_prefix.split("\n")[-4].strip()
+        else:
+            conda_prefix = conda_prefix.split("\n")[-3].strip()
+
 
         if shell.is_windows:
             pip = f"{conda_prefix}\\Scripts\\pip.exe"
