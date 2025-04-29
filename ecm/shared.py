@@ -73,7 +73,7 @@ def load_env():
     ]
 
     for path in paths:
-        dotenv.load_dotenv(path, override=True)
+        dotenv.load_dotenv(path, override=False)
 
 
 load_env()
