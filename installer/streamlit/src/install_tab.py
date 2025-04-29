@@ -1,3 +1,5 @@
+import time
+
 import streamlit as st
 from config import get_repository_root_path
 from installers.api_keys import add_to_dotenv
@@ -81,10 +83,11 @@ def load_install_tab():
                     return
                 st.success("Repository updated successfully.")
 
-        expander = st.expander(label="**Checking conda environment**", expanded=True)
+        expander = st.expander(label="**Checking conda environment.**", expanded=True)
         log_starting_tab("Checking conda environment")
         with expander:
-            success = load_conda_env(shell, description)
+            with st.spinner("Loading conda environment..."):
+                success = load_conda_env(shell, description)
             if not success:
                 st.error(
                     "Failed to load conda environment. Please check the installation."
@@ -149,7 +152,6 @@ def load_install_tab():
         if len(description.api_keys) > 0:
             expander = st.expander("**Setting up API keys**", expanded=True)
             with expander:
-                log_starting_tab("Setting up API keys")
                 for key, val in description.api_keys.items():
                     add_to_dotenv(
                         key, val, dotenv_path=get_repository_root_path() / ".env"
@@ -161,6 +163,7 @@ def load_install_tab():
                 os = "Windows" if description.os == "windows" else "LinuxLike"
                 add_to_pythonpath(get_repository_root_path(), os)
                 st.success("Python path added successfully.")
+        time.sleep(1)
         st.session_state.page = "_installation_success"
         st.rerun()
 
@@ -177,11 +180,12 @@ def load_installation_success_tab():
         f"""
     cd '{get_repository_root_path().resolve().absolute()}'
     conda activate {description.conda_path} # only if using conda
-    python ecm/core/main/main.py --agent {description.cognition_layers[0]}
+    python ecm/core/main/main.py --host --agent {description.cognition_layers[0]}
             """,
         language="bash",
     )
     st.balloons()
+    st.write("You can now close the shell to exit the installer.")
 
 
 def load_conda_env(shell: PersistentShell, description: InstallerDescription):
@@ -225,6 +229,7 @@ def load_conda_env(shell: PersistentShell, description: InstallerDescription):
                 f"Conda environment `{description.conda_path}` not found. Creating a new conda environment."
             )
             success, output = create_conda_environment(
+                shell,
                 description.conda_path,
                 python_version=PYTHON_VERSION,
             )

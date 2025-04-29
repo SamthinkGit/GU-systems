@@ -4,6 +4,8 @@ from installers.description import detect_os
 from installers.description import InstallerDescription
 from src.installation_options import get_cognition_layer_options
 from src.installation_options import get_execution_layer_options
+from src.installation_options import LATEST_COGNITION_LAYER
+from src.installation_options import LATEST_EXECUTION_LAYER
 
 
 def load_selection_tab():
@@ -23,6 +25,9 @@ def load_selection_tab():
                 label_visibility="collapsed",
                 help="Select the execution layer you want to use. Usually, you want to use only the latest version.",
             )
+            if "latest" in cognition_layer.lower():
+                cognition_layer = LATEST_COGNITION_LAYER
+
         c1, c2 = st.columns(2)
         with c1:
             st.write("**Execution Layer:**")
@@ -33,6 +38,8 @@ def load_selection_tab():
                 help="Select the execution layer you want to use. Usually, you want to use only the latest version.",
                 label_visibility="collapsed",
             )
+            if "latest" in execution_layer.lower():
+                execution_layer = LATEST_EXECUTION_LAYER
         install_with_conda = st.checkbox(
             "Install in a conda environment (conda must be installed)",
         )
