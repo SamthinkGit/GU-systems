@@ -54,6 +54,9 @@ class PersistentShell:
             output.append(line)
             print(line, end="")
 
+            if "$" in line:
+                continue
+
             match = re.search(r"RETURN_CODE:(.*)", line)
             if match:
                 return_code_raw = match.group(1).strip()  # Quitamos espacios
