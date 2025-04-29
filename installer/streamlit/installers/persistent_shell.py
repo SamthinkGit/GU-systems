@@ -62,12 +62,13 @@ class PersistentShell:
                 return_code_raw = match.group(1).strip()  # Quitamos espacios
                 if return_code_raw == "":
                     return_code = 0
-                try:
-                    return_code = int(return_code_raw)
-                except ValueError:
-                    raise RuntimeError(
-                        f"Invalid RETURN_CODE value: '{return_code_raw}'"
-                    )
+                else:
+                    try:
+                        return_code = int(return_code_raw)
+                    except ValueError:
+                        raise RuntimeError(
+                            f"Invalid RETURN_CODE value: '{return_code_raw}'"
+                        )
                 break
 
         return return_code, "".join(output)
