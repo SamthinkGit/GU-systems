@@ -1,5 +1,7 @@
 # flake8: noqa: F841
 import streamlit as st
+from installers.description import detect_os
+from installers.description import InstallerDescription
 from src.installation_options import get_cognition_layer_options
 from src.installation_options import get_execution_layer_options
 
@@ -72,7 +74,29 @@ def load_selection_tab():
         submit_button = st.form_submit_button(label="Install")
 
     if submit_button:
-        st.success(f"Installing...")
+        st.session_state.page = "_confirm_install"
+        description = InstallerDescription(
+            cognition_layers=[cognition_layer, "base"],
+            execution_layers=[execution_layer],
+            ecm_dependencies=["base", "devel"],
+            precommit=False,
+            api_keys=(
+                {
+                    "OPENAI_API_KEY": openai_api_key,
+                    "REPLICATE_API_KEY": replicate_api_key,
+                    "MOONDREAM_API_KEY": moondream_api_key,
+                }
+                if not already_have_api_keys
+                else {}
+            ),
+            os=detect_os(),
+            install_with_conda=install_with_conda,
+            conda_path="ecm",
+            git_pull=False,
+            setup_python_path=True,
+        )
+        st.session_state.installation_description = description
+        st.rerun()
 
 
 def load_help_tab():
