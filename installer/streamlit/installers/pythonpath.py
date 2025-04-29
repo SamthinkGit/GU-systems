@@ -36,19 +36,42 @@ def _add_to_pythonpath_linux(directory: Path):
     return True
 
 
+def get_documents_folder():
+    import ctypes.wintypes
+
+    CSIDL_PERSONAL = 5  # Folder ID for 'My Documents'
+    SHGFP_TYPE_CURRENT = 0
+
+    buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+    result = ctypes.windll.shell32.SHGetFolderPathW(
+        None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf
+    )
+
+    if result != 0:
+        raise RuntimeError(
+            "Couldn't obtain the Documents folder for integrating pythonpath"
+        )
+
+    return Path(buf.value)
+
+
 def _add_to_pythonpath_windows(directory: Path):
-    profile = Path.home() / "Documents" / "WindowsPowerShell" / "profile.ps1"
+
+    documents_folder = get_documents_folder()
+    profile = documents_folder / "WindowsPowerShell" / "profile.ps1"
     path_line = (
         f'\n# Added by ECM Installer\n$env:PYTHONPATH += ";{directory.resolve()}"\n'
     )
 
-    profile.parent.mkdir(parents=True, exist_ok=True)
+    if not profile.parent.exists():
+        profile.parent.mkdir(parents=True, exist_ok=True)
 
     if profile.exists():
         content = profile.read_text(encoding="utf-8")
         if str(directory.resolve()) in content:
             return True
     else:
+        content = ""
         profile.touch()
 
     profile.write_text(content + path_line, encoding="utf-8")
