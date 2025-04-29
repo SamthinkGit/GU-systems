@@ -73,7 +73,7 @@ def _add_to_pythonpath_windows(directory: Path):
         if profile.exists():
             content = profile.read_text(encoding="utf-8")
             if str(directory.resolve()) in content:
-                return True
+                continue
         else:
             content = ""
             profile.touch()
