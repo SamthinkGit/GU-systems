@@ -2,6 +2,7 @@ import time
 
 import streamlit as st
 from config import get_repository_root_path
+from config import LATEST_COGNITION_LAYER
 from installers.api_keys import add_to_dotenv
 from installers.conda import activate_conda_environment
 from installers.conda import check_conda_installation
@@ -176,6 +177,7 @@ def load_installation_success_tab():
         "If you encounter any issues, please check the logs in the shell."
     )
     st.markdown("Use the following command to start the ECM:")
+    description.cognition_layers.append(LATEST_COGNITION_LAYER)
     st.code(
         f"""
     cd '{get_repository_root_path().resolve().absolute()}'
@@ -185,7 +187,7 @@ def load_installation_success_tab():
         language="bash",
     )
     st.balloons()
-    st.info("The changes will take effect in the next **new** shell session.")
+    st.info("**IMPORTANT**: The changes will take effect when you launch a NEW shell session.")
     st.write("You can now close the shell to exit the installer.")
 
 
