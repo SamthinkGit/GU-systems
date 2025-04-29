@@ -1,3 +1,5 @@
+import traceback
+
 import streamlit as st
 from config import COGNITION_LAYER_OPTIONS
 from config import ECM_OPTIONS
@@ -17,25 +19,28 @@ from installers.persistent_shell import PersistentShell
 
 def init():
     frame = st.empty()
-    frame.markdown("# `Connecting to internal shell...`")
+    frame.info("Please wait a moment while we create a new interactive environment...")
+    with st.spinner("**Connecting to internal shell...**"):
 
-    shell = PersistentShell()
-    st.session_state.shell = shell
-    st.session_state.conda_init = True
-    installed = check_conda_installation()
-    st.session_state.conda_installed = installed
+        shell = PersistentShell()
+        st.session_state.shell = shell
+        st.session_state.conda_init = True
+        installed = check_conda_installation()
+        st.session_state.conda_installed = installed
 
-    if installed:
-        st.session_state.conda_envs = get_conda_envs()
-        st.session_state.current_conda_env = get_current_conda_env(shell)
-    else:
-        st.session_state.conda_envs = []
-        st.session_state.current_conda_env = "None"
+        if installed:
+            st.session_state.conda_envs = get_conda_envs()
+            st.session_state.current_conda_env = get_current_conda_env(shell)
+        else:
+            st.session_state.conda_envs = []
+            st.session_state.current_conda_env = "None"
 
-    try:
-        load_dependencies_summary()
-    except IndexError:
-        st.error("Error loading dependencies summary. Please refresh the app (F5).")
+        try:
+            load_dependencies_summary()
+        except IndexError:
+            st.error(
+                "Dependencies summary not loaded. Please refresh the app in the browser to continue (F5)."
+            )
     frame.empty()
 
 
@@ -334,6 +339,17 @@ def load_developer_tab():
     st.header("Developer Installation")
     config, debug = st.tabs(["Selection", "Debug"])
     with config:
-        load_config_tab()
+        try:
+            load_config_tab()
+        except AttributeError:
+            st.warning(
+                "Generally this error happens when people try to reload pages too fast >:(."
+            )
+            st.warning(
+                "Please refresh the browser with F5 and let the developer tab load next time."
+            )
+            st.error(f"{traceback.format_exc()}")
+            return
+
     with debug:
         load_debug_tab()

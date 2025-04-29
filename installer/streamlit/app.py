@@ -9,6 +9,8 @@ from src.standard_tab import load_standard_tab
 def print_welcome_message_to_terminal():
     box = [
         "╔══════════════════════════════════════════════════════════════════════════╗",
+        "║                            DO NOT KILL ME!                               ║",
+        "║                                                                          ║",
         "║ 🔥  Installer has been deployed!  🔥                                     ║",
         "║                                                                          ║",
         "║ If the browser does not open automatically, please enter the             ║",

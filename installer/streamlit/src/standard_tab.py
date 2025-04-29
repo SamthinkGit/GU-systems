@@ -41,7 +41,7 @@ def load_selection_tab():
             if "latest" in execution_layer.lower():
                 execution_layer = LATEST_EXECUTION_LAYER
         install_with_conda = st.checkbox(
-            "Install in a conda environment (conda must be installed)",
+            "Install in a conda environment (only if conda is installed)",
         )
 
         st.divider()
@@ -50,7 +50,7 @@ def load_selection_tab():
             """
             The following API keys will be used for using AI services.\n
             > For information on how to get the API keys, please refer to the
-            > `Help` tab.
+            > `Help` tab scrolling up the page.
             """
         )
 
