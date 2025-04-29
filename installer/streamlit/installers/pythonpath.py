@@ -2,27 +2,25 @@ import subprocess
 from pathlib import Path
 from typing import Literal
 
-import streamlit as st
 from installers.fix_execution_policy_windows import fix_execution_policy_permanent
 
 
 def add_to_pythonpath(
     directory: Path,
     os: Literal["Windows", "LinuxLike"],
-    write_output_with_st: bool = True,
 ):
     """
     Add the specified directory to the PYTHONPATH environment variable.
     """
-    if os == "Windows" and not fix_execution_policy_permanent(write_output_with_st):
+    if os == "Windows" and not fix_execution_policy_permanent():
         return False
     if os == "Windows":
-        _add_to_pythonpath_windows(directory, write_output_with_st)
+        _add_to_pythonpath_windows(directory)
     else:
-        _add_to_pythonpath_linux(directory, write_output_with_st)
+        _add_to_pythonpath_linux(directory)
 
 
-def _add_to_pythonpath_linux(directory: Path, write_output_with_st: bool = True):
+def _add_to_pythonpath_linux(directory: Path):
     bashrc = Path.home() / ".bashrc"
     path_line = f'\n# Added by ECM Installer\nexport PYTHONPATH="${{PYTHONPATH}}:{directory.resolve()}"\n'
 
@@ -30,19 +28,15 @@ def _add_to_pythonpath_linux(directory: Path, write_output_with_st: bool = True)
         content = bashrc.read_text()
 
         if str(directory.resolve()) in content:
-            if write_output_with_st:
-                st.write(f"[Linux] {directory} already in PYTHONPATH.")
             return True
     else:
         bashrc.touch()
 
     bashrc.write_text(content + path_line)
-    if write_output_with_st:
-        st.write(f"[Linux] Added {directory} to PYTHONPATH in .bashrc")
     return True
 
 
-def _add_to_pythonpath_windows(directory: Path, write_output_with_st: bool = True):
+def _add_to_pythonpath_windows(directory: Path):
     profile = Path.home() / "Documents" / "WindowsPowerShell" / "profile.ps1"
     path_line = (
         f'\n# Added by ECM Installer\n$env:PYTHONPATH += ";{directory.resolve()}"\n'
@@ -53,15 +47,11 @@ def _add_to_pythonpath_windows(directory: Path, write_output_with_st: bool = Tru
     if profile.exists():
         content = profile.read_text(encoding="utf-8")
         if str(directory.resolve()) in content:
-            if write_output_with_st:
-                st.write(f"[Windows] {directory} already in PYTHONPATH.")
             return True
     else:
         profile.touch()
 
     profile.write_text(content + path_line, encoding="utf-8")
-    if write_output_with_st:
-        st.write(f"[Windows] Added {directory} to PYTHONPATH in profile.ps1")
     return True
 
 

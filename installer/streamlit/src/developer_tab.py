@@ -8,6 +8,7 @@ from installers.conda import activate_conda_environment
 from installers.conda import check_conda_installation
 from installers.conda import get_conda_envs
 from installers.conda import get_current_conda_env
+from installers.description import InstallerDescription
 from installers.install_dependencies import check_dependencies
 from installers.install_dependencies import reload_pip_list_cache
 from installers.persistent_shell import PersistentShell
@@ -20,13 +21,13 @@ def init():
     shell = PersistentShell()
     st.session_state.shell = shell
     st.session_state.conda_init = True
-    installed = check_conda_installation(write_output_with_st=False)
+    installed = check_conda_installation()
     st.session_state.conda_installed = installed
 
     if installed:
         st.session_state.conda_envs = get_conda_envs()
         st.session_state.current_conda_env = get_current_conda_env(
-            shell, write_output_with_st=False
+            shell
         )
     else:
         st.session_state.conda_envs = []
@@ -54,10 +55,10 @@ def set_conda_env():
         st.session_state.current_conda_env = "None"
     else:
         activate_conda_environment(
-            st.session_state.shell, env, write_output_with_st=False
+            st.session_state.shell, env
         )
         st.session_state.current_conda_env = get_current_conda_env(
-            st.session_state.shell, write_output_with_st=False
+            st.session_state.shell
         )
 
     load_dependencies_summary()
@@ -249,9 +250,22 @@ def load_conda_selection_section():
         placeholder="...",
     )
 
-    st.button(
+    install = st.button(
         "Install", help="Install all the selected components.", use_container_width=True
     )
+    if install:
+        st.session_state.page = "_confirm_install"
+        st.session_state.installation_description = InstallerDescription(
+            cognition_layers=["darkvfr"],
+            execution_layers=["pyxcel"],
+            ecm_dependencies=["base", "devel"],
+            os="windows",
+            api_keys={},
+            install_with_conda=True,
+            conda_path="test-ecm",
+            precommit=True
+        )
+        st.rerun()
 
 
 def load_debug_tab():
@@ -261,7 +275,7 @@ def load_debug_tab():
         container = st.container(border=True)
         with container:
             st.markdown("Running: `conda --version`")
-            success = check_conda_installation(write_output_with_st=True)
+            success = check_conda_installation()
             st.write("Success:", success)
 
     conda_init_output = st.button("Check current conda env")
@@ -270,7 +284,7 @@ def load_debug_tab():
         with container:
             st.markdown("Running: `conda info`")
             env = get_current_conda_env(
-                st.session_state.shell, write_output_with_st=True
+                st.session_state.shell
             )
             st.write("Parsed env:", env)
     st.divider()

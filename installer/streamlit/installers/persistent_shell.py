@@ -3,8 +3,6 @@ import os
 import re
 import subprocess
 
-import streamlit as st
-
 
 class PersistentShell:
     def __init__(self):
@@ -33,15 +31,19 @@ class PersistentShell:
             raise RuntimeError("No stdin available to send commands.")
 
         self.process.stdin.write(command + "\n")
+        print(command)
         self.process.stdin.flush()
 
         if self.is_windows:
-            self.process.stdin.write("echo RETURN_CODE:$LASTEXITCODE\n")
+            cmd = "echo RETURN_CODE:$LASTEXITCODE\n"
         else:
-            self.process.stdin.write("echo RETURN_CODE:$?\n")
+            cmd = "echo RETURN_CODE:$?\n"
+
+        print(cmd)
+        self.process.stdin.write(cmd)
         self.process.stdin.flush()
 
-    def read_output(self, write_output_with_st: bool = True):
+    def read_output(self):
         output = []
         return_code = None
 
@@ -49,10 +51,8 @@ class PersistentShell:
             raise RuntimeError("No stdout available to read.")
 
         for line in self.process.stdout:
-            if write_output_with_st:
-                st.write(line)
-
             output.append(line)
+            print(line, end="")
 
             match = re.search(r"RETURN_CODE:(\d+)", line)
             if match:

@@ -1,12 +1,9 @@
-import streamlit as st
 from installers.description import run_command_live
 from installers.persistent_shell import PersistentShell
 
 
 def get_conda_envs() -> list[str]:
-    exit_code, result = run_command_live(
-        ["conda", "env", "list"], write_output_with_st=False
-    )
+    exit_code, result = run_command_live(["conda", "env", "list"])
     if exit_code != 0:
         raise RuntimeError("Error getting conda environments.")
 
@@ -20,64 +17,56 @@ def get_conda_envs() -> list[str]:
     return envs
 
 
-def check_conda_installation(write_output_with_st: bool = True) -> bool:
+def check_conda_installation() -> bool:
     """
     Check if conda is installed.
     """
-    success, _ = run_command_live(
-        ["conda", "--version"], write_output_with_st=write_output_with_st
-    )
+    success, _ = run_command_live(["conda", "--version"])
     return success == 0
 
 
 def create_conda_environment(
-    env_name: str, python_version: str = "3.10", write_output_with_st: bool = True
-) -> bool:
+    shell: PersistentShell,
+    env_name: str,
+    python_version: str = "3.10",
+) -> tuple[bool, str]:
     """
     Create a conda environment.
     """
-    success, _ = run_command_live(
-        ["conda", "create", "-n", env_name, "--yes", f"python={python_version}"],
-        write_output_with_st=write_output_with_st,
-    )
-    return success == 0
+    shell.send_command(f"conda create -n {env_name} --yes python={python_version}")
+    success, output = shell.read_output()
+    return success == 0, output
 
 
-def get_current_conda_env(
-    shell: PersistentShell, write_output_with_st: bool = False
-) -> str:
+def get_current_conda_env(shell: PersistentShell) -> tuple[str, str]:
     """
     Get the name of the currently active conda environment.
     """
     shell.send_command("conda info")
-    success, conda_info = shell.read_output(write_output_with_st=False)
-
-    if write_output_with_st:
-        st.markdown(f"```bash\n{conda_info}```")
+    success, output = shell.read_output()
 
     if success != 0:
-        raise RuntimeError(f"Error getting conda info.\n{conda_info}")
+        raise RuntimeError(f"Error getting conda info.\n{output}")
 
-    for line in conda_info.splitlines():
+    for line in output.splitlines():
         if line.strip().startswith("active environment"):
             return line.split(":")[1].strip()
 
-    return ""
+    return "", output
 
 
 def activate_conda_environment(
-    shell: PersistentShell, env_name: str, write_output_with_st: bool = True
-) -> bool:
+    shell: PersistentShell, env_name: str
+) -> tuple[bool, str]:
     """Activate a conda environment."""
     shell.send_command("conda info")
-    success, conda_info = shell.read_output(write_output_with_st)
+    success, output = shell.read_output()
     if success != 0:
-        return False
+        return False, output
 
-    if f"active environment : {env_name}" in conda_info:
-        st.write(f"Conda environment {env_name} is already activated.")
-        return True
+    if f"active environment : {env_name}" in output:
+        return True, output
 
     shell.send_command(f"conda activate {env_name}")
-    success, _ = shell.read_output(write_output_with_st)
-    return success == 0
+    success, output = shell.read_output()
+    return success == 0, output

@@ -4,8 +4,6 @@ import subprocess
 from dataclasses import dataclass
 from typing import Literal
 
-import streamlit as st
-
 
 @dataclass
 class InstallerDescription:
@@ -15,7 +13,6 @@ class InstallerDescription:
     precommit: bool
     api_keys: dict[str, str]
     os: Literal["windows", "linux", "raspbian"]
-    source_path: str
     install_with_conda: bool
     conda_path: str = "ecm"
 
@@ -37,9 +34,7 @@ def detect_os() -> str:
         raise ValueError(f"Unsupported OS: {os_name}")
 
 
-def run_command_live(
-    cmd: list[str], write_output_with_st: bool = True
-) -> tuple[int, str]:
+def run_command_live(cmd: list[str]) -> tuple[int, str]:
     use_shell = os.name == "nt"
     system_encoding = locale.getpreferredencoding()
 
@@ -56,8 +51,6 @@ def run_command_live(
 
     for line in process.stdout:
         if line:
-            if write_output_with_st:
-                st.write(line, end="")
             result.append(line)
     result = "".join(result)
 

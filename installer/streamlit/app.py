@@ -1,5 +1,7 @@
 import streamlit as st
 from src.developer_tab import load_developer_tab
+from src.install_tab import load_confirm_install_tab
+from src.install_tab import load_install_tab
 from src.standard_tab import load_standard_tab
 
 
@@ -82,3 +84,7 @@ if st.session_state.page == "Standard User":
     load_standard_tab()
 if st.session_state.page == "Developer":
     load_developer_tab()
+if st.session_state.page == "_confirm_install":
+    load_confirm_install_tab()
+if st.session_state.page == "_install":
+    load_install_tab()

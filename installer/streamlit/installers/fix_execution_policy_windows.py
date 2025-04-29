@@ -2,8 +2,6 @@ import ctypes
 import os
 import subprocess
 
-import streamlit as st
-
 
 def is_admin():
     try:
@@ -21,7 +19,7 @@ def get_current_execution_policy():
     return result.stdout.strip()
 
 
-def fix_execution_policy_permanent(write_output_with_st: bool = True) -> bool:
+def fix_execution_policy_permanent() -> bool:
     if os.name != "nt":
         return True
 
@@ -30,12 +28,10 @@ def fix_execution_policy_permanent(write_output_with_st: bool = True) -> bool:
         return True
 
     if not is_admin():
-        if write_output_with_st:
-            st.error(
-                "Administrator privileges required to change Execution Policy permanently."
-                "\nPlease re-run this script as Administrator."
-            )
-        return False
+        raise PermissionError(
+            "Administrator privileges required to change Execution Policy permanently."
+            "\nPlease re-run this script as Administrator."
+        )
 
     try:
         subprocess.run(
@@ -46,13 +42,6 @@ def fix_execution_policy_permanent(write_output_with_st: bool = True) -> bool:
             ],
             check=True,
         )
-        if write_output_with_st:
-            st.write(
-                "[SUCCESS] Execution policy successfully set to RemoteSigned for LocalMachine"
-            )
         return True
     except subprocess.CalledProcessError as e:
-        if write_output_with_st:
-            st.error("[ERROR] Failed to change Execution Policy.")
-            st.error(f"Details: {e}")
-        return False
+        raise RuntimeError(f"Failed to change Execution Policy. Details: {e}") from e

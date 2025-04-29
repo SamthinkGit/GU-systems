@@ -12,7 +12,6 @@ def check_dependencies(
     shell: PersistentShell,
     type: Literal["cognition", "execution", "ecm"],
     module: str,
-    write_output_with_st: bool = False,
 ) -> tuple[bool, list[str]]:
 
     directory_name = None
@@ -39,7 +38,7 @@ def check_dependencies(
             continue
         dependencies.append(line.split("==")[0])
 
-    exit_code, result = get_pip_list(shell, write_output_with_st)
+    exit_code, result = get_pip_list(shell)
     if exit_code != 0:
         raise RuntimeError(f"Error checking dependencies for {module} in {type} layer.")
     if result == "":
@@ -61,19 +60,19 @@ def check_dependencies(
 
 
 def install_dependencies(
-    description: InstallerDescription, write_output_with_st: bool = True
+    description: InstallerDescription
 ) -> bool:
 
     if (
-        not _install_cognition_layer_dependencies(description, write_output_with_st)
-        or not _install_execution_layer_dependencies(description, write_output_with_st)
-        or not _install_ecm_dependencies(description, write_output_with_st)
+        not _install_cognition_layer_dependencies(description)
+        or not _install_execution_layer_dependencies(description)
+        or not _install_ecm_dependencies(description)
     ):
         return False
 
 
 def _install_cognition_layer_dependencies(
-    description: InstallerDescription, write_output_with_st: bool = True
+    description: InstallerDescription
 ) -> bool:
     """
     Install the dependencies for the cognition layer.
@@ -90,7 +89,7 @@ def _install_cognition_layer_dependencies(
     for layer in description.cognition_layers + "base":
         requirements_path = f"{cognition_path}/requirements_{layer.lower()}.txt"
         exit_code, _ = run_command_live(
-            ["pip", "install", "-r", requirements_path], write_output_with_st
+            ["pip", "install", "-r", requirements_path]
         )
         if exit_code != 0:
             st.error(
@@ -102,7 +101,7 @@ def _install_cognition_layer_dependencies(
 
 
 def _install_execution_layer_dependencies(
-    description: InstallerDescription, write_output_with_st: bool = True
+    description: InstallerDescription
 ) -> bool:
     """
     Install the dependencies for the cognition layer.
@@ -119,7 +118,7 @@ def _install_execution_layer_dependencies(
     for layer in description.execution_layers:
         requirements_path = f"{execution_path}/requirements_{layer.lower()}.txt"
         exit_code, _ = run_command_live(
-            ["pip", "install", "-r", requirements_path], write_output_with_st
+            ["pip", "install", "-r", requirements_path]
         )
         if exit_code != 0:
             st.error(
@@ -132,7 +131,7 @@ def _install_execution_layer_dependencies(
 
 
 def _install_ecm_dependencies(
-    description: InstallerDescription, write_output_with_st: bool = True
+    description: InstallerDescription
 ) -> bool:
     """
     Install the dependencies for the cognition layer.
@@ -145,7 +144,7 @@ def _install_ecm_dependencies(
     for layer in description.ecm_dependencies:
         requirements_path = f"{ecm_path}/requirements_{layer.lower()}.txt"
         exit_code, _ = run_command_live(
-            ["pip", "install", "-r", requirements_path], write_output_with_st
+            ["pip", "install", "-r", requirements_path]
         )
         if exit_code != 0:
             st.error(
@@ -177,10 +176,10 @@ def reload_pip_list_cache() -> None:
 
 @cache
 def get_pip_list(
-    shell: PersistentShell, write_output_with_st: bool = False
+    shell: PersistentShell
 ) -> list[str]:
     """
     Get the list of installed packages.
     """
     shell.send_command("python -m pip list")
-    return shell.read_output(write_output_with_st=write_output_with_st)
+    return shell.read_output()
