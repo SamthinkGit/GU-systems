@@ -1,4 +1,5 @@
 pyyaml
+colorama
 colorlog
 dotenv
 pytest==7.4.4

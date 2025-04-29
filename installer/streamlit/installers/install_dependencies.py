@@ -191,7 +191,6 @@ def pip_install(
         else:
             conda_prefix = conda_prefix.split("\n")[-3].strip()
 
-
         if shell.is_windows:
             pip = f"{conda_prefix}\\Scripts\\pip.exe"
         else:
