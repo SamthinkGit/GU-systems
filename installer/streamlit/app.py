@@ -57,37 +57,38 @@ def load_welcome_page():
         "👈 Please select a section from the sidebar to start your installation or update process."
     )
 
+if __name__ == "__main__":
 
-pages = ["Welcome", "Standard User", "Developer"]
-if "page" not in st.session_state:
-    print_welcome_message_to_terminal()
-    st.session_state.page = "Welcome"
+    pages = ["Welcome", "Standard User", "Developer"]
+    if "page" not in st.session_state:
+        print_welcome_message_to_terminal()
+        st.session_state.page = "Welcome"
 
-st.set_page_config(
-    page_title="ECM Installer", initial_sidebar_state="auto", layout="wide"
-)
+    st.set_page_config(
+        page_title="ECM Installer", initial_sidebar_state="auto", layout="wide"
+    )
 
-st.sidebar.markdown(
-    """
-    <h1 style='text-align: center; font-size: 25px;'>
-        Installation
-    </h1>""",
-    unsafe_allow_html=True,
-)
+    st.sidebar.markdown(
+        """
+        <h1 style='text-align: center; font-size: 25px;'>
+            Installation
+        </h1>""",
+        unsafe_allow_html=True,
+    )
 
-for page in pages:
-    if st.sidebar.button(page, use_container_width=True):
-        st.session_state.page = page
+    for page in pages:
+        if st.sidebar.button(page, use_container_width=True):
+            st.session_state.page = page
 
-if st.session_state.page == "Welcome":
-    load_welcome_page()
-if st.session_state.page == "Standard User":
-    load_standard_tab()
-if st.session_state.page == "Developer":
-    load_developer_tab()
-if st.session_state.page == "_confirm_install":
-    load_confirm_install_tab()
-if st.session_state.page == "_install":
-    load_install_tab()
-if st.session_state.page == "_installation_success":
-    load_installation_success_tab()
+    if st.session_state.page == "Welcome":
+        load_welcome_page()
+    if st.session_state.page == "Standard User":
+        load_standard_tab()
+    if st.session_state.page == "Developer":
+        load_developer_tab()
+    if st.session_state.page == "_confirm_install":
+        load_confirm_install_tab()
+    if st.session_state.page == "_install":
+        load_install_tab()
+    if st.session_state.page == "_installation_success":
+        load_installation_success_tab()
