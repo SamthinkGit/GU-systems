@@ -1182,6 +1182,114 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#minimalvfr" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinimalVFR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MinimalVFR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-changes-from-visualfastreact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Changes from VisualFastReact
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#execution-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execution Flow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Initialization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-screenshot-and-prompt-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Screenshot and Prompt Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-fastreact" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. FastReAct
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Meta-Actions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-use-minimalvfr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Use MinimalVFR?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1200,8 +1308,6 @@
   
   
 
-
-  <h1>VFR and Variations</h1>
 
 <blockquote>
 <p><strong>Note</strong>: To fully understand this entry, please first refer to the FastReact documentation which explains the core principles behind the ReAct (Reason + Act) methodology that VisualFastReact extends.</p>
@@ -1253,6 +1359,61 @@
 </ul>
 <h2 id="conclusion">Conclusion</h2>
 <p>VisualFastReact builds upon FastReact to create a visually intelligent, token-efficient agent. By isolating visual analysis and leveraging a structured reasoning/action loop, it offers a scalable approach to screen interaction tasks. The system is modular, memory-aware, and interpretable, making it suitable for a wide range of cognitive tasks involving vision.</p>
+<h1 id="minimalvfr">MinimalVFR</h1>
+<p><strong>MinimalVFR</strong> is a simplified and modular variant of VisualFastReact (VFR), designed to maintain the core vision-and-reasoning loop of FastReact while increasing flexibility and reducing complexity.</p>
+<hr />
+<h2 id="overview">Overview</h2>
+<p>MinimalVFR operates in a continuous state loop, allowing the LLM to reason and act directly, including changing its visual focus as a meta-action. This is a major departure from the original VisualFastReact design, which was structured around discrete states (<code>visual_node</code>, <code>fast_react_node</code>).</p>
+<h3 id="key-changes-from-visualfastreact">Key Changes from VisualFastReact</h3>
+<ul>
+<li><strong>Single-State Execution Loop</strong>: Instead of jumping between vision and action states, the LLM can now use meta-actions (see ActionSpace documentation) to change its focus on-screen, streamlining the execution cycle.</li>
+<li><strong>Modular Function Breakdown</strong>: The agent's logic is split into clear, overridable methods. This enables the creation of new agents—<strong>VFR variants</strong>—by simply overriding or extending key methods, without rewriting the entire agent.</li>
+<li><strong>Structured Output Only</strong>: MinimalVFR only uses structured outputs for reasoning + action, making it more robust against hallucinations and easier to validate.</li>
+<li><strong>Graph-Free Architecture</strong>: No graph frameworks (like LangGraph) are used, simplifying the architecture.</li>
+</ul>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/6d4392d3-5b65-4d75-b2c6-796fdef8b959" alt="MinimalVFR Diagram" width=500>
+</div>
+
+<hr />
+<h2 id="execution-flow">Execution Flow</h2>
+<h3 id="1-initialization">1. Initialization</h3>
+<ul>
+<li>Initializes cognition state, tool formatting, and memory.</li>
+<li>Uses <code>SimpleCognitiveMemory</code> to store messages.</li>
+</ul>
+<h3 id="2-screenshot-and-prompt-generation">2. Screenshot and Prompt Generation</h3>
+<ul>
+<li>Captures and crops screenshots based on the current screen focus.</li>
+<li>Reduces image quality to save tokens.</li>
+<li>Builds prompt using:</li>
+<li>Instructions</li>
+<li>Formatted tools</li>
+<li>Memory history</li>
+<li>Current cognition state summary</li>
+</ul>
+<h3 id="3-fastreact">3. FastReAct</h3>
+<ul>
+<li>The LLM receives the structured prompt and returns:</li>
+<li>A reasoning message</li>
+<li>An action to execute</li>
+<li>If a function is returned, it's compiled to an Exelent task and executed.</li>
+<li>The result (if any) is captured in the memory.</li>
+</ul>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/5908750d-d1ab-42a1-989a-23e7bb72160f" alt="GU logo" width=600>
+</div>
+<hr />
+<h2 id="meta-actions">Meta-Actions</h2>
+<p>Meta-actions enable the LLM to change screen focus mid-task without transitioning between system states. This increases responsiveness and allows the agent to adapt focus based on context naturally. Refer to the ActionSpace meta-actions documentation for more details.</p>
+<h2 id="why-use-minimalvfr">Why Use MinimalVFR?</h2>
+<ul>
+<li>Encourages reusability and rapid prototyping of new VFR variants.</li>
+<li>Better alignment with LLM-based reasoning through structured outputs and minimal external dependencies.</li>
+</ul>
+<hr />
+<h2 id="summary">Summary</h2>
+<p>MinimalVFR is a foundational agent for building flexible, vision-enabled cognitive systems. Its modular structure and continuous reasoning loop offer a powerful alternative to state-based agents like VisualFastReact. By simplifying both the architecture and development workflow, it paves the way for robust and customizable VFR variants.</p>
 
 
 
