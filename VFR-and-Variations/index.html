@@ -1290,6 +1290,81 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#darkvfr" class="md-nav__link">
+    <span class="md-ellipsis">
+      DarkVFR
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DarkVFR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-screenshot-on-demand" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Screenshot on Demand
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ultra-low-quality-image-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Ultra-Low-Quality Image Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-external-visual-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. External Visual Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#summary_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1414,6 +1489,54 @@
 <hr />
 <h2 id="summary">Summary</h2>
 <p>MinimalVFR is a foundational agent for building flexible, vision-enabled cognitive systems. Its modular structure and continuous reasoning loop offer a powerful alternative to state-based agents like VisualFastReact. By simplifying both the architecture and development workflow, it paves the way for robust and customizable VFR variants.</p>
+<h1 id="darkvfr">DarkVFR</h1>
+<p><strong>DarkVFR</strong> is a ultra-lightweight, fast and vision-efficient VFR variant designed to reduce LLM token usage by shifting most visual reasoning outside of the LLM. It operates mostly "blind," relying on structured reasoning and delegating visual interpretation to specialized, cheaper vision tools.</p>
+<blockquote>
+<p>The <code>Dark</code> preffix in the name does reference to the mainly interaction with the environment being mostly blind.</p>
+</blockquote>
+<p>As its main core, instead of feeding a screenshot to the LLM on every step, the agent works in a "dark mode" where screenshots are only shared when the LLM explicitly requests them through a meta-action (<code>look_to_screen</code>). When needed, these screenshots are low-resolution and used primarily for context.</p>
+<p>Additionally, the agent's action space is extended with new vision tools that call cheaper external models (e.g., MolMo or Moondream) to extract information from the image.</p>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/5c8c9dde-e9e7-4dec-9398-52b407faa643" alt="DarkVFR diagram" width=500>
+</div>
+<hr />
+<h2 id="key-features">Key Features</h2>
+<h3 id="1-screenshot-on-demand">1. Screenshot on Demand</h3>
+<ul>
+<li>Screenshots are not included by default.</li>
+<li>The LLM must explicitly request a screenshot via a meta-action (<code>look_to_screen</code>).</li>
+</ul>
+<h3 id="2-ultra-low-quality-image-processing">2. Ultra-Low-Quality Image Processing</h3>
+<ul>
+<li>When screenshots are provided, they are significantly compressed:</li>
+<li><code>fullscreen</code>: 10% quality</li>
+<li><code>partial</code>: 20% quality</li>
+<li>These images are enough for coarse context and delegated to vision tools when necessary.</li>
+</ul>
+<h3 id="3-external-visual-tools">3. External Visual Tools</h3>
+<ul>
+<li>The action space includes tools connected to external, specialized vision models.</li>
+<li>These models provide:</li>
+<li>OCR</li>
+<li>Icon detection</li>
+<li>Contextual image summaries</li>
+<li>LLM only reasons on processed results, not raw pixel data.</li>
+</ul>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d10970c6-ba9a-4215-b063-3e527bccd97e" alt="DarkVFR example" width=600>
+</div>
+
+<hr />
+<h2 id="benefits">Benefits</h2>
+<ul>
+<li><strong>Massive Cost Reduction</strong>: From $0.30–$0.50 per task to ~$0.005.</li>
+<li><strong>Reasoning-Centric</strong>: Vision is used only as needed; most reasoning is symbolic and language-based.</li>
+<li><strong>Flexible &amp; Scalable</strong>: Supports high-throughput tasks on resource-constrained systems.</li>
+<li><strong>Reuses MinimalVFR</strong>: All functionality from MinimalVFR is inherited and only two methods are overridden.</li>
+</ul>
+<hr />
+<h2 id="summary_1">Summary</h2>
+<p>DarkVFR is a cost-optimized, reasoning-first cognitive agent that extends the VFR family. It empowers the LLM to decide when vision is necessary, uses minimal image data, and delegates image understanding to cheaper and specialized models. It is ideal for large-scale or budget-sensitive applications where task accuracy must be balanced with efficiency.</p>
 
 
 
