@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/Home/">
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/VFR-and-Variations/">
       
       
       
@@ -18,7 +18,7 @@
     
     
       
-        <title>🌟 GU-Systems: An ECM approximation to AGI🌟 - Execution Cognition Machine (ECM)</title>
+        <title>VisualFastReact - Execution Cognition Machine (ECM)</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gu-systems-an-ecm-approximation-to-agi" class="md-skip">
+        <a href="#visualfastreact" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              🌟 GU-Systems: An ECM approximation to AGI🌟
+              VisualFastReact
             
           </span>
         </div>
@@ -216,7 +216,7 @@
   
   
     <li class="md-nav__item">
-      <a href="." class="md-nav__link">
+      <a href="../Home" class="md-nav__link">
         
   
   
@@ -1125,9 +1125,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
+  <a href="#visualfastreact-vfr" class="md-nav__link">
     <span class="md-ellipsis">
-      🚀 Introduction
+      VisualFastReact (VFR)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Benefits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualfastreact-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      VisualFastReact Workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VisualFastReact Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-visual-analyzer-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Visual Analyzer Node
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-fastreact-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. FastReact Node
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
     </span>
   </a>
   
@@ -1152,15 +1203,55 @@
   
 
 
-<h1 id="gu-systems-an-ecm-approximation-to-agi">🌟 GU-Systems: An ECM approximation to AGI🌟</h1>
+<h1 id="visualfastreact">VisualFastReact</h1>
+<p><strong>Note</strong>: To fully understand this entry, please first refer to the FastReact documentation which explains the core principles behind the ReAct (Reason + Act) methodology that VisualFastReact extends.</p>
+<p><strong>In this article, we will introduce several variants derived from FastReact (FR), each being a better aproximation of previous ones.</strong></p>
+<hr />
+<h2 id="visualfastreact-vfr">VisualFastReact (VFR)</h2>
+<p><strong>VisualFastReact</strong> is an advanced cognitive agent that enhances the original FastReact by introducing a vision-focused workflow. It integrates visual perception capabilities, allowing the agent to process and interact with screen content more efficiently. VisualFastReact is particularly optimized for environments where vision-based reasoning and action are necessary, such as user interfaces or image-rich tasks.</p>
+<p>The core idea is to split the reasoning process into two phases:</p>
+<ol>
+<li><strong>Visual Analysis</strong>: The agent decides where to focus on the screen (full or partial region).</li>
+<li><strong>Action Execution</strong>: Once focus is established, the agent repeatedly executes FastReact steps until it determines that a focus change is required.</li>
+</ol>
+<p>This hybrid approach significantly reduces token consumption by avoiding the repeated analysis of entire images.</p>
 <div align="center">
-  <img src="https://raw.githubusercontent.com/SamthinkGit/media-images/refs/heads/main/media/Logo1.png" alt="GU logo" width=900>
+  <img src="https://github.com/user-attachments/assets/115ae64d-27e3-47f3-85c5-58f22d81a5e0" alt="VFR Diagram" width=600>
 </div>
 
-<h2 id="introduction">🚀 Introduction</h2>
-<p>Welcome to the main repository for our cutting-edge project on the implementation of <strong>ECM (Execution-Cognition Machine)</strong> as a strategic approach towards the development of Computer Autonomous AI. This initiative represents a significant leap in crafting an intelligent system that not only mimic but also evolve human-like cognitive functionalities autonomously in computer interaction.</p>
-<p>🧠 The project revolves around designing, testing, and refining theoretical models that translate complex human problem-solving capabilities into computational strategies executable by AI. We integrate advanced AI frameworks, particularly focusing on AutoGPT as the backbone for adaptive and scalable solutions. Our system architecture is robust, accommodating rapid iterations and rigorous validations through continuous integration and deployment mechanisms.</p>
-<p>📚 For detailed insights into our methodologies and system functionalities, please refer to the README, the documentation included in this repository or surf through the pages of this Wiki.</p>
+<hr />
+<h2 id="key-benefits">Key Benefits</h2>
+<ul>
+<li><strong>Token Efficiency</strong>: By focusing only on relevant screen areas, the agent reduces image processing costs.</li>
+<li><strong>Hybrid Visual Reasoning</strong>: Combines OCR, icon recognition, and localized image analysis.</li>
+<li><strong>FastReact Integration</strong>: Maintains the speed and structure of FastReact's reasoning/action cycle.</li>
+<li><strong>Cognitive Memory</strong>: Retains contextual information and summaries to support efficient, consistent decision-making.</li>
+</ul>
+<hr />
+<h2 id="visualfastreact-workflow">VisualFastReact Workflow</h2>
+<h3 id="1-visual-analyzer-node">1. Visual Analyzer Node</h3>
+<ul>
+<li>Captures a screenshot (full screen).</li>
+<li>Compresses the image for token optimization.</li>
+<li>Uses an LLM to:</li>
+<li>Describe relevant screen information.</li>
+<li>Reason about the next step.</li>
+<li>Determine screen focus (e.g., "top left", "fullscreen").</li>
+<li>Return a natural language summary of the step.</li>
+</ul>
+<h3 id="2-fastreact-node">2. FastReact Node</h3>
+<ul>
+<li>Crops the image based on the current focus.</li>
+<li>Analyzes icons and OCR-detected text.</li>
+<li>Builds a prompt with available tools and visual descriptions.</li>
+<li>Uses FastReactPrompt to reason and propose the next Python action.</li>
+<li>Returns:</li>
+<li>Reasoning.</li>
+<li>Python function to execute.</li>
+<li>The next focus state: <code>maintain_focus</code>, <code>change_focus</code>, <code>replanning</code>, or <code>finish</code>.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>VisualFastReact builds upon FastReact to create a visually intelligent, token-efficient agent. By isolating visual analysis and leveraging a structured reasoning/action loop, it offers a scalable approach to screen interaction tasks. The system is modular, memory-aware, and interpretable, making it suitable for a wide range of cognitive tasks involving vision.</p>
 
 
 
