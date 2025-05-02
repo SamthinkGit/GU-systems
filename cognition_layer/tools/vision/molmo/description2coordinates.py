@@ -71,7 +71,7 @@ def description2coordinates(image: Image, description: str) -> list[PointDict]:
     payload = {
         "version": "76ebd700864218a4ca97ac1ccff068be7222272859f9ea2ae1dd4ac073fa8de8",
         "input": {
-            "text": f"Find one point to {description}",
+            "text": f"Point to `{description}`",
             "image": image_data_url,
             "top_k": 5,
             "top_p": 1,
