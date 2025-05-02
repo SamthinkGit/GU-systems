@@ -292,8 +292,6 @@ class MinimalVFR:
             prompt = self._get_next_prompt()
             response: VFR_Response = self.llm.invoke(prompt)
 
-            self._execute_response_from_agent(response)
-
             self.cognition_state.set("scratchpad", response.reasoning)
             obj = self.cognition_state.get("objective_completed")
             exit = (obj) or (isinstance(obj, str) and obj.lower() == "true")
@@ -301,6 +299,8 @@ class MinimalVFR:
             yield VFRFeedbackStep(
                 name="MinimalVFR", content=str(response), is_last=exit
             )
+
+            self._execute_response_from_agent(response)
 
 
 # ======================= UTILITIES ============================
