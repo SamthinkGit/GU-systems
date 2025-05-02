@@ -50,6 +50,8 @@ def search_for_installed_app(name: str) -> str:
     """
     Search for an installed app in the system and the path of its executables.
     Use me when the app is not already opened and you want to know the path to open it.
+    Note: Please use generic names to search for the app.
+    For example, 'Edge' instead of 'Microsoft Edge'.
     Example: search_for_installed_app('Edge')
     """
     return _search_for_installed_app(name)

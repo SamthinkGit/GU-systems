@@ -8,3 +8,4 @@ def load_darkvfr_supported_actions() -> None:
     import action_space.mouse.molmo_based.actions
     import action_space.vision.moondream.actions
     import action_space.packages.apps_management.actions
+    import action_space.packages.sleep.actions
