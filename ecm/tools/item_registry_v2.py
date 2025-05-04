@@ -257,6 +257,12 @@ class ItemRegistry:
                 f"Multiple items found for name '{name}':{options} Returning the first match."
             )
 
+        if len(result_list) == 0:
+            raise ValueError(
+                f"Item '{name}' not found in registry '{self.name}'. "
+                f"Available items: {', '.join(self.items.keys())}"
+            )
+
         if not return_multiple:
             return result_list[0]
 

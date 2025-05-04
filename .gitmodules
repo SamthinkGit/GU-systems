@@ -1,0 +1,3 @@
+[submodule "external/ecm_communications"]
+	path = external/ecm_communications
+	url = https://github.com/MaterIA-Lab/ecm-communications
