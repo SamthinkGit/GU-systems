@@ -3,7 +3,7 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 PKG_NAME = "meta-look"
 
 
-@ItemRegistry.register(type="action", package=PKG_NAME)
+@ItemRegistry.register(type="action", package=PKG_NAME, labels=["enforce-host"])
 def look_to_screen():
     """
     Request the user to send an screenshot of the screen with the current focused part of the screen.

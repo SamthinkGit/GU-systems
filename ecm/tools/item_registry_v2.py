@@ -328,6 +328,7 @@ class ItemRegistry:
         cls,
         type: Literal["action", "tool"] = "action",
         package: Optional[str] = None,
+        labels: Optional[list[str]] = None,
         mock: bool = False,
     ):
         """
@@ -368,6 +369,9 @@ class ItemRegistry:
                     content=func,
                     is_callable=True,
                 )
+
+            if labels is not None:
+                item.labels = labels
 
             if package is not None:
                 cls._packages[package].append(item)
