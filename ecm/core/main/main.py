@@ -14,11 +14,52 @@ DEFAULT_COGNITION = "DarkVFR"
 DEFAULT_EXECUTOR = "pyxcel"
 
 
+def load_supported_actions(cognition_layer: str):
+    """
+    Load the supported actions for the specified cognition layer.
+    """
+    match cognition_layer.lower():
+        case "darkvfr":
+            from cognition_layer.agents.minimal_vfr.supported_actions import (
+                load_darkvfr_supported_actions,
+            )
+
+            load_darkvfr_supported_actions()
+        case "vfr":
+            from cognition_layer.agents.visual_fast_react.supported_actions import (
+                load_vfr_supported_actions,
+            )
+
+            load_vfr_supported_actions()
+        case "fastreact":
+            from cognition_layer.agents.fast_react.supported_actions import (
+                load_fastreact_supported_actions,
+            )
+
+            load_fastreact_supported_actions()
+        case "xplore":
+            pass  # No supported actions to load for Xplore
+        case _:
+            raise ValueError(
+                f"Unsupported cognition layer: {cognition_layer}. Supported layers are: {COGNITION_LAYERS}"
+            )
+
+
 def main():
 
     argparser = argparse.ArgumentParser(description="Run the ECM project.")
     argparser.add_argument(
         "--verbose", action="store_true", help="Enable verbose outputs from the agents"
+    )
+    argparser.add_argument(
+        "--client",
+        action="store_true",
+        help="Set this machine as a ECM client (listener)",
+    )
+    argparser.add_argument(
+        "--server",
+        action="store_true",
+        help="Set this machine as a ECM server (master)",
     )
     argparser.add_argument("--debug", action="store_true", help="Enable debug output")
     argparser.add_argument(
@@ -55,6 +96,19 @@ def main():
     )
     args = argparser.parse_args()
 
+    # ----- Loading Action Space ----
+    load_supported_actions(args.agent)
+
+    if args.client:
+        from ecm_communications.tools.listener import Listener
+
+        registry = ItemRegistry()
+        registry.summary()
+
+        listener = Listener()
+        listener.listen()
+        exit()
+
     # ----- Settling Layers ----
     match args.executor.lower():
         case "rosa":
@@ -82,31 +136,19 @@ def main():
             from cognition_layer.agents.minimal_vfr.api.darkvfr_server import (
                 get_fast_ap_server,
             )
-            from cognition_layer.agents.minimal_vfr.supported_actions import (
-                load_darkvfr_supported_actions,
-            )
 
-            load_darkvfr_supported_actions()
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "vfr":
             from cognition_layer.agents.visual_fast_react.api.server import (
                 get_fast_ap_server,
             )
-            from cognition_layer.agents.visual_fast_react.supported_actions import (
-                load_vfr_supported_actions,
-            )
 
-            load_vfr_supported_actions()
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "fastreact":
             from cognition_layer.agents.fast_react.api.server import get_fast_ap_server
-            from cognition_layer.agents.fast_react.supported_actions import (
-                load_fastreact_supported_actions
-            )
 
-            load_fastreact_supported_actions()
             server = get_fast_ap_server(interpreter=interpreter)
 
         case "xplore":
@@ -135,6 +177,9 @@ def main():
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug("Initialization finished. Starting...")
     ItemRegistry().summary()
+
+    if args.server:
+        raise NotImplementedError()
 
     @traceable
     def execute_user_query(query: str):
