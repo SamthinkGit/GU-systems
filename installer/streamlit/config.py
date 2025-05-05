@@ -3,7 +3,7 @@ from pathlib import Path
 LATEST_COGNITION_LAYER = "DarkVFR"
 LATEST_EXECUTION_LAYER = "Pyxcel"
 
-ECM_OPTIONS = ["base", "devel"]
+ECM_OPTIONS = ["base", "devel", "remote"]
 EXECUTION_LAYER_OPTIONS = ["Pyxcel", "All"]
 COGNITION_LAYER_OPTIONS = ["DarkVFR", "VisualFastReact", "FastReact", "Base", "All"]
 

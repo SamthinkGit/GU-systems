@@ -216,12 +216,6 @@ def load_config_tab():
                 selected_ecm_options.append(component)
 
     st.divider()
-    st.subheader("Client/Host Templates")
-    st.markdown(
-        "> This mode is still not implemented. Future versions will have this feature."
-    )
-
-    st.divider()
     st.subheader("Environment")
     c1, c2 = st.columns(2)
     with c1:
@@ -243,7 +237,7 @@ def load_config_tab():
     with c1:
         st.markdown("**Pull to latest version (experimental)**")
     with c2:
-        git_pull_key = st.toggle("Add", disabled=False, key="git_pull", value=False)
+        git_pull_key = st.toggle("Add", disabled=False, key="git_pull", value=True)
 
     st.divider()
     c1, c2 = st.columns(2)

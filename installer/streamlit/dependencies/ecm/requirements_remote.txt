@@ -1,0 +1,4 @@
+grpcio
+
+# Asumming this is executed from the root of the repo
+./external/ecm_communications

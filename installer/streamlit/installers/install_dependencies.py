@@ -34,7 +34,10 @@ def check_dependencies(
     for line in path.read_text().splitlines():
         if line.startswith("#"):
             continue
-        dependencies.append(line.split("==")[0])
+        dep = line.split("==")[0]
+        dependencies.append(dep)
+
+    dependencies = [dep for dep in dependencies if dep.strip() != ""]
 
     installed_dependencies = []
     for line in pip_list.splitlines():
@@ -56,13 +59,12 @@ def install_dependencies(
     shell: PersistentShell, description: InstallerDescription
 ) -> bool:
 
-    shell.send_command(
-        f"cd '{get_repository_root_path().resolve().absolute() / 'installer' / 'streamlit'}'"
-    )
+    shell.send_command(f"cd '{get_repository_root_path().resolve().absolute()}'")
+
     exit_code, _ = shell.read_output()
     if exit_code != 0:
         st.error(
-            "Error changing directory to the installer. Please check your Python installation."
+            "Error changing directory to the root path. Please check your Python installation."
         )
         return False
     if (
@@ -161,6 +163,8 @@ def get_fixed_package_name(package_name: str) -> str:
             return "langchain-openai"
         case "langchain_ollama":
             return "langchain-ollama"
+    if package_name.startswith("./external/"):
+        return package_name.split("/")[-1]
     return package_name
 
 

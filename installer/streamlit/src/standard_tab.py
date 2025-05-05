@@ -99,7 +99,7 @@ def load_selection_tab():
             os=detect_os(),
             install_with_conda=install_with_conda,
             conda_path="ecm",
-            git_pull=False,
+            git_pull=True,
             setup_python_path=True,
         )
         st.session_state.installation_description = description
