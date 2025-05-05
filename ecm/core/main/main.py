@@ -47,6 +47,7 @@ def load_supported_actions(cognition_layer: str):
 
 def main():
 
+    logger = get_logger("main")
     argparser = argparse.ArgumentParser(description="Run the ECM project.")
     argparser.add_argument(
         "--verbose", action="store_true", help="Enable verbose outputs from the agents"
@@ -57,9 +58,19 @@ def main():
         help="Set this machine as a ECM client (listener)",
     )
     argparser.add_argument(
+        "--autodiscover",
+        action="store_true",
+        help="Discovers and saves a peer to connnect to the ECM",
+    )
+    argparser.add_argument(
         "--server",
         action="store_true",
         help="Set this machine as a ECM server (master)",
+    )
+    argparser.add_argument(
+        "--localhost",
+        action="store_true",
+        help="Set this machine as a ECM server (master) with localhost connection detection",
     )
     argparser.add_argument("--debug", action="store_true", help="Enable debug output")
     argparser.add_argument(
@@ -95,6 +106,12 @@ def main():
         default=DEFAULT_EXECUTOR,
     )
     args = argparser.parse_args()
+    # ----- Autodiscovering Peer ----
+    if args.autodiscover:
+        from ecm_communications.bootstraps.autodiscover import autodiscover
+
+        logger.info("Waiting for peer to connect...")
+        autodiscover(allow_localhost=args.localhost)
 
     # ----- Loading Action Space ----
     load_supported_actions(args.agent)
@@ -103,6 +120,7 @@ def main():
         from ecm_communications.tools.listener import Listener
 
         registry = ItemRegistry()
+        registry.load_all()
         registry.summary()
 
         listener = Listener()
@@ -162,7 +180,6 @@ def main():
                 + str(COGNITION_LAYERS)
             )
 
-    logger = get_logger("main")
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug(f"Running {args.executor} as Execution Layer")
 
@@ -173,13 +190,15 @@ def main():
     if not args.host:
         ItemRegistry().invalidate(tools=False)
 
+    if args.server:
+        from ecm_communications.tools.server import enable_server_mode
+
+        enable_server_mode()
+
     ItemRegistry().load_all()
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug("Initialization finished. Starting...")
     ItemRegistry().summary()
-
-    if args.server:
-        raise NotImplementedError()
 
     @traceable
     def execute_user_query(query: str):
