@@ -18,6 +18,6 @@ def git_update(shell: PersistentShell) -> bool:
     if exit_code != 0:
         return False
 
-    shell.send_command("git submodule foreach git pull")
+    shell.send_command("git submodule foreach git pull origin main")
     exit_code, output = shell.read_output()
     return exit_code == 0
