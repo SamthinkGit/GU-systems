@@ -48,39 +48,49 @@ cd <repository_folder>
 If you are using Linux, run the auto-installation script:
 
 ```bash
-scripts/autoinstall.bash
+./installer/install.sh
 ```
+
+> Note: The linux installation only supports `server` mode. In the current version, action space is only ensured to be stable for Windows installations.
 
 ### Windows
+If you are using Windows please open the file `./installer/install.bat` with admin permissions.
+> You can double click on the file and click on `Run as Administrator`
 
-If you are using Windows, run the PowerShell auto-installation script:
+## Running the Installer
+Both options for Windows/Linux will open a streamlit browser where you can install all the dependencies for the ECM.
 
-```powershell
-scripts/autoinstall.ps1
-```
-
-### Linux (without Bash Support)
-
-If your Linux distribution does not support Bash, there is no auto-installer available. You must manually install the dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Additionally, configure the necessary tools manually according to the project requirements.
-
+- For using a local and ready-to-use configuration you can install from `Standard User` tab.
+- For updating or installing advanced/experimental features you can use the `Developer` tab.
+ 
 Now you are ready to use the repository!
 
 ## 📖 Usage
 Using the ECM is as simple as running a python script!
-You can use RePlan (our best agent so far) to start sending queries to control your computer!
+You can use DarkVFR (our best agent so far) to start sending queries to control your computer!
 
 ```bash
 # For safety reasons this does not affect your computer.
 # You can use --host if you are in a safe environment.
 
-python ecm/core/main/main.py --agent fastreact
+python ecm/core/main/main.py --agent darkvfr
 ```
+
+> **REMEMBER**: If you installed the ECM with conda don't forget to use `conda activate ecm` to init the dependencies!
+
+If you want to have the controller/controlled in different devices you can use the following commands:
+```bash
+# This is the server (The agent who thinks and reasons)
+python ecm/core/main/main.py --agent darkvfr --server
+```
+```
+# This is the client (The device controlled by the agent)
+python ecm/core/main/main.py --agent darkvfr --client
+```
+
+> Note: If it's the first time connecting two devices, you must append `--autodiscover` to each option to sync the devices
+
+> Note: You can use `--localhost` to allow the same device for both client and server 
 
 ## ✨ Features
 
