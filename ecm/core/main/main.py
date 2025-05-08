@@ -8,7 +8,7 @@ import ecm.shared
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 
-COGNITION_LAYERS = ["fastreact", "xplore", "vfr", "darkvfr"]
+COGNITION_LAYERS = ["fastreact", "xplore", "vfr", "darkvfr", "sva"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
 DEFAULT_COGNITION = "DarkVFR"
 DEFAULT_EXECUTOR = "pyxcel"
@@ -37,6 +37,13 @@ def load_supported_actions(cognition_layer: str):
             )
 
             load_fastreact_supported_actions()
+        case "sva":
+            from cognition_layer.agents.experts.small_vision_agent.supported_actions import (
+                load_sva_supported_actions,
+            )
+
+            load_sva_supported_actions()
+
         case "xplore":
             pass  # No supported actions to load for Xplore
         case _:
@@ -169,13 +176,20 @@ def main():
 
             server = get_fast_ap_server(interpreter=interpreter)
 
+        case "sva":
+            from cognition_layer.agents.experts.small_vision_agent.api.server import (
+                get_fast_ap_server,
+            )
+
+            server = get_fast_ap_server(interpreter=interpreter)
+
         case "xplore":
             from cognition_layer.agents.xplore.api.server import get_fast_ap_server
 
             server = get_fast_ap_server(interpreter=interpreter)
 
         case _:
-            return ValueError(
+            raise ValueError(
                 "Cognition Layer not valid, the unique supported values are: "
                 + str(COGNITION_LAYERS)
             )
