@@ -1,9 +1,9 @@
 from operator import attrgetter
 
-from cognition_layer.agents.experts.small_vision_agent.core.small_vision_agent import (
+from cognition_layer.api import FastAgentProtocol
+from cognition_layer.experts.small_vision_agent.core.small_vision_agent import (
     SmallVisionAgent,
 )
-from cognition_layer.api import FastAgentProtocol
 from ecm.mediator.Interpreter import Interpreter
 from ecm.shared import default_kwargs
 from ecm.tools.registry import ItemRegistry

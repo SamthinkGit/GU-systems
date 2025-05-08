@@ -1,8 +1,8 @@
 from operator import attrgetter
 
+from cognition_layer.agents.fast_react.agents.fast_react import FastReact
 from cognition_layer.api import FastAgentProtocol
 from cognition_layer.api import ServerAPI
-from cognition_layer.fast_react.agents.fast_react import FastReact
 from cognition_layer.tools.server_template import ServerFromIterator
 from ecm.mediator.Interpreter import Interpreter
 from ecm.shared import default_kwargs

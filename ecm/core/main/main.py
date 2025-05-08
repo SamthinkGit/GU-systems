@@ -20,19 +20,19 @@ def load_supported_actions(cognition_layer: str):
     """
     match cognition_layer.lower():
         case "darkvfr":
-            from cognition_layer.agents.minimal_vfr.supported_actions import (
+            from cognition_layer.agents.minimal_vfr.darkvfr_description import (
                 load_darkvfr_supported_actions,
             )
 
             load_darkvfr_supported_actions()
         case "vfr":
-            from cognition_layer.agents.visual_fast_react.supported_actions import (
+            from cognition_layer.agents.visual_fast_react.description import (
                 load_vfr_supported_actions,
             )
 
             load_vfr_supported_actions()
         case "fastreact":
-            from cognition_layer.agents.fast_react.supported_actions import (
+            from cognition_layer.agents.fast_react.description import (
                 load_fastreact_supported_actions,
             )
 
