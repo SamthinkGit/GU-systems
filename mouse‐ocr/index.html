@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/LLMs-and-State-of-Art/">
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/mouse%E2%80%90ocr/">
       
       
       
@@ -18,7 +18,7 @@
     
     
       
-        <title>LLMs and State of Art - Execution Cognition Machine (ECM)</title>
+        <title>action_space/mouse/ocr_based vs action_space/mouse/labelled-ocr - Execution Cognition Machine (ECM)</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#introduction-to-large-language-models-llms" class="md-skip">
+        <a href="#action_spacemouseocr_based-vs-action_spacemouselabelled-ocr" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              LLMs and State of Art
+              action_space/mouse/ocr_based vs action_space/mouse/labelled-ocr
             
           </span>
         </div>
@@ -298,7 +298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="." class="md-nav__link">
+      <a href="../LLMs-and-State-of-Art" class="md-nav__link">
         
   
   
@@ -1115,6 +1115,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1123,36 +1125,108 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction-to-large-language-models-llms" class="md-nav__link">
+  <a href="#mouseocr-based" class="md-nav__link">
     <span class="md-ellipsis">
-      Introduction to Large Language Models (LLMs)
+      mouse/ocr-based
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="mouse/ocr-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-ocr-detection-pre-requisite" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: OCR Detection (Pre-requisite)
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#integrating-cognitive-agents-within-gu-systems" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-text-matching-and-click" class="md-nav__link">
     <span class="md-ellipsis">
-      Integrating Cognitive Agents within GU-Systems
+      Phase 2: Text Matching and Click
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#framework-evaluation-for-optimal-integration" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#example-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      Framework Evaluation for Optimal Integration
+      Example Workflow
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#conclusions" class="md-nav__link">
+  <a href="#mouselabelled-ocr" class="md-nav__link">
     <span class="md-ellipsis">
-      Conclusions
+      mouse/labelled-ocr
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="mouse/labelled-ocr">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-by-step-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step-by-Step Process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visual-representation-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visual Representation Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visual Representation Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-labels-overlaid-on-screenshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Labels Overlaid on Screenshot
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-labels-displayed-in-a-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Labels Displayed in a Table
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#this-image-can-be-obtained-by-using-the-labelerboard-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      &gt; This image can be obtained by using the labeler.board() method
     </span>
   </a>
   
@@ -1177,54 +1251,66 @@
   
 
 
-  <h1>LLMs and State of Art</h1>
-
-<h2 id="introduction-to-large-language-models-llms">Introduction to Large Language Models (LLMs)</h2>
-<p>Large Language Models (LLMs) such as OpenAI's GPT series (GPT-3.5, GPT-4, and others) represent the pinnacle of current natural language processing technologies. These models have been pivotal in demonstrating capabilities close to human-level text understanding and generation, offering significant advantages in terms of scalability, cost-effectiveness, and ease of integration. The choice of GPT-X as our primary model is driven by its cost efficiency, which offers a low cost per token, and its stability—being a product of a well-established company, it ensures reliability for long-term projects. Additionally, OpenAI provides robust APIs that facilitate straightforward web-based queries, an essential feature for seamless integration into diverse applications.</p>
-<p>In line with exploring other robust models to enhance our system's capabilities, we are also considering incorporating models like Microsoft's Bing, Meta's Llama, and the emerging Gemini model. Each of these models brings unique strengths:</p>
-<ul>
-<li><strong><a href="https://openai.com/gpt-4">OpenAI GPT-X</a></strong>: Known for robust performance and versatility in various NLP tasks, making it ideal for core system operations.</li>
-<li><strong><a href="https://www.bing.com/AI">Bing</a></strong>: Utilizes Microsoft's extensive experience in AI and search technologies to provide enriched conversational capabilities.</li>
-<li><strong><a href="https://ai.facebook.com/blog/meta-introduces-llama/">Llama</a></strong>: An OpenSource alternative, offers adaptability across different conversational contexts, ideal for applications requiring versatile linguistic styles.</li>
-<li><strong><a href="https://example.com/gemini">Gemini</a></strong>: Focuses on multitasking and handling multiple domains, which is crucial for systems requiring broad knowledge bases.</li>
-</ul>
-<p>Going further, the evolution from traditional LLMs to systems capable of <a href="https://en.wikipedia.org/wiki/Artificial_general_intelligence">AGI (Artificial Generalist Agents)</a> involves creating models that can understand, learn, and perform any intellectual task comparable to human capabilities. AGI aims to transcend the limitations of typical NLP tasks by providing solutions that can apply learned knowledge across various disciplines. This shift is crucial for developing systems like GU-Systems, which require a level of cognitive flexibility and adaptability that goes beyond simple task execution.</p>
-<p><a href="https://es.wikipedia.org/wiki/Artificial_intelligence">Autonomous AI</a> takes this a step further by developing systems that operate independently of human oversight, which is essential for applications involving real-time decision making or when human input may introduce delays or biases. The ability to make autonomous decisions is critical for the areas of our project that involve real-time data interpretation and response generation without human intervention.</p>
+<h1 id="action_spacemouseocr_based-vs-action_spacemouselabelled-ocr">action_space/mouse/ocr_based vs action_space/mouse/labelled-ocr</h1>
+<p>This document explains the differences and usage of two mouse control actions based on visual recognition: <code>mouse/ocr-based</code> and <code>mouse/labelled-ocr</code>. These actions allow a cognitive agent to interact with the graphical interface by recognizing screen elements via OCR (Optical Character Recognition) and label annotation.</p>
+<h2 id="mouseocr-based">mouse/ocr-based</h2>
+<p>The <code>mouse/ocr-based</code> action relies solely on text recognition through an OCR engine. It works in two phases:</p>
+<h3 id="phase-1-ocr-detection-pre-requisite">Phase 1: OCR Detection (Pre-requisite)</h3>
+<p>Before invoking the <code>mouse/ocr-based</code> action, the agent must perform OCR detection using:</p>
+<pre><code class="language-python">from cognition_layer.tools.ocr.engine import OCR
+</code></pre>
+<p>Calling the OCR tool stores detection results in <code>ocr.latest_detections</code>. These include all recognized text bounding boxes on the screen. The <code>mouse/ocr-based</code> action <strong>requires</strong> this to be done beforehand. If not, the action will fail due to the lack of reference data.</p>
+<h3 id="phase-2-text-matching-and-click">Phase 2: Text Matching and Click</h3>
+<p>Once text detections are available, the action searches for the text that best matches a given <code>target</code>. For example, if the target is:</p>
+<pre><code class="language-python">mouse/ocr-based.click(&quot;Git&quot;)
+</code></pre>
+<p>And the OCR engine has detected the text "GitHub", it will match it and perform a click on the <strong>center</strong> of the corresponding bounding box.</p>
+<h3 id="example-workflow">Example Workflow</h3>
+<ol>
+<li>The agent is initialized.</li>
+<li>The agent runs OCR on the screen.</li>
+<li>The OCR engine returns detected texts like: <code>YouTube</code>, <code>GitHub</code>, <code>Settings</code>.</li>
+<li>The agent decides to click on <code>GitHub</code>, so it executes:</li>
+</ol>
+<pre><code class="language-python">mouse/ocr-based.click(&quot;Git&quot;)
+</code></pre>
+<ol>
+<li>The action finds the best matching box and clicks it.</li>
+</ol>
+<hr />
+<h2 id="mouselabelled-ocr">mouse/labelled-ocr</h2>
+<p>The <code>mouse/labelled-ocr</code> action provides greater flexibility by allowing the agent to target not just visible texts, but also graphical elements like icons. It introduces a <strong>labelling step</strong> that augments each OCR bounding box with a semantic tag.</p>
+<blockquote>
+<p>The labeller used can be found at <code>/cognition_layer/tools/ocr/labeller</code></p>
+</blockquote>
+<h3 id="step-by-step-process">Step-by-Step Process</h3>
+<ol>
+<li><strong>Run OCR</strong> as in the <code>ocr-based</code> approach.</li>
+<li><strong>Labelling</strong>: Each OCR bounding box is passed through a labeller which assigns a label (e.g., <code>A2</code>, <code>F2</code>, <code>BH8</code>).</li>
+<li><strong>Agent Selection</strong>: The agent sees these labels and selects one (e.g., <code>A2</code>).</li>
+<li><strong>Freeze Labeller</strong>: Once a label is chosen, the current state of the labeller is frozen for global access.</li>
+<li><strong>Click Execution</strong>: The agent calls:</li>
+</ol>
+<pre><code class="language-python">mouse/labelled-ocr.click(&quot;A2&quot;)
+</code></pre>
+<p>This will identify the bounding box associated with the label and perform a click on its center.</p>
+<h3 id="visual-representation-options">Visual Representation Options</h3>
+<p>The labelled bounding boxes can be shown to the agent in two different ways:</p>
+<h4 id="1-labels-overlaid-on-screenshot">1. Labels Overlaid on Screenshot</h4>
 <div align="center">
-  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/07c3d505-f2b5-465f-aacd-9ebbc0198795" alt="AI State-Of-Art Diagram" width=550>
+  <img src="https://github.com/user-attachments/assets/84c455a3-6182-44ee-b2e0-e756da053bb7" width="500">
 </div>
 
+<blockquote>
+<p>This image can be obtained by using the <code>labeler.draw()</code> method</p>
+</blockquote>
+<h4 id="2-labels-displayed-in-a-table">2. Labels Displayed in a Table</h4>
 <div align="center">
-  AI State-Of-Art Diagram
+  <img src="https://github.com/user-attachments/assets/c4219048-98b9-4652-b29e-acc6a93a8ea7" width="500">
 </div>
 
-<h2 id="integrating-cognitive-agents-within-gu-systems">Integrating Cognitive Agents within GU-Systems</h2>
-<p>To translate the sophisticated data processing capabilities of LLMs into actionable strategies in real-world applications, it is necessary to embed these models within <a href="https://en.wikipedia.org/wiki/Cognitive_architecture">Cognitive Agents</a>. These agents utilize mechanisms that convert generated text and insights into direct actions, enabling effective operation in various environments. An excellent resource for current technologies and frameworks that facilitate the implementation of these agents is the <a href="https://github.com/EmbraceAGI/Awesome-AGI">awesome-AGI</a> repository on GitHub, which showcases some of the most popular and cutting-edge repositories today.</p>
-<h2 id="framework-evaluation-for-optimal-integration">Framework Evaluation for Optimal Integration</h2>
-<p>Our exploration of available frameworks through resources like the awesome-AGI repository revealed several potential candidates, including MetaGPT, AgentGPT, and AutoGPT:</p>
-<ul>
-<li>
-<p><strong><a href="https://github.com/geekan/MetaGPT">MetaGPT</a></strong>: Targets professional and enterprise environments, facilitating rapid and secure AI integration within technological workspaces. However, its focus on enterprise solutions does not align with our project's need for broader applicability and flexibility.</p>
-</li>
-<li>
-<p><strong><a href="https://github.com/reworkd/AgentGPT">AgentGPT</a></strong>: Provides a user-friendly GUI and supports a collaborative AI-human working model. It is designed for semi-supervised operations, which do not meet the autonomy requirements of our project.</p>
-</li>
-</ul>
-<p>Ultimately, <strong><a href="https://github.com/Significant-Gravitas/AutoGPT">AutoGPT</a></strong> emerged as the optimal choice. It is selected for its active community support, stability, ease of integration, and its architecture that supports feedback-driven AI capable of utilizing skills/actions in a cognitive loop—perfectly matching the requirements for GU-Systems. AutoGPT facilitates the integration of agents based on the <a href="https://arxiv.org/pdf/2308.11432">Profile-Memory-Planning-Action model</a>, which is extensively used across multiple disciplines for robust agent implementation. It includes features like:</p>
-<ul>
-<li><strong>Forge System</strong>: Simplifies the deployment of new models, providing a platform where users can collaboratively develop and standardize AI technologies, which aligns with our vision of creating a flexible and adaptive system.</li>
-<li><strong>Agent Protocol</strong>: This protocol standardizes interactions with AI agents via a REST API, streamlining the management of multiple agents and ensuring that GU-Systems can function efficiently as an Execution-Cognition Machine (ECM) that leverages these standards. <a href="https://agentprotocol.ai/">Learn more about Agent Protocol</a></li>
-</ul>
-<div align="center">
-  <img src="https://github.com/SamthinkGit/GU-systems/assets/92941012/f86aa8eb-7339-4593-a346-8239d304bdb7" alt="AutoGPT/AgentProtocol Diagram" width=350>
-</div>
-
-<div align="center">
-  AutoGPT/AgentProtocol BlackBox Diagram
-</div>
-
-<h2 id="conclusions">Conclusions</h2>
-<p>Understanding these state-of-the-art technologies and selecting the right frameworks like AutoGPT are crucial steps toward realizing the ambitious goals of GU-Systems. By integrating advanced AGI and autonomous AI capabilities, GU-Systems is set to redefine the landscape of interactive, cognitive AI applications, ensuring that our project remains at the cutting edge of technology innovation.</p>
+<h2 id="this-image-can-be-obtained-by-using-the-labelerboard-method">&gt; This image can be obtained by using the <code>labeler.board()</code> method</h2>
+<p>Both actions are compatible with Windows and Linux, and they provide powerful tools for screen-based interaction using vision and semantics.</p>
 
 
 
