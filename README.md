@@ -6,7 +6,7 @@
 |       |                                                                                                                                                                        |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Code  | ![GitHub](https://img.shields.io/badge/License-Propietary-blue) ![GitHub](https://img.shields.io/badge/Version-0.0.1-blue) ![GitHub](https://img.shields.io/badge/release-in_process-orange) ![GitHub](https://img.shields.io/badge/docs-Doxygen-white) ![GitHub](https://img.shields.io/badge/Python-3.10-green) ![GitHub](https://img.shields.io/badge/LLM-OpenAI-white) |
-| Layers | ![GitHub](https://img.shields.io/badge/execution-pyxcel-royalblue) ![GitHub](https://img.shields.io/badge/cognition-FastReact-royalblue)  ![GitHub](https://img.shields.io/badge/api-FastAP-royalblue) |
+| Layers | ![GitHub](https://img.shields.io/badge/execution-pyxcel-royalblue) ![GitHub](https://img.shields.io/badge/cognition-DarkVFR-royalblue)  ![GitHub](https://img.shields.io/badge/api-FastAP-royalblue) |
 | CI/CD | ![GitHub](https://img.shields.io/badge/style-flake8-green) ![GitHub](https://img.shields.io/badge/build-passing-green)                                                 |
 | Wiki  | <div align="center"><a href="https://github.com/SamthinkGit/GU-systems/wiki"><strong>📖 Access our Wiki for detailed documentation</strong></a></div>                  |
 </div>
