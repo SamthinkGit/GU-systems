@@ -19,7 +19,7 @@ def load_darkvfr_supported_actions() -> None:
 
 DEPLOY_MODEL = {
     "name": "DarkVFR",
-    "alias": ["dark-vfr", "dvfr"],
+    "alias": ["dark-vfr", "darkvfr", "dvfr"],
     "agent_description": "An autonomous agent capable of solving complex tasks on the user environment.",
     "response_description": "The reasoning about the actions running/completed",
     "use_case": "Solve a complex task or interact with the computer/environment",

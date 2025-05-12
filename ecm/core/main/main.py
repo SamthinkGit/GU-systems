@@ -5,51 +5,13 @@ from langchain.globals import set_debug
 from langsmith import traceable
 
 import ecm.shared
+from cognition_layer.routing.descriptions import DEPLOY_MODELS
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 
-COGNITION_LAYERS = ["fastreact", "xplore", "vfr", "darkvfr", "sva"]
 EXECUTION_LAYERS = ["rosa", "pyxcel"]
-DEFAULT_COGNITION = "DarkVFR"
+DEFAULT_COGNITION = "dark-vfr"
 DEFAULT_EXECUTOR = "pyxcel"
-
-
-def load_supported_actions(cognition_layer: str):
-    """
-    Load the supported actions for the specified cognition layer.
-    """
-    match cognition_layer.lower():
-        case "darkvfr":
-            from cognition_layer.agents.minimal_vfr.darkvfr_description import (
-                load_darkvfr_supported_actions,
-            )
-
-            load_darkvfr_supported_actions()
-        case "vfr":
-            from cognition_layer.agents.visual_fast_react.description import (
-                load_vfr_supported_actions,
-            )
-
-            load_vfr_supported_actions()
-        case "fastreact":
-            from cognition_layer.agents.fast_react.description import (
-                load_fastreact_supported_actions,
-            )
-
-            load_fastreact_supported_actions()
-        case "sva":
-            from cognition_layer.agents.experts.small_vision_agent.supported_actions import (
-                load_sva_supported_actions,
-            )
-
-            load_sva_supported_actions()
-
-        case "xplore":
-            pass  # No supported actions to load for Xplore
-        case _:
-            raise ValueError(
-                f"Unsupported cognition layer: {cognition_layer}. Supported layers are: {COGNITION_LAYERS}"
-            )
 
 
 def main():
@@ -101,7 +63,6 @@ def main():
         "--agent",
         type=str,
         help="Select the Cognition Layer interface",
-        choices=COGNITION_LAYERS,
         default=DEFAULT_COGNITION,
     )
 
@@ -120,9 +81,22 @@ def main():
         logger.info("Waiting for peer to connect...")
         autodiscover(allow_localhost=args.localhost)
 
-    # ----- Loading Action Space ----
-    load_supported_actions(args.agent)
+    # ----- Discovering deploy model (agent) ----
+    deploy_model = None
+    for model in DEPLOY_MODELS:
+        if args.agent.lower() in model["alias"]:
+            deploy_model = model
+            break
 
+    if deploy_model is None:
+        raise ValueError("Invalid Agent layer passed as argument")
+
+    # ----- Loading Action Space ----
+    actions_loader = deploy_model["supported_actions"]
+    server_loader = deploy_model["server"]()
+    actions_loader()
+
+    # ----- Listening (Only for clients) ----
     if args.client:
         from ecm_communications.tools.listener import Listener
 
@@ -134,7 +108,7 @@ def main():
         listener.listen()
         exit()
 
-    # ----- Settling Layers ----
+    # ----- Settling Execution Layer ----
     match args.executor.lower():
         case "rosa":
             from execution_layer.rosa.interpreter.rosa_interpreter import (
@@ -156,43 +130,7 @@ def main():
                 + str(EXECUTION_LAYERS)
             )
 
-    match args.agent.lower():
-        case "darkvfr":
-            from cognition_layer.agents.minimal_vfr.api.darkvfr_server import (
-                get_fast_ap_server,
-            )
-
-            server = get_fast_ap_server(interpreter=interpreter)
-
-        case "vfr":
-            from cognition_layer.agents.visual_fast_react.api.server import (
-                get_fast_ap_server,
-            )
-
-            server = get_fast_ap_server(interpreter=interpreter)
-
-        case "fastreact":
-            from cognition_layer.agents.fast_react.api.server import get_fast_ap_server
-
-            server = get_fast_ap_server(interpreter=interpreter)
-
-        case "sva":
-            from cognition_layer.agents.experts.small_vision_agent.api.server import (
-                get_fast_ap_server,
-            )
-
-            server = get_fast_ap_server(interpreter=interpreter)
-
-        case "xplore":
-            from cognition_layer.agents.xplore.api.server import get_fast_ap_server
-
-            server = get_fast_ap_server(interpreter=interpreter)
-
-        case _:
-            raise ValueError(
-                "Cognition Layer not valid, the unique supported values are: "
-                + str(COGNITION_LAYERS)
-            )
+    server = server_loader(interpreter)
 
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug(f"Running {args.executor} as Execution Layer")
