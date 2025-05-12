@@ -1218,31 +1218,51 @@ The Linux installation only supports server mode. In the current version, action
 <img src="https://github.com/user-attachments/assets/8fc0c01a-48f4-41ea-93a0-8c92a6b5fd70" width="800">
 </div>
 
-<p>You must choose an <strong>Execution Layer</strong> and a <strong>Cognition Layer</strong>. Usually, the versions labeled "latest" are recommended, and typically do not require any change.</p>
+<ol>
+<li>
+<p>You must choose an <strong>Execution Layer</strong> and a <strong>Cognition Layer</strong>. Usually, the versions labeled <code>Latest</code> are recommended, and typically do not require any change.</p>
+</li>
+<li>
 <p>There is an option to install with Conda, but this will only work if you have previously installed Conda or Miniconda. The default environment will be <code>ecm</code>, custom environments must be created through the developer tab.</p>
-<p>Finally, you will find three input fields to insert the API keys required by the ECM. These keys are necessary for the latest versions and must be obtained in advance, either with administrator approval or through the following pages:</p>
-<ul>
-<li><a href="https://platform.openai.com/account/api-keys">OpenAI API Key</a></li>
+</li>
+<li>
+<p>You will find three input fields to insert the API keys required by the ECM. These keys are necessary for the latest versions and must be obtained in advance, either with administrator approval or through the following pages:</p>
+</li>
+<li>
+<p><a href="https://platform.openai.com/account/api-keys">OpenAI API Key</a></p>
+</li>
 <li><a href="https://replicate.com/account/api-tokens">Replicate API Key</a></li>
 <li><a href="https://huggingface.co/settings/tokens">Moondream API Key</a></li>
-</ul>
+</ol>
+<blockquote>
 <p>When accessing these pages, you will be prompted to create an account if you don't already have one. Once logged in, you will be able to generate and copy the necessary token.</p>
-<p>After filling in the keys, click on <strong>Install</strong>. A confirmation window will appear and the installation will proceed automatically.</p>
+</blockquote>
+<ol>
+<li>After filling in the keys, click on <strong>Install</strong>. A confirmation window will appear and the installation will proceed automatically.</li>
+</ol>
 <h1 id="developer-installation">Developer Installation</h1>
 <div align="center">
 <img src="https://github.com/user-attachments/assets/0f8b0dc1-c66e-41bc-97dd-312b03768dad" width="800">
 </div>
 
 <p>This mode offers more options and can be used to perform partial installations or update current installations to newer (including experimental) versions. From here, you can also install the host/client mode, where the cognition layer and execution layer can be separated.</p>
+<ol>
+<li>
 <p>After clicking the <strong>Developer</strong> button, wait about one minute while it connects to a shell and gathers data from the console to help display the current installation status.</p>
+</li>
+<li>
 <p>If Conda is installed:</p>
-<ul>
+</li>
 <li>You can change the current environment using the dropdown menu labeled <strong>Change conda environment:</strong></li>
 <li>The currently active environment will be displayed next to: <strong>Current active conda environment</strong></li>
 <li>In case of errors, please check your Conda installation and click <strong>Reload</strong></li>
-<li>If Conda is installed but you wish to install directly with Python, select the environment <strong>None</strong></li>
-</ul>
-<p>After this, multiple installable package options will appear for the ECM. If a package is marked as <strong>Installed</strong>, all its dependencies have been satisfied.</p>
+<li>
+<p>If Conda is installed but you wish to install directly with Python, select the environment <strong>None</strong></p>
+</li>
+<li>
+<p>Multiple installable package options will appear for the ECM. If a package is marked as <strong>Installed</strong>, all its dependencies have been satisfied.</p>
+</li>
+</ol>
 <blockquote>
 <p>[!NOTE]
 It is recommended to install at minimum the <code>Base</code> and <code>Devel</code> dependencies.</p>
