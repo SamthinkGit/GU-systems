@@ -47,11 +47,6 @@ def main():
         action="store_true",
         help="Enable LangChain Debug information",
     )
-    argparser.add_argument(
-        "--show-exelent",
-        action="store_true",
-        help="Shows Exelent file obtained from the Cognition Layer",
-    )
 
     argparser.add_argument(
         "--host",
