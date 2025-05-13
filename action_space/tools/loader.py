@@ -1,0 +1,81 @@
+import importlib
+import re
+from functools import cache
+from pathlib import Path
+from typing import Any
+from typing import Dict
+
+from ecm.shared import get_root_path
+
+ACTIONS_FILE_NAME = "actions.py"
+
+
+@cache
+def discover_packages(
+    root_path: Path = get_root_path() / "action_space",
+) -> Dict[str, Dict[str, str]]:
+    """
+    Recursively scans the directory 'root_path' to find internal packages.
+    A package is identified by containing a file 'actions.py' with a variable PKG_NAME.
+    Returns a dictionary where the key is the package notation (e.g., 'meta/example')
+    and the value is another dictionary with:
+      - 'notation': the notation of the package (e.g., 'meta/example')
+      - 'pkg_name': the name of the package (PKG_NAME)
+      - 'module_path': module path to import (e.g., 'action_space.meta.example.actions')
+    """
+    packages = []
+    for actions_file in root_path.rglob(ACTIONS_FILE_NAME):
+        content = actions_file.read_text(encoding="utf-8")
+        m = re.search(r"^PKG_NAME\s*=\s*[\'\"]([^\'\"]+)[\'\"]", content, re.MULTILINE)
+        if not m:
+            continue
+        pkg_name = m.group(1)
+        rel_dir = actions_file.parent.relative_to(root_path)
+        notation = str(rel_dir).replace("\\", "/").replace("/", "/")
+        module_path = ".".join(
+            actions_file.with_suffix("").relative_to(root_path).parts
+        )
+        packages.append(
+            {"pkg_name": pkg_name, "module_path": module_path, "notation": notation}
+        )
+    validate_unique_packages(packages)
+    return packages
+
+
+def load_package(
+    identifier: str,
+    root_path: Path = get_root_path() / "action_space",
+    pkg_import_path: str = "action_space",
+) -> Any:
+    """
+    Dynamically loads an internal package given its notation or name (PKG_NAME).
+    - identifier: can be the notation ('meta/example') or the PKG_NAME.
+    - root_path: root directory containing the 'action_space' folder.
+    Returns the 'actions' module of the package.
+    """
+    packages = discover_packages(root_path)
+    info = False
+    for pkg in packages:
+        if pkg["notation"] == identifier or pkg["pkg_name"] == identifier:
+            info = pkg
+            break
+    if not info:
+        raise ValueError(f"Package '{identifier}' not found.")
+
+    import_path = pkg_import_path + "." + info["module_path"]
+    importlib.import_module(import_path)
+
+
+def validate_unique_packages(packages: list) -> None:
+    """
+    Validates that there are no duplicated package notations or PKG_NAME values.
+    Raises a ValueError if any duplicates are found.
+    """
+    seen_pkg_names = {}
+    for pkg in packages:
+        pkg_name = pkg["pkg_name"]
+        if pkg_name in seen_pkg_names:
+            raise ValueError(
+                f"Duplicate PKG_NAME '{pkg_name}' found in '{pkg['notation']}' and '{seen_pkg_names[pkg_name]}'"
+            )
+        seen_pkg_names[pkg_name] = pkg["notation"]

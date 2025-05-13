@@ -31,6 +31,8 @@ from typing import Optional
 from colorama import Fore
 from colorama import Style
 
+from action_space.tools.loader import discover_packages
+from action_space.tools.loader import load_package as import_pkg
 from ecm.shared import _MOCKS_ENABLED
 from ecm.shared import get_logger
 from ecm.tools.prettify import pretty_head
@@ -160,6 +162,34 @@ class ItemRegistry:
         :param item_name: The name of the item to load.
         """
         self._load_to_correspondent(ItemRegistry._global_items[item_name])
+
+    def autoload(
+        self,
+        identifier: Optional[str] = None,
+    ):
+        """
+        Imports and loads a package or item based on the provided identifier.
+        If the identifier contains a "/", it is treated as a package name.
+        Otherwise, it is treated as an action notation. The method
+        dynamically imports the package and loads its items into the
+        registry.
+        :param identifier: The identifier for the package or item to load.
+        :return: None
+        """
+        if "/" not in identifier:
+            # This is a package
+            import_pkg(identifier)
+            self.load_package(identifier)
+
+        else:
+            # Using action notation
+            packages = discover_packages()
+            import_pkg(identifier)
+            for pkg in packages:
+                if pkg["notation"] == identifier:
+                    pkg_name = pkg["pkg_name"]
+                    break
+            self.load_package(pkg_name)
 
     def load_all(self):
         """

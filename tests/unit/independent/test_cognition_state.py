@@ -2,7 +2,7 @@ import pytest
 from pydantic import BaseModel
 from pydantic import Field
 
-from action_space.meta.state import CognitionState
+from action_space.meta.cognition_state.state import CognitionState
 from ecm.tools.item_registry_v2 import Storage
 
 

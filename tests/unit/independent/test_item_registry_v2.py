@@ -94,3 +94,17 @@ def test_storage():
     assert storage is storage_2
     assert storage["test"] == "result" and storage_2["test"] == "result"
     assert "test" not in storage_diff.keys()
+
+
+def test_autoload_with_notation():
+    registry = ItemRegistry()
+    registry.autoload("packages/sleep")
+    assert len(registry.actions) == 1
+    assert "sleep.sleep" in registry.actions
+
+
+def test_autoload_with_pkg_name():
+    registry = ItemRegistry()
+    registry.autoload("sleep")
+    assert len(registry.actions) == 1
+    assert "sleep.sleep" in registry.actions
