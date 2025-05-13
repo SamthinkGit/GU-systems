@@ -1,0 +1,1433 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://SamthinkGit.github.io/GU-systems/Bare%E2%80%90Metal-Installation/">
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.13">
+    
+    
+      
+        <title>Installation of the ECM on a Minimal Bare-Metal System - Execution Cognition Machine (ECM)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installation-of-the-ecm-on-a-minimal-bare-metal-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Execution Cognition Machine (ECM)" class="md-header__button md-logo" aria-label="Execution Cognition Machine (ECM)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Execution Cognition Machine (ECM)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Installation of the ECM on a Minimal Bare-Metal System
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/SamthinkGIt/GU-systems" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Execution Cognition Machine (ECM)" class="md-nav__button md-logo" aria-label="Execution Cognition Machine (ECM)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Execution Cognition Machine (ECM)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/SamthinkGIt/GU-systems" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Home" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../What-is-GU" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    State of Art
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            State of Art
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LLMs-and-State-of-Art" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LLM's and Frameworks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AgentProtocol" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AgentProtocol
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Bibliography" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bibliography
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Architecture
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Architecture
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Theoretical-Fundamentals" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Theoretical Fundamentals
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../System-Architecture-Overview" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Architecture Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Architecture-Guide" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Architecture Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ECM-Problem-Analysis" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ECM Problem Analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ItemRegistry" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ItemRegistry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Exelent" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exelent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Interpreter" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Interpreters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FastAgentProtocol" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FastAgentProtocol
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Remote-Execution" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Remote Execution
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SimpleCognitiveMemory" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cognitive Memory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Component Insights
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Component Insights
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FastReact" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FastReact
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Xplore-Insights" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Xplore
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MouseAgent-Insights" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    MouseAgent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Self‐Training-Agents" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Self Training Agents
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Capabilities
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Capabilities
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROSA-Interpreter" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RosaInterpreter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Pyxcel-Interpreter" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PyxcelInterpreter
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Deprecations
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Deprecations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROSA" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ROSA Tutorial
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rosa-Insights" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ROSA TaskSequence Protocol
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Planex" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Planex Tutorial
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Planex-Insights" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Planex Insights
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RePlan-Insights" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RePlan
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cognition-Layer-API-(Planex)" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cognition Layer API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-partitioning-and-structuring-the-boot-medium" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Partitioning and Structuring the Boot Medium
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-acquisition-of-the-bootloader-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Acquisition of the Bootloader Binary
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-flashing-the-bootloader" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Flashing the Bootloader
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-preparing-the-boot-partition-and-kernel-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Preparing the Boot Partition and Kernel Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-kernel-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Kernel Compilation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-generation-of-kernel-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Generation of Kernel Artifacts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-deploying-kernel-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Deploying Kernel Artifacts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-installation-of-the-root-filesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Installation of the Root Filesystem
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-initial-boot-and-diagnostic-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Initial Boot and Diagnostic Monitoring
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-enabling-wireless-connectivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Enabling Wireless Connectivity
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-completing-arch-linux-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Completing Arch Linux Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-ecm-installation-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      12. ECM Installation Procedure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-final-remarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      13. Final Remarks
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="installation-of-the-ecm-on-a-minimal-bare-metal-system">Installation of the ECM on a Minimal Bare-Metal System</h1>
+<p>This document provides a comprehensive and technically detailed methodology for deploying the ECM on a resource-constrained, headless embedded platform. As an example, the target hardware is the <code>NXPIMX8MPEVK</code> development board, which features a heterogeneous multi-core ARM Cortex-A53/A72 processor architecture within the i.MX8M Plus SoC family. This procedure is applicable to scenarios where graphical processing capabilities are minimal or absent and where deterministic, CPU-bound computational loads are predominant.</p>
+<p>The deployment leverages <strong>Arch Linux</strong> due to its modularity, lightweight nature, and suitability for environments requiring precise system customization. Nevertheless, the instructions can be extrapolated to any Linux distribution that incorporates a package management system, Wi-Fi driver support, and the capacity to compile and maintain a custom kernel.</p>
+<p>The objective is to enable ECM functionality on a system without relying on graphical interfaces or power-hungry frameworks, thereby optimizing performance for edge inference and computational workloads using only essential system services.</p>
+<h2 id="1-partitioning-and-structuring-the-boot-medium">1. Partitioning and Structuring the Boot Medium</h2>
+<p>Employ tools such as <code>fdisk</code>, <code>gdisk</code>, or <code>parted</code> to manually configure the target storage device—either SD card or eMMC—with a layout that facilitates both bootloader and operating system installation:</p>
+<ul>
+<li>Reserve the first 20480 bytes (20 KiB) at the beginning of the medium to accommodate the U-Boot bootloader. This sector must remain unallocated.</li>
+<li>Create a primary partition of type <code>ext4</code> beginning from byte offset 20480 and extending to roughly 1024000 bytes. This partition will host the kernel image (<code>Image</code>), device tree blobs (<code>.dtb</code>), and optionally, boot scripts (<code>boot.txt</code>, <code>boot.scr</code>).</li>
+<li>Allocate a second partition from approximately byte offset 1228800 onward. This will contain the root filesystem, inclusive of the ECM runtime and its dependencies.</li>
+</ul>
+<blockquote>
+<p>[!NOTE]
+This arrangement separates boot-critical components from the root filesystem, enabling cleaner updates and recovery.</p>
+</blockquote>
+<h2 id="2-acquisition-of-the-bootloader-binary">2. Acquisition of the Bootloader Binary</h2>
+<p>The bootloader for i.MX series processors, namely U-Boot, is distributed by NXP through its official software repositories. Navigate to:</p>
+<p><a href="https://www.nxp.com/design/design-center/software/embedded-software/i-mx-software/embedded-linux-for-i-mx-applications-processors:IMXLINUX">https://www.nxp.com/design/design-center/software/embedded-software/i-mx-software/embedded-linux-for-i-mx-applications-processors\:IMXLINUX</a></p>
+<p>Select the appropriate version matching the hardware revision of your IMX8MPEVK board. Extract the binary image corresponding to the secondary program loader (SPL) and/or U-Boot proper.</p>
+<h2 id="3-flashing-the-bootloader">3. Flashing the Bootloader</h2>
+<p>Refer to the reference manual and NXP documentation to determine the boot offset. For i.MX8M EVK devices, the SoC expects to load the bootloader from a 32 KiB offset:</p>
+<pre><code class="language-bash">sudo dd if=&lt;U-Boot_image&gt; of=/dev/sdX bs=1k seek=32 conv=fsync
+</code></pre>
+<p>Ensure all write operations are flushed to disk. Improper flashing or incorrect offsets may result in non-bootable media.</p>
+<blockquote>
+<p>[!WARNING]
+Always verify <code>/dev/sdX</code> is the correct device path. Inadvertently writing to an incorrect block device may irreversibly corrupt existing data in your current machine.</p>
+</blockquote>
+<h2 id="4-preparing-the-boot-partition-and-kernel-setup">4. Preparing the Boot Partition and Kernel Setup</h2>
+<p>Mount the first partition and prepare it to receive the kernel binary and DTB artifacts. This step involves creating necessary directory structures (e.g., <code>/boot/</code>, <code>/dtbs/</code>) and verifying filesystem integrity via <code>fsck</code>. The layout must conform to the bootloader’s expectations, particularly the device tree path and kernel entry point.</p>
+<h2 id="5-kernel-compilation">5. Kernel Compilation</h2>
+<p>Compile a custom kernel tailored to the exact hardware specifications and deployment requirements. Fetch the kernel source code maintained by NXP for i.MX platforms:</p>
+<p><a href="https://github.com/nxp-imx/linux-imx">https://github.com/nxp-imx/linux-imx</a></p>
+<p>Proceed with the following:</p>
+<ul>
+<li>Use <code>make menuconfig</code> to access the kernel configuration interface and fine-tune options such as Wi-Fi chipsets, file systems, and network drivers.</li>
+<li>Explicitly activate support for the Marvell 88W8997 chipset, typically found on IMX8M boards, under <code>CONFIG_MWIFIEX_SDIO</code> and related options.</li>
+<li>Cross-compile using a suitable toolchain, such as <code>aarch64-linux-gnu-gcc</code>, ensuring environmental variables (<code>ARCH</code>, <code>CROSS_COMPILE</code>) are correctly defined.</li>
+</ul>
+<blockquote>
+<p>[!NOTE]
+Consider saving the <code>.config</code> file and kernel headers for future kernel module compilation or system updates.</p>
+</blockquote>
+<h2 id="6-generation-of-kernel-artifacts">6. Generation of Kernel Artifacts</h2>
+<p>Post-compilation, extract and validate the following artifacts:</p>
+<ul>
+<li><code>Image</code>: the kernel binary to be loaded by U-Boot.</li>
+<li><code>.dtb</code>: Device Tree Blobs corresponding to the board configuration (e.g., <code>imx8mp-evk.dtb</code>).</li>
+</ul>
+<p>These outputs should be tested on a separate system to confirm correct compilation and structure.</p>
+<h2 id="7-deploying-kernel-artifacts">7. Deploying Kernel Artifacts</h2>
+<p>Transfer the kernel image and DTBs into the first partition. Maintain appropriate directory layout as referenced by the bootloader. This process may also include updating <code>extlinux.conf</code> if using <code>syslinux</code> or appending boot arguments to match the root filesystem UUID and networking options.</p>
+<h2 id="8-installation-of-the-root-filesystem">8. Installation of the Root Filesystem</h2>
+<p>Download and extract a minimal root filesystem into the second partition. Arch Linux ARM provides a clean and lightweight base suitable for embedded workloads. Extraction should be performed with <code>bsdtar</code> or <code>tar</code> to preserve ownership and symbolic links:</p>
+<pre><code class="language-bash">bsdtar -xpf ArchLinuxARM-aarch64-latest.tar.gz -C /mnt/root
+</code></pre>
+<p>Once extracted, mount necessary pseudo-filesystems (<code>/proc</code>, <code>/sys</code>, <code>/dev</code>) and perform essential post-install steps such as creating fstab entries, locale generation, and user setup.</p>
+<blockquote>
+<p>[!NOTE] 
+Ensure that <code>/etc/fstab</code> uses UUIDs rather than device names for robustness across reboots.</p>
+</blockquote>
+<h2 id="9-initial-boot-and-diagnostic-monitoring">9. Initial Boot and Diagnostic Monitoring</h2>
+<p>Unmount all partitions, insert the SD card into the target board, and power on the device. Connect a serial adapter to the board’s UART interface and launch a terminal session:</p>
+<pre><code class="language-bash"># Read target documentation to find the correct port
+sudo minicom -s /dev/ttyUSB3
+</code></pre>
+<p>Observe bootloader and kernel messages for successful hardware enumeration, rootfs mounting, and init system handoff. Kernel panics or boot stalls at this stage often indicate incorrect DTB or root filesystem misconfiguration.</p>
+<h2 id="10-enabling-wireless-connectivity">10. Enabling Wireless Connectivity</h2>
+<p>If the onboard Marvell 88W8997 interface is not operational, manually configure it within a <code>chroot</code> environment:</p>
+<pre><code class="language-bash">mount /dev/sdX2 /mnt
+mount --bind /proc /mnt/proc
+mount --bind /sys /mnt/sys
+mount --bind /dev /mnt/dev
+chroot /mnt
+</code></pre>
+<p>Within the chroot:</p>
+<ul>
+<li>Install firmware (<code>linux-firmware-marvell</code>, <code>mwifiex</code> drivers)</li>
+<li>Load modules manually using <code>modprobe</code></li>
+<li>Verify interface status with <code>ip link</code> or <code>iwconfig</code></li>
+</ul>
+<p>This setup allows temporary use of the host’s networking stack to bootstrap Wi-Fi connectivity on the target system.</p>
+<blockquote>
+<p>[!NOTE]
+Compiling drivers may need a reference to the kernel using <code>-C</code>, for this, copy the result of the previous kernel compilation on <code>/boot</code> and point to that directory on the compilation. Do not clean the headers of the compilation, or you can delete the references needed.</p>
+</blockquote>
+<h2 id="11-completing-arch-linux-configuration">11. Completing Arch Linux Configuration</h2>
+<p>Finalize system configuration:</p>
+<ul>
+<li>Set hostname, root password, and create user accounts</li>
+<li>Generate locales and keymaps</li>
+<li>Enable networking services (<code>systemd-networkd</code>, <code>wpa_supplicant</code>)</li>
+<li>Install useful tools such as <code>net-tools</code>, <code>vim</code>, <code>htop</code>, and <code>openssh</code></li>
+</ul>
+<p>Optionally, set up SSH key authentication for remote access. Validate internet connectivity prior to proceeding with ECM installation.</p>
+<h2 id="12-ecm-installation-procedure">12. ECM Installation Procedure</h2>
+<p>Once a working OS environment is established, proceed with installing the ECM suite:</p>
+<ul>
+<li>Execute the automated script:</li>
+</ul>
+<pre><code class="language-pwsh">git clone https://github.com/SamthinkGit/GU-systems.git
+sudo ./scripts/autoinstall.sh
+</code></pre>
+<ul>
+<li>Alternatively, use the graphical installer provided:</li>
+</ul>
+<pre><code class="language-pwsh">sudo ./installer/install.sh
+</code></pre>
+<p>Monitor logs to confirm successful dependency installation and service registration.</p>
+<blockquote>
+<p>[!WARNING]
+Avoid using Conda environments in embedded deployments due to their substantial disk and memory requirements. Use <code>pip</code> with virtual environments if necessary.</p>
+</blockquote>
+<h2 id="13-final-remarks">13. Final Remarks</h2>
+<p>With the system fully operational and tailored to the constraints of the hardware, you're now equipped to use the ECM's capabilities.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
