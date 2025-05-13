@@ -1,0 +1,87 @@
+import importlib
+from functools import cache
+from pathlib import Path
+from typing import Any
+from typing import Dict
+from typing import Optional
+
+from cognition_layer.protocols.fast_ap import FastAgentProtocol
+from ecm.mediator.Interpreter import Interpreter
+from ecm.shared import get_root_path
+from ecm.tools.registry import ItemRegistry
+
+DESCRIPTION_FILE_NAME = "description.py"
+
+
+@cache
+def discover_deploy_models(
+    root_path: Path = get_root_path() / "cognition_layer",
+) -> Dict[str, Dict[str, Any]]:
+    agents = []
+
+    for description_file in root_path.rglob(DESCRIPTION_FILE_NAME):
+
+        module_parts = (
+            description_file.with_suffix("").relative_to(get_root_path()).parts
+        )
+        module_path = ".".join(module_parts)
+
+        module = importlib.import_module(module_path)
+        deploy_model = getattr(module, "DEPLOY_MODEL", None)
+        agents.append(deploy_model)
+
+    return agents
+
+
+def get_deploy_model(identifier: str) -> Optional[Dict[str, Any]]:
+    """
+    Dynamically loads a deploy model (agent) given its name or alias.
+    - identifier: can be the name (e.g., 'fastreact') or an alias (e.g., 'fr').
+    raises ValueError if the identifier is not found.
+    """
+    models = discover_deploy_models()
+    target_model = None
+    for model in models:
+        if (
+            identifier.lower() in model["alias"]
+            or identifier.lower() == model["name"].lower()
+        ):
+            target_model = model
+
+    if target_model is None:
+        raise ValueError(f"Invalid Agent identifier: {identifier}.")
+    return target_model
+
+
+def deploy(
+    model: Dict[str, Any],
+    interpreter: Interpreter,
+    registry: ItemRegistry = ItemRegistry(),
+    packages: Optional[list[str]] = None,
+) -> FastAgentProtocol:
+    """
+    Dynamically loads a deploy model (agent) given its name or alias.
+    - model: the deploy model (agent) to be loaded.
+    - interpreter: the Interpreter instance to be used by the agent.
+    - registry: the ItemRegistry instance to be used by the agent.
+    - packages: a list of package names to be autoloaded. If None, the default packages
+      for the agent will be used.
+    Returns the server instance of the agent.
+    Example:
+        >>> from cognition_layer.deploy.loader import deploy
+        >>> model = get_deploy_model("darkvfr")
+        >>> server = deploy(model, interpreter)
+        >>> for step in server("Open spotify"):
+        >>>     print(step)
+    """
+
+    if packages is None:
+        packages = model["packages"]
+
+    for pkg in packages:
+        registry.autoload(pkg)
+
+    server_loader = model["server"]
+    server_getter = server_loader()
+    server: FastAgentProtocol = server_getter(interpreter, registry=registry)
+    return server

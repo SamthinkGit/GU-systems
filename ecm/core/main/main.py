@@ -5,7 +5,8 @@ from langchain.globals import set_debug
 from langsmith import traceable
 
 import ecm.shared
-from cognition_layer.routing.descriptions import DEPLOY_MODELS
+from cognition_layer.deploy.loader import deploy
+from cognition_layer.deploy.loader import get_deploy_model
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 
@@ -69,6 +70,7 @@ def main():
         default=DEFAULT_EXECUTOR,
     )
     args = argparser.parse_args()
+
     # ----- Autodiscovering Peer ----
     if args.autodiscover:
         from ecm_communications.bootstraps.autodiscover import autodiscover
@@ -76,28 +78,16 @@ def main():
         logger.info("Waiting for peer to connect...")
         autodiscover(allow_localhost=args.localhost)
 
-    # ----- Discovering deploy model (agent) ----
-    deploy_model = None
-    for model in DEPLOY_MODELS:
-        if args.agent.lower() in model["alias"]:
-            deploy_model = model
-            break
-
-    if deploy_model is None:
-        raise ValueError("Invalid Agent layer passed as argument")
-
-    # ----- Loading Action Space ----
-    pkgs = deploy_model["packages"]
-    server_loader = deploy_model["server"]()
-
-    for pkg in pkgs:
-        registry = ItemRegistry()
-        registry.autoload(pkg)
+    # ----- Loading Model ----
+    registry = ItemRegistry()
+    model = get_deploy_model(args.agent)
 
     # ----- Listening (Only for clients) ----
     if args.client:
         from ecm_communications.tools.listener import Listener
 
+        for package in model["packages"]:
+            registry.autoload(package)
         registry.summary()
 
         listener = Listener()
@@ -126,7 +116,12 @@ def main():
                 + str(EXECUTION_LAYERS)
             )
 
-    server = server_loader(interpreter)
+    server = deploy(
+        model,
+        interpreter,
+        registry=registry,
+        packages=model["packages"],
+    )
 
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug(f"Running {args.executor} as Execution Layer")
