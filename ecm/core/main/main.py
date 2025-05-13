@@ -87,16 +87,17 @@ def main():
         raise ValueError("Invalid Agent layer passed as argument")
 
     # ----- Loading Action Space ----
-    actions_loader = deploy_model["supported_actions"]
+    pkgs = deploy_model["packages"]
     server_loader = deploy_model["server"]()
-    actions_loader()
+
+    for pkg in pkgs:
+        registry = ItemRegistry()
+        registry.autoload(pkg)
 
     # ----- Listening (Only for clients) ----
     if args.client:
         from ecm_communications.tools.listener import Listener
 
-        registry = ItemRegistry()
-        registry.load_all()
         registry.summary()
 
         listener = Listener()
@@ -142,7 +143,6 @@ def main():
 
         enable_server_mode()
 
-    ItemRegistry().load_all()
     logger.debug(f"Running {args.agent} as Cognition Layer")
     logger.debug("Initialization finished. Starting...")
     ItemRegistry().summary()

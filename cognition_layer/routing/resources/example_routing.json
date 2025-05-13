@@ -1,0 +1,26 @@
+{
+    "name": "MainAgent",
+    "type": "router",
+    "class": "simple-router-agent",
+    "packages": [
+        "agent-calling"
+    ],
+    "workers": [
+        {
+            "name": "VisionResponseAgent",
+            "type": "agent",
+            "class": "small-vision-agent",
+            "packages": [
+                "screenshot"
+            ],
+            "workers": []
+        },
+        {
+            "name": "AutonomousTaskSolverAgent",
+            "type": "agent",
+            "class": "darkvfr",
+            "kwargs": {},
+            "workers": []
+        }
+    ]
+}
