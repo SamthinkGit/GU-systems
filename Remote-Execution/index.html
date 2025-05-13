@@ -18,7 +18,7 @@
     
     
       
-        <title>ECM Server/Client - Execution Cognition Machine (ECM)</title>
+        <title>Remote Execution - Execution Cognition Machine (ECM)</title>
       
     
     
@@ -96,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ECM Server/Client
+              Remote Execution
             
           </span>
         </div>
@@ -1161,6 +1161,10 @@
   
 
 
+<blockquote>
+<p>[!WARNING]
+The latest version uses a client/server remote model based on the repository <code>/external/ecm_communications</code> please refer to that repository for updated docs.</p>
+</blockquote>
 <h1 id="ecm-serverclient">ECM Server/Client</h1>
 <p>The ECM algorithms designed in this repository are aimed to be executed remotely, this is, to have a computer or machine that reasons, loads and computes all the cognitive layers ($A_1$) and a client machine that listens and executes all the functions sent by the server ($A_2$), this can be easily activated without affecting the core architecture by using the modules integrated in this repository.</p>
 <p>The Client/Server modules use RabbitMQ in order to stablish a connection between the two machines, to start this protocol you only need to start listening with the client as follows:</p>
