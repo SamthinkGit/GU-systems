@@ -1,25 +1,26 @@
 {
     "name": "MainAgent",
     "type": "router",
-    "class": "simple-router-agent",
-    "packages": [
-        "agent-calling"
-    ],
+    "model": "zero-shot-router",
+    "packages": [],
+    "config": {},
     "workers": [
         {
             "name": "VisionResponseAgent",
             "type": "agent",
-            "class": "small-vision-agent",
+            "model": "small-vision-agent",
             "packages": [
                 "screenshot"
             ],
+            "config": {},
             "workers": []
         },
         {
             "name": "AutonomousTaskSolverAgent",
             "type": "agent",
-            "class": "darkvfr",
-            "kwargs": {},
+            "model": "darkvfr",
+            "packages": "default",
+            "config": {},
             "workers": []
         }
     ]

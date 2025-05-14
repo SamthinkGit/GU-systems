@@ -1,10 +1,11 @@
 import importlib
+import uuid
 from functools import cache
 from pathlib import Path
-from typing import Any
-from typing import Dict
 from typing import Optional
 
+from cognition_layer.deploy.types import DeployModel
+from cognition_layer.deploy.types import DeploySchema
 from cognition_layer.protocols.fast_ap import FastAgentProtocol
 from ecm.mediator.Interpreter import Interpreter
 from ecm.shared import get_root_path
@@ -16,7 +17,7 @@ DESCRIPTION_FILE_NAME = "description.py"
 @cache
 def discover_deploy_models(
     root_path: Path = get_root_path() / "cognition_layer",
-) -> Dict[str, Dict[str, Any]]:
+) -> list[DeployModel]:
     agents = []
 
     for description_file in root_path.rglob(DESCRIPTION_FILE_NAME):
@@ -33,7 +34,8 @@ def discover_deploy_models(
     return agents
 
 
-def get_deploy_model(identifier: str) -> Optional[Dict[str, Any]]:
+@cache
+def get_deploy_model(identifier: str) -> DeployModel:
     """
     Dynamically loads a deploy model (agent) given its name or alias.
     - identifier: can be the name (e.g., 'fastreact') or an alias (e.g., 'fr').
@@ -54,10 +56,12 @@ def get_deploy_model(identifier: str) -> Optional[Dict[str, Any]]:
 
 
 def deploy(
-    model: Dict[str, Any],
+    model: DeployModel,
     interpreter: Interpreter,
-    registry: ItemRegistry = ItemRegistry(),
+    registry: Optional[ItemRegistry] = None,
     packages: Optional[list[str]] = None,
+    schema: Optional[DeploySchema] = None,
+    config: Optional[dict] = None,
 ) -> FastAgentProtocol:
     """
     Dynamically loads a deploy model (agent) given its name or alias.
@@ -74,14 +78,28 @@ def deploy(
         >>> for step in server("Open spotify"):
         >>>     print(step)
     """
+    if registry is None:
+        registry_name = f"{model['name']}-{uuid.uuid4()}"
+        registry = ItemRegistry(registry_name)
 
-    if packages is None:
+    if packages is None or packages == "default":
         packages = model["packages"]
 
     for pkg in packages:
+        ItemRegistry().autoload(pkg)  # Execution layer can uses this
         registry.autoload(pkg)
+
+    if model["type"] == "router" and schema is None:
+        raise ValueError(
+            "Schema is required for router models. Please provide a schema."
+        )
+
+    if config is None:
+        config = {}
 
     server_loader = model["server"]
     server_getter = server_loader()
-    server: FastAgentProtocol = server_getter(interpreter, registry=registry)
+    server: FastAgentProtocol = server_getter(
+        interpreter=interpreter, registry=registry, schema=schema, **config
+    )
     return server

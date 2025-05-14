@@ -1,20 +1,24 @@
 from operator import attrgetter
 
+from cognition_layer.agents.visual_fast_react.agents.visual_fast_react import (
+    VisualFastReact,
+)
 from cognition_layer.api import FastAgentProtocol
-from cognition_layer.visual_fast_react.agents.visual_fast_react import VisualFastReact
 from ecm.mediator.Interpreter import Interpreter
-from ecm.shared import default_kwargs
 from ecm.tools.registry import ItemRegistry
 
 
-def get_fast_ap_server(interpreter: Interpreter, **kwargs) -> FastAgentProtocol:
+def get_fast_ap_server(
+    interpreter: Interpreter,
+    registry: ItemRegistry = ItemRegistry(),
+    memory_capacity: int = 10,
+    **kwargs
+) -> FastAgentProtocol:
 
     vfr = VisualFastReact(
         interpreter=interpreter,
-        **default_kwargs(
-            {"registry": ItemRegistry(), "memory_capacity": 10},
-            kwargs,
-        )
+        memory_capacity=memory_capacity,
+        registry=registry,
     )
     return FastAgentProtocol(
         name="VisualFastReact Server",

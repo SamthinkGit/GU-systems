@@ -12,7 +12,7 @@ DEPLOY_MODEL = {
     "alias": ["dark-vfr", "darkvfr", "dvfr"],
     "agent_description": "An autonomous agent capable of solving complex tasks on the user environment.",
     "response_description": "The reasoning about the actions running/completed",
-    "use_case": "Solve a complex task or interact with the computer/environment",
+    "use_case": "Interact via commands/clicks or keyboard with the computer",
     "type": "agent",
     "packages": [
         "screenshot",

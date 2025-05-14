@@ -56,7 +56,7 @@ class DarkVFR(MinimalVFR):
     @ItemRegistry.require_dependencies("meta-look")
     def __init__(
         self,
-        interpreter: Interpreter = None,
+        interpreter: Interpreter,
         registry: ItemRegistry = ItemRegistry(),
         memory_capacity: int = 10,
     ):

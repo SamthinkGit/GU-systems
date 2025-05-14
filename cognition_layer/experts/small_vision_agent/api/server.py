@@ -4,19 +4,14 @@ from cognition_layer.api import FastAgentProtocol
 from cognition_layer.experts.small_vision_agent.core.small_vision_agent import (
     SmallVisionAgent,
 )
-from ecm.mediator.Interpreter import Interpreter
-from ecm.shared import default_kwargs
 from ecm.tools.registry import ItemRegistry
 
 
-def get_fast_ap_server(interpreter: Interpreter, **kwargs) -> FastAgentProtocol:
+def get_fast_ap_server(
+    registry: ItemRegistry = ItemRegistry(), **kwargs
+) -> FastAgentProtocol:
 
-    mva = SmallVisionAgent(
-        **default_kwargs(
-            {"registry": ItemRegistry()},
-            kwargs,
-        )
-    )
+    mva = SmallVisionAgent(registry=registry)
     return FastAgentProtocol(
         name="SmallVisionAgent Server",
         iterator=lambda input: mva.invoke(input),

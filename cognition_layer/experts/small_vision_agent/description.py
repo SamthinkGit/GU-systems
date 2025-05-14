@@ -12,9 +12,9 @@ def server_loader():
 DEPLOY_MODEL = {
     "name": "SmallVisionAgent",
     "alias": ["small-vision-agent", "sva"],
-    "agent_description": "A small vision agent that can process images and respond to queries.",
+    "agent_description": "A small vision agent that can process images/screenshots and respond to queries.",
     "response_description": "Short response to the user",
-    "use_case": "Use it only to give responses to the user based on the display/screenshot.",
+    "use_case": "Use it to give responses to the user based on the display/screenshot or to response about graphical queries/questions.",
     "type": "agent",
     "packages": ["screenshot"],
     "server": server_loader,
