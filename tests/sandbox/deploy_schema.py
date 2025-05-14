@@ -15,12 +15,12 @@ if __name__ == "__main__":
         / "cognition_layer"
         / "routing"
         / "schemas"
-        / "example_routing.json"
+        / "full_feedback_routing.json"
     )
 
     schema = json.loads(path.read_text())
     model = get_deploy_model(schema["model"])
-    server = deploy(model, interpreter, schema=schema)
+    server = deploy(model, interpreter, schema=schema, config=schema["config"])
 
     ItemRegistry().summary()
 

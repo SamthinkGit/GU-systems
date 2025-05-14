@@ -3,7 +3,6 @@ from typing import Generator
 
 from langchain_core.messages import HumanMessage
 from langchain_core.messages import SystemMessage
-from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -30,25 +29,17 @@ class ZeroShotRouter:
 
     def __init__(self, schema: DeploySchema, interpreter: Interpreter, **kwargs):
         self.interpreter = interpreter
-        llm = MutableChatLLM().with_structured_output(ZeroShotRouterResponse)
+        self.llm = MutableChatLLM().with_structured_output(ZeroShotRouterResponse)
         self.router = SimpleRouter(schema)
-
         summary = self.router.summary_dict()
-
-        prompt = (
+        self.prompt = (
             "Select the best agent to handle the user query:"
             f"\n\n{json.dumps(summary, indent=2)}\n\n"
         )
-        prompt_t = ChatPromptTemplate.from_messages(
-            [
-                SystemMessage(prompt),
-                HumanMessage("{input}"),
-            ]
-        )
-        self.chain = prompt_t | llm
 
     def invoke(self, query: str) -> Generator[ZeroShotRouterResponse, None, None]:
-        response: ZeroShotRouterResponse = self.chain.invoke({"input": query})
+        prompt = [SystemMessage(self.prompt), HumanMessage(query)]
+        response: ZeroShotRouterResponse = self.llm.invoke(prompt)
         self._logger.debug(f"Reasoning: {response.reasoning}")
         self._logger.debug(f"Choice: {response.choice}")
 

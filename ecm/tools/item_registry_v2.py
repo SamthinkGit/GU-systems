@@ -99,6 +99,8 @@ class ItemRegistry:
         return registry
 
     def __init__(self, name: str = "default"):
+        if name != "default":
+            self._logger = get_logger(name)
 
         if self._instance_initialization:
             self.name: str = name

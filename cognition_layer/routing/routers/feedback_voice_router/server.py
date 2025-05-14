@@ -2,21 +2,24 @@ from operator import attrgetter
 
 from cognition_layer.api import FastAgentProtocol
 from cognition_layer.deploy.types import DeploySchema
-from cognition_layer.routing.routers.zero_shot_router.router import ZeroShotRouter
+from cognition_layer.routing.routers.feedback_voice_router.router import (
+    FeedbackVoiceRouter,
+)
 from ecm.mediator.Interpreter import Interpreter
 
 
 def get_fast_ap_server(
-    interpreter: Interpreter, schema: DeploySchema, **kwargs
+    interpreter: Interpreter, schema: DeploySchema, model: str, **kwargs
 ) -> FastAgentProtocol:
 
-    router = ZeroShotRouter(
+    router = FeedbackVoiceRouter(
         schema=schema,
         interpreter=interpreter,
+        model=model,
         **kwargs,
     )
     return FastAgentProtocol(
-        name="ZeroShotRouter Server",
+        name="FeedbackVoiceRouter Server",
         iterator=lambda input: router.invoke(input),
         step_name_getter=attrgetter("name"),
         content_getter=attrgetter("content"),

@@ -1,3 +1,4 @@
+import json
 import traceback
 from pprint import pformat
 from typing import Any
@@ -5,6 +6,8 @@ from typing import Optional
 
 from colorama import Fore
 from colorama import Style
+
+from ecm.shared import get_root_path
 
 
 def pretty_print(value: Any, header: Optional[str] = None):
@@ -33,3 +36,43 @@ def _prettify_dict(dict: dict[Any, Any]) -> str:
             for key, value in dict.items()
         ]
     )
+
+
+def _color_by_type(name, node_type):
+    if node_type == "router":
+        return Fore.BLUE + "📡 " + name + Style.RESET_ALL
+    elif node_type == "agent":
+        return Fore.GREEN + "🛠️ " + name + Style.RESET_ALL
+    else:
+        return name + f" [{node_type}]"
+
+
+def _print_graph(node, prefix="", is_root=True):
+    name = node.get("name", "Unnamed")
+    node_type = node.get("type", "unknown")
+
+    if is_root:
+        print(_color_by_type(name, node_type))
+
+    workers = node.get("workers", [])
+    for i, child in enumerate(workers):
+        is_last = i == len(workers) - 1
+        branch = "└── " if is_last else "├── "
+        child_prefix = prefix + ("    " if is_last else "│   ")
+
+        print(
+            prefix
+            + branch
+            + _color_by_type(child["name"], child.get("type", "unknown"))
+        )
+        _print_graph(child, prefix=child_prefix, is_root=False)
+
+
+def pretty_print_schema(id: str):
+    path = get_root_path() / "cognition_layer" / "routing" / "schemas" / f"{id}.json"
+    graph = json.loads(path.read_text())
+    print(pretty_head(id))
+    print("\n")
+    _print_graph(graph)
+    print("\n")
+    print(f"{Style.BRIGHT}{'=' * (42 + len(id))}{Style.RESET_ALL}")

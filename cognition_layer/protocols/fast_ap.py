@@ -112,7 +112,7 @@ class FastAgentProtocol(Generic[_StepType]):
             ...     print(step)
         """
 
-        self._logger.debug(f"New task started: `{input}`")
+        self._logger.debug(f"New task started: `{input}` with server `{self.name}`")
         step_iter = self.iterator(input)
 
         done = False

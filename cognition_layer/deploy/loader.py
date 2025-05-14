@@ -1,4 +1,5 @@
 import importlib
+import json
 import uuid
 from functools import cache
 from pathlib import Path
@@ -102,4 +103,24 @@ def deploy(
     server: FastAgentProtocol = server_getter(
         interpreter=interpreter, registry=registry, schema=schema, **config
     )
+    return server
+
+
+def autodeploy_schema(id: str, interpreter: Interpreter) -> FastAgentProtocol:
+    """
+    Deploys a schema given its id.
+    - id: the id of the schema to be deployed.
+    - interpreter: the Interpreter instance to be used by the agent.
+    Returns the server instance of the agent.
+    Example:
+        >>> from cognition_layer.deploy.loader import autodeploy_schema
+        >>> server = autodeploy_schema("full_feedback_routing", interpreter)
+        >>> for step in server("Open spotify"):
+        >>>     print(step)
+    """
+    path = get_root_path() / "cognition_layer" / "routing" / "schemas" / f"{id}.json"
+
+    schema = json.loads(path.read_text())
+    model = get_deploy_model(schema["model"])
+    server = deploy(model, interpreter, schema=schema, config=schema["config"])
     return server
