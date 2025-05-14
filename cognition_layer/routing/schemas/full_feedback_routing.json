@@ -1,36 +1,49 @@
 {
-    "name": "Nova",
+    "name": "NovaStartEndFeedback",
     "type": "router",
-    "model": "feedback-voice-router",
+    "model": "start-end-voice-router",
     "packages": [],
     "config": {
         "model": "gpt-4.1-nano"
     },
     "workers": [
         {
-            "name": "Selector",
+            "name": "NovaIntermediateFeedback",
             "type": "router",
-            "model": "zero-shot-router",
+            "model": "feedback-voice-router",
             "packages": [],
-            "config": {},
+            "config": {
+                "model": "gpt-4.1-nano",
+                "filler_words_prob": 0.15,
+                "disable": true
+            },
             "workers": [
                 {
-                    "name": "VisionResponseAgent",
-                    "type": "agent",
-                    "model": "small-vision-agent",
-                    "packages": [
-                        "screenshot"
-                    ],
+                    "name": "Selector",
+                    "type": "router",
+                    "model": "zero-shot-router",
+                    "packages": [],
                     "config": {},
-                    "workers": []
-                },
-                {
-                    "name": "AutonomousTaskSolverAgent",
-                    "type": "agent",
-                    "model": "darkvfr",
-                    "packages": "default",
-                    "config": {},
-                    "workers": []
+                    "workers": [
+                        {
+                            "name": "VisionResponseAgent",
+                            "type": "agent",
+                            "model": "small-vision-agent",
+                            "packages": [
+                                "screenshot"
+                            ],
+                            "config": {},
+                            "workers": []
+                        },
+                        {
+                            "name": "AutonomousTaskSolverAgent",
+                            "type": "agent",
+                            "model": "darkvfr",
+                            "packages": "default",
+                            "config": {},
+                            "workers": []
+                        }
+                    ]
                 }
             ]
         }

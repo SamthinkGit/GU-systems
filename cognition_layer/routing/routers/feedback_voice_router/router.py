@@ -1,3 +1,4 @@
+import random
 from typing import Generator
 
 from langchain_core.messages import HumanMessage
@@ -13,11 +14,19 @@ from ecm.mediator.Interpreter import Interpreter
 from ecm.shared import get_logger
 
 LANGUAGE = "spanish"
+FILLER_WORDS = [
+    "Uhm...",
+    "Interesante...",
+    "Mmm...",
+    "Ok...",
+    "Déjame ver...",
+]
 
 PROMPT = f"""
 Based on the following text, generate one single sentence in Spanish that simulates performing the described action.
 Follow these strict rules:
 - The sentence must be no longer than 10 words.
+- Avoid using common starting phrases like "Voy a" or "Estoy por", instead be creative.
 - Use a natural, spoken, and direct tone, as if you are talking to the user.
 - Do not include any variables, internal functions, technical terms, or code-related keywords.
 - Use correct {LANGUAGE} accents, punctuation, question marks and upper/lowercases,
@@ -36,8 +45,9 @@ installing it again. function: open_spotify()
 "
 
 Expected output example:
-"Vamos a abrir Spotify..."
+"Abrimos Spotify..."
 
+"
 Input text (example 2):
 "
 Having opened the Spotify application, my next step is to check the list of
@@ -49,7 +59,7 @@ Expected output example:
 "Revisaré si Spotify se ha abierto"
 
 Other example phrases:
-- "Justo como esperaba, continuemos"
+- "Justo como esperaba, continuemos pulsando enter"
 - "Acabo de encontrar la ruta a la aplicación, ahora la abriré"
 - "Debería revisar donde hacer click"
 - "Estoy intentando reproducir la canción"
@@ -66,10 +76,14 @@ class FeedbackVoiceRouter:
         schema: DeploySchema,
         interpreter: Interpreter,
         model: str = "gpt-4.1-nano",
+        filler_words_prob: float = 0.4,
+        disable: bool = False,
         **kwargs,
     ):
+        self.disable = disable
+        self.filler_words_prob = filler_words_prob
         self.interpreter = interpreter
-        self.llm = MutableChatLLM(model="gpt-4.1-nano")
+        self.llm = MutableChatLLM(model=model, temperature=1)
         self.router = SimpleRouter(schema)
 
         assert (
@@ -94,6 +108,10 @@ class FeedbackVoiceRouter:
                 yield step
                 break
 
+            if self.disable:
+                yield step
+                continue
+
             prompt = [
                 SystemMessage(PROMPT),
                 HumanMessage(step.content),
@@ -101,6 +119,9 @@ class FeedbackVoiceRouter:
             feedback = self.llm.invoke(prompt)
             message = feedback.content
             self._logger.debug(f"Speech: {message}")
-            speech = text2speech(message)
+            if random.random() < self.filler_words_prob:
+                filler_word = random.choice(FILLER_WORDS)
+                message = f'"{filler_word}" <break time="0.5s" /> "{message}"'
+            speech = text2speech(' <break time="0.3s" /> ' + message)
             play(speech)
             yield step

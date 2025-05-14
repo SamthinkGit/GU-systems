@@ -1,16 +1,18 @@
 import os
+import threading
 from functools import cache
 
 from elevenlabs import save
 from elevenlabs.client import ElevenLabs
 from playsound import playsound
 
-from ecm.shared import get_logger
 from ecm.shared import get_root_path
 
 NOVA_VOICE = "gD1IexrzCvsXPHUuT0s3"
 
-_logger = get_logger("NovaVoice")
+
+_last_audio_thread = None
+_last_audio_lock = threading.Lock()
 
 
 @cache
@@ -51,4 +53,17 @@ def text2speech(
 
 
 def play(path: str):
-    playsound(path)
+    global _last_audio_thread
+
+    def _play_audio():
+        playsound(path)
+
+    new_thread = threading.Thread(target=_play_audio)
+
+    with _last_audio_lock:
+        if _last_audio_thread and _last_audio_thread.is_alive():
+            _last_audio_thread.join()
+
+        _last_audio_thread = new_thread
+
+    new_thread.start()
