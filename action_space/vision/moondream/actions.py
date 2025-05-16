@@ -6,16 +6,13 @@ PKG_NAME = "moondream_vision_actions"
 
 
 @ItemRegistry.register(type="action", package=PKG_NAME)
-def ask_to_image(question: str) -> str:
-    """Use this tool for asking to an advanced Vision Model about what is on the screen.
+def describe_screen() -> str:
+    """Use this tool to obtain an advanced Vision Model description about what is on the screen.
     This tool will take a screenshot of the screen and ask the model about it.
-    Example: ask_to_image("What app is on the screen?")
-    Example: ask_to_image("Describe shortly this part of the image")
-    Note: This tool is faster (and usually better than your own vision), so use it frequently, however it can return wrong results.
-    Note: Entities must be described in English.
+    Please note the model sometimes may be wrong or hallucinate.
     """  # noqa
 
-    return _ask_to_image("fullscreen", question)
+    return _ask_to_image("fullscreen", "Describe this image screen.")
 
 
 @throttle(min_interval_seconds=10)

@@ -38,6 +38,9 @@ def _read_screen():
     ocr = _get_ocr()
     results = ocr.invoke(screenshot)
     response = [
-        f"Bounding Box at ({box.center}): ```{box.content}```" for box in results
+        f"Text at coordinates {box.center}: ```{box.content}```" for box in results
     ]
-    return "\n".join(response)
+    return (
+        "\n".join(response)
+        + "You can use the mouse to the given coordinates."
+    )

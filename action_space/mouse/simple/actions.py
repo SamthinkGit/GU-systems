@@ -6,28 +6,21 @@ PKG_NAME = "mouse-simple"
 
 
 @ItemRegistry.register(type="action", package=PKG_NAME)
-def move_mouse_to(x: int, y: int):
-    """
-    Moves the mouse to the specified coordinates.
-    Example: move_mouse_to(100, 200)
-    """
-    move(x, y)
-
-
-@ItemRegistry.register(type="action", package=PKG_NAME)
-def click():
+def click(x: int, y: int):
     """
     Clicks with the mouse at the current position.
-    Example: click()
+    Example: click(200, 50)
     """
+    move(x, y)
     osclick()
 
 
 @ItemRegistry.register(type="action", package=PKG_NAME)
-def double_click():
+def double_click(x: int, y: int):
     """
     DoubleClicks with the mouse at the current position.
-    Example: double_click()
+    Example: double_click(925, 30)
     """
+    move(x, y)
     osclick()
     osclick()
