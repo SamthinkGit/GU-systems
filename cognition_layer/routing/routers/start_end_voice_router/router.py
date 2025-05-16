@@ -83,8 +83,10 @@ class StartEndVoiceRouter:
         model: str = "gpt-4.1-nano",
         start_fx: str = "slow_button_trimmed.mp3",
         end_fx: str = "mellow_echo_success.mp3",
+        disable: bool = False,
         **kwargs,
     ):
+        self.disabled = disable
         fx_path = get_root_path() / "cognition_layer" / "tools" / "voice" / "fx"
         self.interpreter = interpreter
         self.llm = MutableChatLLM(model=model, max_tokens=200)
@@ -110,15 +112,16 @@ class StartEndVoiceRouter:
             )
             return
 
-        prompt = [
-            SystemMessage(START_PROMPT),
-            HumanMessage(query),
-        ]
-        feedback = self.llm.invoke(prompt)
-        message = feedback.content
-        self._logger.debug(f"Start Speech: {message}")
-        speech = text2speech(message)
-        play(speech)
+        if not self.disabled:
+            prompt = [
+                SystemMessage(START_PROMPT),
+                HumanMessage(query),
+            ]
+            feedback = self.llm.invoke(prompt)
+            message = feedback.content
+            self._logger.debug(f"Start Speech: {message}")
+            speech = text2speech(message)
+            play(speech)
 
         last_step = None
         for step in server.send_task(query):
@@ -127,15 +130,16 @@ class StartEndVoiceRouter:
                 break
             yield step
 
-        prompt = [
-            SystemMessage(END_PROMPT),
-            SystemMessage("context: " + last_step.content),
-            HumanMessage(query),
-        ]
-        feedback = self.llm.invoke(prompt)
-        message = feedback.content
-        self._logger.debug(f"End Speech: {message}")
-        speech = text2speech(message)
-        play(speech)
-        play(self.end_fx)
+        if not self.disabled:
+            prompt = [
+                SystemMessage(END_PROMPT),
+                SystemMessage("context: " + last_step.content),
+                HumanMessage(query),
+            ]
+            feedback = self.llm.invoke(prompt)
+            message = feedback.content
+            self._logger.debug(f"End Speech: {message}")
+            speech = text2speech(message)
+            play(speech)
+            play(self.end_fx)
         yield last_step

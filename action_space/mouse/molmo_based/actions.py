@@ -26,6 +26,7 @@ def click_on(
     """Clicks with the mouse on given a specified description and location.
     Example: click_on('Firefox fox alike Icon in the Windows bar', 'bottom')
     Example: click_on('Windows Explorer (a file yellow-like manager icon)', 'bottom')
+    Note: Prompts must be made on english.
     Note: Please focus the screen where you want to click before executing this action.
     Note: Please ensure to describe the visuals if the element is an icon.
     Use me only when you are sure that the element is on the screen and which element you want to click.
@@ -53,6 +54,7 @@ def double_click_on(
     """Double clicks with the mouse on given a specified description and location.
     Note: Please focus the screen where you want to click before executing this action.
     Note: Please ensure to describe the visuals if the element is an icon.
+    Note: Prompts must be made on english.
     Use me only when you are sure that the element is on the screen and which element you want to click.
     """
     return _double_click_on_(prompt, location)

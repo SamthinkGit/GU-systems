@@ -1,0 +1,33 @@
+{
+    "name": "NovaStartEndFeedback",
+    "type": "router",
+    "model": "start-end-voice-router",
+    "packages": [],
+    "config": {
+        "model": "gpt-4.1-nano",
+        "disable": true
+    },
+    "workers": [
+        {
+            "name": "NovaIntermediateFeedback",
+            "type": "router",
+            "model": "feedback-voice-router",
+            "packages": [],
+            "config": {
+                "model": "gpt-4.1-nano",
+                "filler_words_prob": 0.15,
+                "disable": true
+            },
+            "workers": [
+                {
+                    "name": "AutonomousTaskSolverAgent",
+                    "type": "agent",
+                    "model": "darkvfr",
+                    "packages": "default",
+                    "config": {},
+                    "workers": []
+                }
+            ]
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+from functools import cache
 import sys
 from pathlib import Path
 
@@ -41,6 +42,7 @@ def get_root_path() -> Path:
     return path
 
 
+@cache
 def get_logger(name: str):
 
     handler = colorlog.StreamHandler()

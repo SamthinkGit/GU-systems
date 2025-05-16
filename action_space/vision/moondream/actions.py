@@ -11,6 +11,7 @@ def ask_to_image(question: str) -> str:
     Example: ask_to_image("What app is on the screen?")
     Example: ask_to_image("Describe shortly this part of the image")
     Note: This tool is faster (and usually better than your own vision), so use it frequently, however it can return wrong results.
+    Note: Entities must be described in English.
     """  # noqa
 
     return query_screenshot("fullscreen", question)
