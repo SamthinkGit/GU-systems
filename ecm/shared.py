@@ -1,5 +1,5 @@
-from functools import cache
 import sys
+from functools import cache
 from pathlib import Path
 
 import colorlog
