@@ -1,7 +1,10 @@
-from cognition_layer.tools.ocr.template import OcrEngine, BoundingBox
-from cognition_layer.tools.ocr.datalab.extract_bboxes import read_image, extract_bboxes
-from ecm.shared import get_logger
 from PIL import Image
+
+from cognition_layer.tools.ocr.datalab.extract_bboxes import extract_bboxes
+from cognition_layer.tools.ocr.datalab.extract_bboxes import read_image
+from cognition_layer.tools.ocr.template import BoundingBox
+from cognition_layer.tools.ocr.template import OcrEngine
+from ecm.shared import get_logger
 
 
 class DatalabEngine(OcrEngine):

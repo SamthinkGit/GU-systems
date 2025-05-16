@@ -1,11 +1,13 @@
+import io
+import time
+
+import requests
+from PIL import Image
 from PyQt5.QtWidgets import QApplication
+
 from cognition_layer.tools.ocr.datalab.animation import BoxOverlay
 from cognition_layer.tools.ocr.template import BoundingBox
 from ecm.shared import get_logger
-from PIL import Image
-import time
-import requests
-import io
 
 ANIMATION_DURATION = 2000
 MIN_DURATION_PER_BOX = 500

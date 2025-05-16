@@ -1,13 +1,13 @@
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtCore import (
-    Qt,
-    QTimer,
-    pyqtProperty,
-    QPropertyAnimation,
-    QEasingCurve,
-    QObject,
-)
-from PyQt5.QtGui import QColor, QPainter
+from PyQt5.QtCore import pyqtProperty
+from PyQt5.QtCore import QEasingCurve
+from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QPropertyAnimation
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QWidget
 
 
 class OpacityWrapper(QObject):
