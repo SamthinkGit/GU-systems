@@ -1,6 +1,7 @@
 from functools import cache
 
 from action_space.tools.image import load_image
+from action_space.tools.wrappers import throttle
 from cognition_layer.tools.ocr.engine import TextOCR
 from ecm.tools.item_registry_v2 import ItemRegistry
 
@@ -16,10 +17,19 @@ def _get_ocr():
 @ItemRegistry.register(type="action", package=PKG_NAME)
 def read_screen():
     """
+    IMPORTANT: Do not overuse this action/tool, extract the features you need and save
+    them in your memory after this action.
+
     Parse all the texts and its coordinates from the screen using OCR.
     Use it when you need to read the screen.
     Use it also when you need to find a specific text/label in the screen.
+    You can also use it find where to click or where to move the mouse.
     """
+    return _read_screen()
+
+
+@throttle(min_interval_seconds=15)
+def _read_screen():
     registry = ItemRegistry("DatalabOCR")
     registry.autoload("screenshot")
     tool = registry.get("screenshot", type="tool")
@@ -27,4 +37,7 @@ def read_screen():
 
     ocr = _get_ocr()
     results = ocr.invoke(screenshot)
-    return str(results)
+    response = [
+        f"Bounding Box at ({box.center}): ```{box.content}```" for box in results
+    ]
+    return "\n".join(response)

@@ -9,6 +9,7 @@ DURATION = 1.5
 @ItemRegistry.register(type="action", package=PKG_NAME)
 def show_in_screen(x: int, y: int, target_radius: int) -> str:
     """
+    NOTE: Usually this tool/action is the latest used (before deactivating).
     Use it to highlight a specific area on the screen.
     Use it always that you must show, indicate, point or explain something in the screen.
     Example for highlighting pixel x=100, y=200: spotlight(100, 200, 200)
