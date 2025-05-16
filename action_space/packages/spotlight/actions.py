@@ -1,5 +1,5 @@
-from ecm.tools.item_registry_v2 import ItemRegistry
 from action_space.packages.spotlight.app import spotlight as _spotlight
+from ecm.tools.item_registry_v2 import ItemRegistry
 
 PKG_NAME = "spotlight"
 DURATION = 1.5
