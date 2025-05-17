@@ -58,6 +58,18 @@ def read_image(image: Image.Image):
     return result_response.json()
 
 
+def animate_bboxes(bboxes: list[BoundingBox]) -> None:
+    app = QApplication([])
+    overlay = BoxOverlay(
+        bboxes,
+        duration_total=ANIMATION_DURATION,
+        min_duration_per_box=MIN_DURATION_PER_BOX,
+    )
+
+    overlay.show()
+    app.exec_()
+
+
 def extract_bboxes(response_json: dict, animate: bool = True) -> list[BoundingBox]:
     bounding_boxes = []
     for line in response_json["pages"][0]["text_lines"]:
@@ -75,14 +87,6 @@ def extract_bboxes(response_json: dict, animate: bool = True) -> list[BoundingBo
         bounding_boxes.append(bbox)
 
     if animate:
-        app = QApplication([])
-        overlay = BoxOverlay(
-            bounding_boxes,
-            duration_total=ANIMATION_DURATION,
-            min_duration_per_box=MIN_DURATION_PER_BOX,
-        )
-
-        overlay.show()
-        app.exec_()
+        animate_bboxes(bounding_boxes)
 
     return bounding_boxes

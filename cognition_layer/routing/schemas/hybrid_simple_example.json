@@ -1,0 +1,17 @@
+{
+    "name": "Hybrid1",
+    "type": "agent",
+    "model": "hybrid1",
+    "packages": "default",
+    "config": {},
+    "workers": [
+        {
+            "name": "VisionResponseAgent",
+            "type": "agent",
+            "model": "small-vision-agent",
+            "packages": "default",
+            "config": {},
+            "workers": []
+        }
+    ]
+}

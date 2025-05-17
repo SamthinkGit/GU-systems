@@ -23,6 +23,8 @@ from typing import Callable
 from typing import Optional
 from typing import Union
 
+from langsmith import traceable
+
 from ecm.exelent.parser import ParsedAction
 from ecm.mediator.feedback import ExecutionStatus
 from ecm.mediator.feedback import Feedback as FeedbackTemplate
@@ -178,6 +180,15 @@ class Scheduler(ABC):
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         self.run()
 
+    def _log_action(self, action: ParsedAction):
+        """Logs the current call"""
+
+        @traceable(run_type="tool", name=action.name)
+        def _langsmith_log():
+            return action
+
+        _langsmith_log()
+
 
 class Sequential(Scheduler):
 
@@ -201,6 +212,7 @@ class Sequential(Scheduler):
         success = True
 
         for action in self.actions:
+            self._log_action(action)
             try:
                 if self.soft_stop:
                     self._logger.debug(

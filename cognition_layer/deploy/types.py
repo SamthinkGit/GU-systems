@@ -17,6 +17,7 @@ class DeployModel(TypedDict):
     alias: list[str]
     agent_description: str
     response_description: str
+    welcome_message: str
     use_case: str
     type: str
     packages: list[str]

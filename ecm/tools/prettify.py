@@ -40,9 +40,9 @@ def _prettify_dict(dict: dict[Any, Any]) -> str:
 
 def _color_by_type(name, node_type):
     if node_type == "router":
-        return Fore.BLUE + "📡 " + name + Style.RESET_ALL
+        return Fore.BLUE + "📡  " + name + Style.RESET_ALL
     elif node_type == "agent":
-        return Fore.GREEN + "🛠️ " + name + Style.RESET_ALL
+        return Fore.GREEN + "🛠️  " + name + Style.RESET_ALL
     else:
         return name + f" [{node_type}]"
 

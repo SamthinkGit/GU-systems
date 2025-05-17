@@ -165,6 +165,7 @@ class ItemRegistry:
         """
         self._load_to_correspondent(ItemRegistry._global_items[item_name])
 
+    @functools.cache
     def autoload(
         self,
         identifier: Optional[str] = None,
@@ -176,7 +177,7 @@ class ItemRegistry:
         dynamically imports the package and loads its items into the
         registry.
         :param identifier: The identifier for the package or item to load.
-        :return: None
+        :return: True if the package was loaded successfully
         """
         if "/" not in identifier:
             # This is a package
@@ -192,6 +193,7 @@ class ItemRegistry:
                     pkg_name = pkg["pkg_name"]
                     break
             self.load_package(pkg_name)
+        return True
 
     def load_all(self):
         """

@@ -45,7 +45,7 @@ class CognitionState:
             self._model = schema.model_construct()
         Storage("CognitionState")[storage_key] = self
 
-    def set(self, key: str, value: Any) -> None:
+    def set(self, key: str, value: Any, nofail: bool = True) -> None:
         """
         Sets a value for a specific field in the state.
 
@@ -53,14 +53,17 @@ class CognitionState:
             key (str): The name of the field to set.
             value (Any): The value to assign to the field.
 
+            nofail (bool): If True, raises an AttributeError if the field
+
         Raises:
             AttributeError: If the field is not defined in the schema.
         """
-        if key not in self._schema_cls.model_fields:
-            raise AttributeError(
-                f"Field '{key}' is not defined in {self._schema_cls.__name__}"
-            )
-        setattr(self._model, key, value)
+        if not nofail:
+            if key not in self._schema_cls.model_fields:
+                raise AttributeError(
+                    f"Field '{key}' is not defined in {self._schema_cls.__name__}"
+                )
+        self._model.__dict__[key] = value
 
     def get(self, key: str) -> Any:
         """
@@ -125,6 +128,14 @@ class CognitionState:
                 "description": str(field.description),
                 "value": str(getattr(self._model, name, False)) or "None",
             }
+
+        for name, value in self._model.__dict__.items():
+            if name not in summary_data:
+                summary_data[name] = {
+                    "type": "str",
+                    "description": "None",
+                    "value": str(value),
+                }
         return json.dumps(summary_data, indent=2)
 
     @staticmethod

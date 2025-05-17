@@ -1,0 +1,10 @@
+from pydantic import ConfigDict
+from pydantic import BaseModel
+class ExampleSchema(BaseModel):
+  model_config = ConfigDict(extra="allow")
+  value: int
+
+from ecm.tools.debugging import call_action
+from action_space.meta.cognition_state.state import CognitionState
+state = CognitionState(ExampleSchema)
+call_action("set_value_on_cognition_state", "meta", "plan", "This is an example")

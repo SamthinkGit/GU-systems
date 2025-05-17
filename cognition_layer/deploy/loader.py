@@ -71,6 +71,8 @@ def deploy(
     - registry: the ItemRegistry instance to be used by the agent.
     - packages: a list of package names to be autoloaded. If None, the default packages
       for the agent will be used.
+    - schema: the schema to be used by the agent. If None, the default schema for the
+      agent will be used.
     Returns the server instance of the agent.
     Example:
         >>> from cognition_layer.deploy.loader import deploy

@@ -51,7 +51,7 @@ def main():
         ItemRegistry().invalidate(tools=False)
 
     # -------- Running Tasks -------
-    @traceable
+    @traceable(run_type="chain", name=server.name)
     def execute_user_query(query: str):
         for step in server.send_task(query):
             logger.debug(f"Step completed successfully:\n-> {step}")
