@@ -85,12 +85,20 @@ def deploy(
         registry_name = f"{model['name']}-{uuid.uuid4()}"
         registry = ItemRegistry(registry_name)
 
-    if packages is None or packages == "default":
-        packages = model["packages"]
+    if packages is None:
+        packages = []
+
+    packages += schema["packages"]
+
+    if "default" in packages:
+        packages += model["packages"]
+        packages.remove("default")
+
+    for pkg in packages:
+        registry.autoload(pkg)
 
     for pkg in packages:
         ItemRegistry().autoload(pkg)  # Execution layer can uses this
-        registry.autoload(pkg)
 
     if model["type"] == "router" and schema is None:
         raise ValueError(

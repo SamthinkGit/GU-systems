@@ -9,7 +9,7 @@ from cognition_layer.tools.mutable_llm import MutableChatLLM
 from cognition_layer.tools.ocr.image_edition import resize_image
 from ecm.tools.item_registry_v2 import ItemRegistry
 
-IMAGE_QUALITY = 0.2
+IMAGE_QUALITY = 0.6
 
 
 @dataclass
@@ -33,7 +33,7 @@ class SmallVisionAgent:
     @ItemRegistry.require_dependencies("screenshot")
     def __init__(self, registry: ItemRegistry = ItemRegistry()):
         self.registry = registry
-        self.llm = MutableChatLLM()
+        self.llm = MutableChatLLM(model="gpt-4.1-nano")
 
     def invoke(self, query: str) -> Generator[SVAResponse, None, None]:
         screenshot = load_image(self.registry.get("screenshot", type="tool").content())

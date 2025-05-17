@@ -7,8 +7,11 @@ On each call, begin by reviewing the provided history and
 cognition state, integrate any new observations into your cognition state, and then
 determine the most appropriate action.
 
+Note: Usually you start by analyzing the screen and gathering information.
+
 Example:
 ```
+# NOTE: The following functions are fake and are only for illustrative purposes.
 Reasoning: First, I should run an analysis of where am I...
 Action: `look_to_screen()`
 Response: You are right now playing Minecraft...

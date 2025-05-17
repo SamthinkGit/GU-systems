@@ -1,0 +1,26 @@
+{
+    "name": "Hybrid1",
+    "type": "agent",
+    "model": "hybrid1",
+    "packages": [
+        "default",
+        "keyboard",
+        "mouse-simple",
+        "apps-management",
+        "spotlight",
+        "molmo_vision_actions"
+    ],
+    "config": {},
+    "workers": [
+        {
+            "name": "VisionResponseAgent",
+            "type": "agent",
+            "model": "small-vision-agent",
+            "packages": [
+                "default"
+            ],
+            "config": {},
+            "workers": []
+        }
+    ]
+}

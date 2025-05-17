@@ -23,7 +23,7 @@
                     "name": "AutonomousTaskSolverAgent",
                     "type": "agent",
                     "model": "darkvfr",
-                    "packages": "default",
+                    "packages": ["default"],
                     "config": {},
                     "workers": []
                 }
