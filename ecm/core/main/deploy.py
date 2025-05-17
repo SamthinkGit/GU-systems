@@ -8,7 +8,7 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 from ecm.tools.prettify import pretty_print_schema
 from execution_layer.pyxcel.interpreter.pyxcel_interpreter import PyxcelInterpreter
 
-LATEST = "full_feedback_routing"
+LATEST = "hybrid1"
 
 
 def main():

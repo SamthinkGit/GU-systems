@@ -7,13 +7,22 @@
         "keyboard",
         "mouse-simple",
         "apps-management",
-        "spotlight",
-        "molmo_vision_actions"
+        "spotlight"
     ],
     "config": {},
     "workers": [
         {
-            "name": "VisionResponseAgent",
+            "name": "ElementFinder",
+            "type": "agent",
+            "model": "element-finder",
+            "packages": [
+                "default"
+            ],
+            "config": {},
+            "workers": []
+        },
+        {
+            "name": "ScreenAgent",
             "type": "agent",
             "model": "small-vision-agent",
             "packages": [

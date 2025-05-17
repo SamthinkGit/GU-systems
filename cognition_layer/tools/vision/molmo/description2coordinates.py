@@ -87,7 +87,7 @@ def description2coordinates(image: Image, description: str) -> list[PointDict]:
         "https://api.replicate.com/v1/predictions",
         json=payload,
         headers=headers,
-        timeout=20,
+        timeout=10,
     )
     end = time.perf_counter()
 

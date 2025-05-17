@@ -110,7 +110,10 @@ class Hybrid1:
         """
         task = _convert_response_to_exelent(response)
         self.latest_task = TaskSummary()
-        self.interpreter.run(task, callback=self.retrieve_task_result)
+        if task is not None:
+            self.interpreter.run(task, callback=self.retrieve_task_result)
+        else:
+            self.latest_task = TaskSummary(success=True, result="Invalid syntax")
         self.memory.update(
             [
                 AIMessage(content=str(response)),
@@ -183,5 +186,5 @@ class Hybrid1:
 
             yield FastAPStep(name="Hybrid1", content=str(response), is_last=exit)
 
-            sync_experts(self.schema)
+            sync_experts(self.schema, self.interpreter)
             self._execute_response_from_agent(response)

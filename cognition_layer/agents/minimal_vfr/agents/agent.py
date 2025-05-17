@@ -330,5 +330,8 @@ def _convert_response_to_exelent(
     builder.add_type("Sequential")
     builder.add_statement(frdict.function.replace("\\", "\\\\"))
 
-    task = builder.compile()
+    try:
+        task = builder.compile()
+    except SyntaxError:
+        return None
     return task

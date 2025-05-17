@@ -88,7 +88,8 @@ def deploy(
     if packages is None:
         packages = []
 
-    packages += schema["packages"]
+    if schema is not None:
+        packages += schema["packages"]
 
     if "default" in packages:
         packages += model["packages"]
