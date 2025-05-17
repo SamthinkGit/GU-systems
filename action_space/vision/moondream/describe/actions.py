@@ -1,5 +1,6 @@
-from action_space.tools.wrappers import throttle
-from action_space.vision.moondream.request import query_screenshot
+from action_space.vision.moondream.request import (
+    query_screenshot,
+)
 from ecm.tools.item_registry_v2 import ItemRegistry
 
 PKG_NAME = "moondream_vision_actions"
@@ -15,7 +16,6 @@ def describe_screen() -> str:
     return _ask_to_image("fullscreen", "Describe this image screen.")
 
 
-@throttle(min_interval_seconds=10)
 def _ask_to_image(*args, **kwargs) -> str:
 
     return query_screenshot(*args, **kwargs)

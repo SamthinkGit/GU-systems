@@ -5,7 +5,7 @@ import action_space.keyboard.actions  # noqa
 import action_space.meta.cognition_state.actions  # noqa
 import action_space.meta.fake.actions  # noqa
 import action_space.mouse.molmo_based.actions # noqa
-import action_space.vision.moondream.actions  # noqa
+import action_space.vision.moondream.describe.actions  # noqa
 from cognition_layer.agents.minimal_vfr.variations.darkvfr import DarkVFR
 from ecm.tools.item_registry_v2 import ItemRegistry
 from execution_layer.pyxcel.interpreter.pyxcel_interpreter import PyxcelInterpreter

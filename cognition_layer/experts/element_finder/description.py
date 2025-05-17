@@ -18,7 +18,7 @@ DEPLOY_MODEL = {
     "welcome_message": "Send me the element you want to find, a purpouse for it (is a button?, is an icon?) and contextual information you consider relevant.",
     "type": "agent",
     "packages": [
-        "molmo_vision_actions",
+        "moondream_element_finder",
         "expert-calling",
         "simple-read-ocr",
         "screenshot",

@@ -7,7 +7,9 @@ from cognition_layer.deploy.loader import get_deploy_model
 from cognition_layer.experts.minimal_fastreact_expert.agent import custom_schema
 from cognition_layer.experts.minimal_fastreact_expert.agent import DeploySchema
 from cognition_layer.experts.minimal_fastreact_expert.agent import MfreResponse
-from cognition_layer.experts.minimal_fastreact_expert.agent import MinimalFastReactExpert
+from cognition_layer.experts.minimal_fastreact_expert.agent import (
+    MinimalFastReactExpert,
+)
 from cognition_layer.protocols.fast_ap import FastAPStep
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
@@ -33,7 +35,7 @@ For analyzing the screen:
 
 For finding coordinates:
 - Use the function read_screen to get the coordinates of all texts in screen. ¡Careful! Multiple texts can be similar, ensure to get the most relevant one according to the user query.
-- Use obtain_coords with a visual description of a non-text element (visual, icon, etc) to retrieve its coordinates. However this method usually fails if its not a big icon, image or visual element. Do not use this if the target is a text.
+- Use obtain_coordinates with a visual description of a non-text element (visual, icon, etc) to retrieve its coordinates. However this method usually fails if its not a big icon, image or visual element.
 
 WARNING: You must satisfy the user using at most {K} steps.
 THE FINAL ANSWER MUST SATISFY THIS: The final answer will use the function `<stop_analysis>` and return about the coordinates (and a reasoning) in the reasoning field.
@@ -45,7 +47,7 @@ class ElementFinder(MinimalFastReactExpert):
     _logger = get_logger("ElementFinder")
 
     @ItemRegistry.require_dependencies(
-        "molmo_vision_actions",
+        "moondream_element_finder",
         "expert-calling",
         "simple-read-ocr",
         "screenshot",

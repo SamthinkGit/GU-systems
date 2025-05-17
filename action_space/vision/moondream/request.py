@@ -135,3 +135,22 @@ def query_point(image: Image, query: str) -> tuple[int, int, bool]:
     x = points[0]["x"] * image.width
     y = points[0]["y"] * image.height
     return (int(x), int(y), confident)
+
+
+def obtain_coordinates(query: str):
+    image = load_image(ItemRegistry().get("screenshot", type="tool").content())
+
+    api_key = get_moondream_api_key()
+    model = md.vl(api_key=api_key)
+
+    result = model.point(image, query)
+    points = result["points"]
+    print(f"Found {points}")
+
+    result = []
+    for point in points:
+        x = point["x"] * image.width
+        y = point["y"] * image.height
+        result.append((int(x), int(y)))
+
+    return "The following points were found: " + str(result)
