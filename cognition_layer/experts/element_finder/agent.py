@@ -59,6 +59,7 @@ class ElementFinder(MinimalFastReactExpert):
         *args,
         **kwargs,
     ):
+        self.threshold = threshold
         self.max_steps = max_steps
         gpt_vision = get_deploy_model("small-vision-agent")
         gpt_vision["agent_description"] = "A small nlp vision agent."
