@@ -3,6 +3,9 @@ import argparse
 from langsmith import traceable
 
 from cognition_layer.deploy.loader import autodeploy_schema
+from cognition_layer.protocols.broadcaster import deploy_backend
+from cognition_layer.protocols.broadcaster import terminate_backend
+from cognition_layer.protocols.fast_ap import config_fast_ap
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
 from ecm.tools.prettify import pretty_print_schema
@@ -28,10 +31,28 @@ def main():
         help="Invalidate the item registry to only print instead of make actions (useful for testing).",
     )
 
+    argparser.add_argument(
+        "--api",
+        action="store_true",
+        help="Publish all the steps to the FastAP API.",
+    )
+    argparser.add_argument(
+        "--backend",
+        action="store_true",
+        help="Run the backend server for FastAP.",
+    )
+
     args = argparser.parse_args()
 
     if args.schema == "latest":
         args.schema = LATEST
+
+    if args.api:
+        config_fast_ap(enable_api=True)
+
+    if args.backend:
+        deploy_backend()
+
     pretty_print_schema(args.schema)
 
     # ----- Loading Interpreter ----
@@ -56,9 +77,13 @@ def main():
         for step in server.send_task(query):
             logger.debug(f"Step completed successfully:\n-> {step}")
 
-    while True:
-        query = input("Request a Task: ")
-        execute_user_query(query)
+    try:
+        while True:
+            query = input("Request a Task: ")
+            execute_user_query(query)
+    finally:
+        if args.backend:
+            terminate_backend()
 
 
 if __name__ == "__main__":

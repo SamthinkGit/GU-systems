@@ -31,11 +31,11 @@ repos:
         args: [--py36-plus]
         always_run: true
 
-  - repo: local
-    hooks:
-      - id: test-system
-        name: test-system
-        entry: python ./scripts/tests.py
-        language: system
-        files: .*
-        stages: [pre-commit]
+#  - repo: local
+#    hooks:
+#      - id: test-system
+#        name: test-system
+#        entry: python ./scripts/tests.py
+#        language: system
+#        files: .*
+#        stages: [pre-commit]

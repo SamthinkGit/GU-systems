@@ -19,8 +19,13 @@ from typing import Optional
 from typing import TypeVar
 
 from ecm.shared import get_logger
+from ecm.tools.registry import Storage
 
 _StepType = TypeVar("_StepType")
+
+_fast_ap_config = Storage("FAST_AP_CONFIG")
+_fast_ap_config["port"] = 9301
+_fast_ap_config["enable_api"] = False
 
 
 # ======================= CLASSES ============================
@@ -129,5 +134,24 @@ class FastAgentProtocol(Generic[_StepType]):
                 is_last=self.is_last_getter(raw_step),
             )
 
+            if _fast_ap_config["enable_api"]:
+                from cognition_layer.protocols.broadcaster import publish_step_to_api
+
+                publish_step_to_api(step, port=_fast_ap_config["port"])
             yield step
             done = step.is_last
+
+
+def config_fast_ap(
+    port: int = 9301,
+    enable_api: bool = True,
+):
+    """
+    Configure the FastAgentProtocol settings.
+
+    Args:
+        port (int): The port for the FastAPI server.
+        enable_api (bool): Whether to enable the FastAPI server.
+    """
+    _fast_ap_config["port"] = port
+    _fast_ap_config["enable_api"] = enable_api
