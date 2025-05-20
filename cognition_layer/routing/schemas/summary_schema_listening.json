@@ -1,0 +1,23 @@
+{
+    "name": "FeedbackSummarizer",
+    "type": "router",
+    "model": "time-based-feedback-summarizer",
+    "packages": [],
+    "config": {
+        "disable": false,
+        "model": "gpt-4.1-nano",
+        "delay": 15
+    },
+    "workers": [
+        {
+            "name": "SchemaListener",
+            "type": "router",
+            "model": "schema-listener",
+            "packages": [],
+            "config": {
+                "schema_name": "composition_routing_with_clusters"
+            },
+            "workers": []
+        }
+    ]
+}
