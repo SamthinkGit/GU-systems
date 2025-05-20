@@ -1,0 +1,10 @@
+{
+    "name": "VisionAgent",
+    "type": "agent",
+    "model": "small-vision-agent",
+    "packages": [
+        "default"
+    ],
+    "config": {},
+    "workers": []
+}

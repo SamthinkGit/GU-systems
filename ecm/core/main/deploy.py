@@ -4,10 +4,12 @@ from langsmith import traceable
 
 from cognition_layer.deploy.loader import autodeploy_schema
 from cognition_layer.protocols.broadcaster import deploy_backend
+from cognition_layer.protocols.broadcaster import exit_fast_ap
 from cognition_layer.protocols.broadcaster import terminate_backend
 from cognition_layer.protocols.fast_ap import config_fast_ap
 from ecm.shared import get_logger
 from ecm.tools.item_registry_v2 import ItemRegistry
+from ecm.tools.item_registry_v2 import Storage
 from ecm.tools.prettify import pretty_print_schema
 from execution_layer.pyxcel.interpreter.pyxcel_interpreter import PyxcelInterpreter
 
@@ -40,6 +42,11 @@ def main():
         "--backend",
         action="store_true",
         help="Run the backend server for FastAP.",
+    )
+    argparser.add_argument(
+        "--prompt",
+        type=str,
+        help="Sends this prompt to the schema.",
     )
 
     args = argparser.parse_args()
@@ -78,12 +85,18 @@ def main():
             logger.debug(f"Step completed successfully:\n-> {step}")
 
     try:
-        while True:
-            query = input("Request a Task: ")
-            execute_user_query(query)
+        if args.prompt:
+            execute_user_query(args.prompt)
+        else:
+            while True:
+                query = input("Request a Task: ")
+                execute_user_query(query)
     finally:
         if args.backend:
             terminate_backend()
+
+        if args.api:
+            exit_fast_ap(port=Storage("FAST_AP_CONFIG")["port"])
 
 
 if __name__ == "__main__":

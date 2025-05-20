@@ -1,4 +1,5 @@
 import subprocess
+import time
 
 import requests
 
@@ -50,6 +51,18 @@ def listen_to_steps_from_api(port: int):
                 _logger.debug(f"Received step: {payload}")
 
 
+def exit_fast_ap(port: int):
+    publish_step_to_api(
+        FastAPStep(
+            name="FAST_AP_EXIT",
+            step_name="FAST_AP_EXIT",
+            content="FAST_AP_EXIT",
+            is_last=True,
+        ),
+        port,
+    )
+
+
 def deploy_backend():
     global _uvicorn_process
     if _uvicorn_process is not None:
@@ -61,6 +74,10 @@ def deploy_backend():
         ["uvicorn", "app:app", "--port", str(port)],
         cwd=str(get_root_path() / "cognition_layer" / "protocols"),
     )
+
+    # This method should not be used in autodeploying
+    # Instead use `uvicorn cognition_layer.protocols.broadcaster:app --port <port>`
+    time.sleep(2)  # A little delay to avoid mixing up the logs :D
 
 
 def terminate_backend():

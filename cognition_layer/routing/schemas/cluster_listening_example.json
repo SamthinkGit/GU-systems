@@ -1,0 +1,10 @@
+{
+    "name": "ClusterListener",
+    "type": "router",
+    "model": "cluster-listener",
+    "packages": [],
+    "config": {
+        "schema_name": "simple_vision_agent"
+    },
+    "workers": []
+}
