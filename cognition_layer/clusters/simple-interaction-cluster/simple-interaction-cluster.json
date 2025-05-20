@@ -1,0 +1,33 @@
+{
+    "name": "Hybrid1",
+    "type": "agent",
+    "model": "hybrid1",
+    "packages": [
+        "default",
+        "keyboard",
+        "mouse-simple"
+    ],
+    "config": {},
+    "workers": [
+        {
+            "name": "ElementFinder",
+            "type": "agent",
+            "model": "element-finder",
+            "packages": [
+                "default"
+            ],
+            "config": {},
+            "workers": []
+        },
+        {
+            "name": "ScreenAgent",
+            "type": "agent",
+            "model": "small-vision-agent",
+            "packages": [
+                "default"
+            ],
+            "config": {},
+            "workers": []
+        }
+    ]
+}

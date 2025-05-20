@@ -117,11 +117,14 @@ def deploy(
     return server
 
 
-def autodeploy_schema(id: str, interpreter: Interpreter) -> FastAgentProtocol:
+def autodeploy_schema(
+    id: str, interpreter: Interpreter, path: Path = None
+) -> FastAgentProtocol:
     """
     Deploys a schema given its id.
     - id: the id of the schema to be deployed.
     - interpreter: the Interpreter instance to be used by the agent.
+    - path: the path to the schema file. If None, the default path will be used.
     Returns the server instance of the agent.
     Example:
         >>> from cognition_layer.deploy.loader import autodeploy_schema
@@ -129,7 +132,13 @@ def autodeploy_schema(id: str, interpreter: Interpreter) -> FastAgentProtocol:
         >>> for step in server("Open spotify"):
         >>>     print(step)
     """
-    path = get_root_path() / "cognition_layer" / "routing" / "schemas" / f"{id}.json"
+
+    if path is None:
+        path = (
+            get_root_path() / "cognition_layer" / "routing" / "schemas" / f"{id}.json"
+        )
+    else:
+        path = Path(path)
 
     schema = json.loads(path.read_text())
     model = get_deploy_model(schema["model"])

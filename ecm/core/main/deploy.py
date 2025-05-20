@@ -48,6 +48,14 @@ def main():
         type=str,
         help="Sends this prompt to the schema.",
     )
+    argparser.add_argument(
+        "--absolute",
+        action="store_true",
+        help=(
+            "The path to the schema file will be considered absolute."
+            " Use this to deploy custom schemas or clusters."
+        ),
+    )
 
     args = argparser.parse_args()
 
@@ -60,17 +68,27 @@ def main():
     if args.backend:
         deploy_backend()
 
-    pretty_print_schema(args.schema)
+    if args.absolute:
+        pretty_print_schema(path=args.schema)
+    else:
+        pretty_print_schema(id=args.schema)
 
     # ----- Loading Interpreter ----
     interpreter = PyxcelInterpreter()
     logger.debug("Pyxcel Interpreter loaded successfully.")
 
     # ----- Deploying Schema ----
-    server = autodeploy_schema(
-        args.schema,
-        interpreter=interpreter,
-    )
+    if not args.absolute:
+        server = autodeploy_schema(
+            args.schema,
+            interpreter=interpreter,
+        )
+    else:
+        server = autodeploy_schema(
+            id="",
+            interpreter=interpreter,
+            path=args.schema,
+        )
 
     logger.debug(f"Schema `{args.schema}` deployed successfully.")
 

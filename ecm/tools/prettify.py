@@ -1,5 +1,6 @@
 import json
 import traceback
+from pathlib import Path
 from pprint import pformat
 from typing import Any
 from typing import Optional
@@ -68,9 +69,17 @@ def _print_graph(node, prefix="", is_root=True):
         _print_graph(child, prefix=child_prefix, is_root=False)
 
 
-def pretty_print_schema(id: str):
-    path = get_root_path() / "cognition_layer" / "routing" / "schemas" / f"{id}.json"
+def pretty_print_schema(id: str = None, path: Optional[str] = None):
+    if path is None:
+        path = (
+            get_root_path() / "cognition_layer" / "routing" / "schemas" / f"{id}.json"
+        )
+    else:
+        path = Path(path)
+        id = path.name
+
     graph = json.loads(path.read_text())
+
     print(pretty_head(id))
     print("\n")
     _print_graph(graph)
