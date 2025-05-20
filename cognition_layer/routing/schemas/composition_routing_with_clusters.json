@@ -1,0 +1,27 @@
+{
+    "name": "CompositionRouter",
+    "type": "router",
+    "model": "composition-router",
+    "packages": [
+        "default"
+    ],
+    "config": {},
+    "workers": [
+        {
+            "name": "VisionExpert",
+            "type": "cluster",
+            "model": "fast-vision-cluster",
+            "packages": [],
+            "config": {},
+            "workers": []
+        },
+        {
+            "name": "KeyboardMouseExpert",
+            "type": "cluster",
+            "model": "simple-interaction-cluster",
+            "packages": [],
+            "config": {},
+            "workers": []
+        }
+    ]
+}

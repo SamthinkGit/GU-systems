@@ -29,7 +29,13 @@ class SimpleRouter:
     def server(
         self, target: str, interpreter: Interpreter, **kwargs
     ) -> FastAgentProtocol:
-        agent, model = self.agents.get(target)
+
+        agent_model = self.agents.get(target)
+
+        if agent_model is None:
+            raise ValueError(f"Agent {target} not found in the schema.")
+
+        agent, model = agent_model
 
         if model is None:
             return None

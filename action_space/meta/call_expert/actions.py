@@ -29,7 +29,6 @@ def call_expert(name: str, message: str) -> None:
     return _call_expert(name, message)
 
 
-@ItemRegistry.require_dependencies("meta")
 def _call_expert(name: str, message: str) -> None:
     server, model = load_model(name)
     if message == "<start>":
