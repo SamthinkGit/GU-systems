@@ -1,14 +1,14 @@
 from operator import attrgetter
 
 from cognition_layer.api import FastAgentProtocol
-from cognition_layer.experts.cluster_listener.agent import ClusterListener
+from cognition_layer.experts.schema_listener.agent import SchemaListener
 
 
 def get_fast_ap_server(schema_name: str, **kwargs) -> FastAgentProtocol:
 
-    listener = ClusterListener(schema_name=schema_name)
+    listener = SchemaListener(schema_name=schema_name)
     return FastAgentProtocol(
-        name="ClusterListener",
+        name="SchemaListener",
         iterator=lambda input: listener.invoke(input),
         step_name_getter=attrgetter("name"),
         content_getter=attrgetter("content"),

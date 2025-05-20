@@ -1,7 +1,7 @@
 {
-    "name": "ClusterListener",
+    "name": "SchemaListener",
     "type": "router",
-    "model": "cluster-listener",
+    "model": "schema-listener",
     "packages": [],
     "config": {
         "schema_name": "simple_vision_agent"

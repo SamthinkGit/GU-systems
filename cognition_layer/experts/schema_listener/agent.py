@@ -13,8 +13,8 @@ from ecm.tools.registry import Storage
 MAIN_DEPLOY_FILE_PATH = get_root_path() / "ecm" / "core" / "main" / "deploy.py"
 
 
-class ClusterListener:
-    _logger = get_logger("ClusterListener")
+class SchemaListener:
+    _logger = get_logger("SchemaListener")
 
     def __init__(self, schema_name: str, api_port: int = -1):
 
