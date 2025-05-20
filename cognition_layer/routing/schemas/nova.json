@@ -1,0 +1,48 @@
+{
+    "name": "NovaStartEndFeedback",
+    "type": "router",
+    "model": "start-end-voice-router",
+    "packages": [],
+    "config": {
+        "model": "gpt-4.1-nano",
+        "disable": false
+    },
+    "workers": [
+        {
+            "name": "NovaIntermediateFeedback",
+            "type": "router",
+            "model": "feedback-voice-router",
+            "packages": [],
+            "config": {
+                "model": "gpt-4.1-nano",
+                "filler_words_prob": 0.15,
+                "disable": false
+            },
+            "workers": [
+                {
+                    "name": "FeedbackSummarizer",
+                    "type": "router",
+                    "model": "time-based-feedback-summarizer",
+                    "packages": [],
+                    "config": {
+                        "disable": false,
+                        "model": "gpt-4.1-nano",
+                        "delay": 5
+                    },
+                    "workers": [
+                        {
+                            "name": "SchemaListener",
+                            "type": "router",
+                            "model": "schema-listener",
+                            "packages": [],
+                            "config": {
+                                "schema_name": "composition_routing_with_clusters"
+                            },
+                            "workers": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

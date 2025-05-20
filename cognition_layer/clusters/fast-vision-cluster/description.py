@@ -24,7 +24,7 @@ def server_loader():
 DEPLOY_MODEL = {
     "name": "fast-vision-cluster",
     "alias": ["fast-vision-cluster"],
-    "agent_description": "A cluster of agents that can process the current display and retrieve information or give responses to queries.",
+    "agent_description": "A cluster of agents that can process the current display and retrieve information or give responses to queries. I cannot perform operations or actions, I only provide information.",
     "response_description": "Response about the screen",
     "use_case": "Use it to give responses to the user based on the display/screenshot or to response about graphical queries/questions.",
     "welcome_message": "Send me a question about the current screen or image and I will do my best to assist you.",

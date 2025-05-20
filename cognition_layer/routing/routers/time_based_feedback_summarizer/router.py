@@ -12,6 +12,8 @@ from ecm.mediator.Interpreter import Interpreter
 
 PROMPT = """
 Generate a summary of the actions and reasonings performed in the following messages.
+Do only include the reasonings described and the actions performed in the past.
+Do never include future or non-mentioned ideas/actions.
 You must eliminate the agent names and always talk in first person, as if you were the one reasoning and acting.
 """
 
