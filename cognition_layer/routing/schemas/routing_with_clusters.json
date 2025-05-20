@@ -1,5 +1,5 @@
 {
-    "name": "MainAgent",
+    "name": "ZeroShotRouter",
     "type": "router",
     "model": "zero-shot-router",
     "packages": [],
@@ -9,19 +9,15 @@
             "name": "VisionExpert",
             "type": "cluster",
             "model": "fast-vision-cluster",
-            "packages": [
-                "default"
-            ],
+            "packages": [],
             "config": {},
             "workers": []
         },
         {
-            "name": "AutonomousTaskSolverAgent",
-            "type": "agent",
-            "model": "darkvfr",
-            "packages": [
-                "default"
-            ],
+            "name": "KeyboardMouseExpert",
+            "type": "cluster",
+            "model": "simple-interaction-cluster",
+            "packages": [],
             "config": {},
             "workers": []
         }

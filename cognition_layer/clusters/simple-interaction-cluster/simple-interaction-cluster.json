@@ -20,9 +20,9 @@
             "workers": []
         },
         {
-            "name": "ScreenAgent",
+            "name": "ScreenVisionAgent",
             "type": "agent",
-            "model": "small-vision-agent",
+            "model": "fast-vision-cluster",
             "packages": [
                 "default"
             ],

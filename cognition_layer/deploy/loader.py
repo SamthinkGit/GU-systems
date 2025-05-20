@@ -93,12 +93,15 @@ def deploy(
 
     if "default" in packages:
         packages += model["packages"]
-        packages.remove("default")
 
     for pkg in packages:
+        if pkg == "default":
+            continue
         registry.autoload(pkg)
 
     for pkg in packages:
+        if pkg == "default":
+            continue
         ItemRegistry().autoload(pkg)  # Execution layer can uses this
 
     if model["type"] == "router" and schema is None:

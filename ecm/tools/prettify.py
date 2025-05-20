@@ -44,6 +44,8 @@ def _color_by_type(name, node_type):
         return Fore.BLUE + "📡  " + name + Style.RESET_ALL
     elif node_type == "agent":
         return Fore.GREEN + "🛠️  " + name + Style.RESET_ALL
+    elif node_type == "cluster":
+        return Fore.GREEN + "👥  " + name + Style.RESET_ALL
     else:
         return name + f" [{node_type}]"
 
