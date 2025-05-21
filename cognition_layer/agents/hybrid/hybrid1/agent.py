@@ -35,6 +35,16 @@ class Hybrid1Response(BaseModel):
     )
 
 
+class Hybrid1ResponseWithFeedback(BaseModel):
+    reasoning: str = Field(description="A reasoning for about the next steps")
+    function: str = Field(
+        description="The next function with pythonic notation. E.g: myfunc(2, 3, 'foo')."  # noqa
+    )
+    feedback: str = Field(
+        description="Feedback for the user about what are you planning/doing"
+    )
+
+
 class HybridCognitionState(BaseModel):
     model_config = ConfigDict(extra="allow")
     goal: str = Field(description="The goal of the task")
@@ -55,16 +65,23 @@ class Hybrid1:
         interpreter: Interpreter = None,
         registry: ItemRegistry = ItemRegistry(),
         memory_capacity: int = 10,
+        feedback_mode: bool = False,
     ):
         self.schema = schema
         self.router = SimpleRouter(schema)
-        self.llm = MutableChatLLM().with_structured_output(Hybrid1Response)
+        if feedback_mode:
+            self.llm = MutableChatLLM().with_structured_output(
+                Hybrid1ResponseWithFeedback
+            )
+        else:
+            self.llm = MutableChatLLM().with_structured_output(Hybrid1Response)
         self.registry = registry
         self.interpreter = interpreter
         self.memory_capacity = memory_capacity
         self.cognition_state = None
         self.formatted_tools = None
         self.memory = None
+        self.feedback_mode = feedback_mode
 
     def _initialize_agent_task(self, input):
         """
@@ -184,7 +201,14 @@ class Hybrid1:
             obj = self.cognition_state.get("objective_completed")
             exit = (obj) or (isinstance(obj, str) and obj.lower() == "true")
 
-            yield FastAPStep(name="Hybrid1", content=str(response), is_last=exit)
+            if self.feedback_mode:
+                feedback_content = response
+            else:
+                feedback_content = response.reasoning
+
+            yield FastAPStep(
+                name="Hybrid1", content=str(feedback_content), is_last=exit
+            )
 
             sync_experts(self.schema, self.interpreter)
             self._execute_response_from_agent(response)

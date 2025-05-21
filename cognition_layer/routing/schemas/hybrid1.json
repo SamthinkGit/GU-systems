@@ -13,7 +13,9 @@
         "simple-read-ocr",
         "moondream_vision_actions"
     ],
-    "config": {},
+    "config": {
+        "feedback_mode": true
+    },
     "workers": [
         {
             "name": "PlannerExpert",

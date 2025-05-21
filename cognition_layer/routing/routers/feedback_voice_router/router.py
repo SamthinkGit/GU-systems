@@ -54,6 +54,7 @@ Having opened the Spotify application, my next step is to check the list of
 opened windows to determine if Spotify has successfully launched...
 function: check_if_spotify_opened()
 "
+Do not overuse words as "Perfecto!" or "Listo", be more creative.
 
 Expected output example:
 "Revisaré si Spotify se ha abierto"

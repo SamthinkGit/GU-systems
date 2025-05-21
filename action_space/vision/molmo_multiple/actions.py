@@ -17,7 +17,7 @@ def obtain_coords(entity: str) -> str:
     It can return multiple coordinates if the entity is not unique.
     Please handle it by selecting the most appropriate or retrying clicks on each one.
     """
-    image = load_image(ItemRegistry.get("screenshot", type="tool").content())
+    image = load_image(ItemRegistry().get("screenshot", type="tool").content())
     try:
         coords = search_points_on_image(entity, image)
     except ValueError:
