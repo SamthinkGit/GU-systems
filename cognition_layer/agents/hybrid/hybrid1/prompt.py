@@ -22,15 +22,15 @@ Action: `update_state("plan", "Go to settings, search a...")`
 Response: Data saved
 
 Reasoning: I must go to settings, first I should locate the coordinates of the button.
-Action: `call_expert("button-finder", "<start>")`
+Action: `call_expert("fictional-and-invalid-expert", "<start>")`
 Response: Please send me a context and the element you want to locate.
 
 Reasoning: I should give the expert a clue of the button.
-Action: `call_expert("button-finder", "Configuration")`
+Action: `call_expert("fictional-and-invalid-expert", "Configuration")`
 Response: I found "Minecraft" at (x=340, y=540), I have other 2 options remaining. Send me `<next>` for obtaining other option.
 
 Reasoning: Minecraft is not the configuration button. Let's search for another button.
-Action: `call_expert("button-finder", "<next>")`
+Action: `call_expert("fictional-and-invalid-expert", "<next>")`
 Response: I found "Opciones" at (x=640, y=810), I have other 2 options remaining. Send me `<next>` for obtaining other option.
 
 Reasoning: "Opciones" is a valid button. Let's try clicking there.

@@ -8,28 +8,23 @@
         "mouse-simple",
         "apps-management",
         "spotlight",
-        "request-selection"
+        "request-selection",
+        "molmo_element_finder_multiple_actions",
+        "simple-read-ocr",
+        "moondream_vision_actions"
     ],
     "config": {},
     "workers": [
         {
-            "name": "ElementFinder",
+            "name": "PlannerExpert",
             "type": "agent",
-            "model": "element-finder",
+            "model": "planner-expert",
             "packages": [
                 "default"
             ],
-            "config": {},
-            "workers": []
-        },
-        {
-            "name": "ScreenAgent",
-            "type": "agent",
-            "model": "small-vision-agent",
-            "packages": [
-                "default"
-            ],
-            "config": {},
+            "config": {
+                "quality": 0.3
+            },
             "workers": []
         }
     ]
