@@ -58,11 +58,11 @@ def read_image(image: Image.Image):
     return result_response.json()
 
 
-def animate_bboxes(bboxes: list[BoundingBox]) -> None:
+def animate_bboxes(bboxes: list[BoundingBox], animation_duration: float = ANIMATION_DURATION) -> None:
     app = QApplication([])
     overlay = BoxOverlay(
         bboxes,
-        duration_total=ANIMATION_DURATION,
+        duration_total=animation_duration,
         min_duration_per_box=MIN_DURATION_PER_BOX,
     )
 

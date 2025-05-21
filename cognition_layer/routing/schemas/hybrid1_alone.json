@@ -1,0 +1,16 @@
+{
+    "name": "Hybrid1",
+    "type": "agent",
+    "model": "hybrid1",
+    "packages": [
+        "default",
+        "keyboard",
+        "mouse-simple",
+        "apps-management",
+        "request-selection",
+        "molmo_element_finder_multiple_actions",
+        "simple-read-ocr"
+    ],
+    "config": {},
+    "workers": []
+}

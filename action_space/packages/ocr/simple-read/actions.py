@@ -21,7 +21,7 @@ def read_screen():
     them in your memory after this action.
 
     Parse all the texts and its coordinates from the screen using OCR.
-    Use it when you need to read the screen.
+    Use it when you need to read the screen or click in text/labels/buttons that contain texts.
     Use it also when you need to find a specific text/label in the screen.
     You can also use it find where to click or where to move the mouse.
     """
@@ -40,7 +40,4 @@ def _read_screen():
     response = [
         f"Text at coordinates {box.center}: ```{box.content}```" for box in results
     ]
-    return (
-        "\n".join(response)
-        + "You can use the mouse to the given coordinates."
-    )
+    return "\n".join(response) + "You can use the mouse to the given coordinates."
