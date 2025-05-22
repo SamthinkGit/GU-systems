@@ -34,6 +34,12 @@ def main():
     )
 
     argparser.add_argument(
+        "--voice",
+        action="store_true",
+        help="Use STT as the input method.",
+    )
+
+    argparser.add_argument(
         "--api",
         action="store_true",
         help="Publish all the steps to the FastAP API.",
@@ -96,6 +102,14 @@ def main():
     if args.invalidate:
         ItemRegistry().invalidate(tools=False)
 
+    # ----- Loading STT (if needed) ----
+    if args.voice:
+        logger.debug("Loading STT Engine...")
+        from ecm.tools.stt.engine import STT
+
+        stt = STT()
+        logger.debug("Successfully loaded STT Engine.")
+
     # -------- Running Tasks -------
     @traceable(run_type="chain", name=server.name)
     def execute_user_query(query: str):
@@ -107,7 +121,18 @@ def main():
             execute_user_query(args.prompt)
         else:
             while True:
-                query = input("Request a Task: ")
+                if args.voice:
+                    input("Press Enter to start STT...")
+                    stt.start()
+                    input("Press Enter to stop STT...")
+                    stt.stop()
+
+                    query = stt.text
+                    logger.info(f"Recognized: {query}")
+
+                else:
+                    query = input("Request a Task: ")
+
                 execute_user_query(query)
     finally:
         if args.backend:

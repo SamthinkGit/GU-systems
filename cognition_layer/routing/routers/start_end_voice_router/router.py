@@ -49,6 +49,7 @@ Rules:
 - Keep it always short (8-10 words max).
 - Always suggest the task was attempted or completed — no guarantees.
 - Include a subtle opinion or reaction.
+- Do not overuse words as "Perfecto!" or "Listo", be more creative as in the example.
 
 Behavior based on the type of query:
 - If the user query was a question:
@@ -89,7 +90,7 @@ class StartEndVoiceRouter:
         self.disabled = disable
         fx_path = get_root_path() / "cognition_layer" / "tools" / "voice" / "fx"
         self.interpreter = interpreter
-        self.llm = MutableChatLLM(model=model, max_tokens=200)
+        self.llm = MutableChatLLM(model=model, max_tokens=200, temperature=1)
         self.router = SimpleRouter(schema)
         self.start_fx = (fx_path / start_fx).as_posix()
         self.end_fx = (fx_path / end_fx).as_posix()

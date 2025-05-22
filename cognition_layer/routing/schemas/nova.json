@@ -27,7 +27,7 @@
                     "config": {
                         "disable": false,
                         "model": "gpt-4.1-nano",
-                        "delay": 3
+                        "delay": 2
                     },
                     "workers": [
                         {
