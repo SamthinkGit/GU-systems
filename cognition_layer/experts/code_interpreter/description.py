@@ -9,12 +9,12 @@ def server_loader():
 
 
 DEPLOY_MODEL = {
-    "name": "CodeInterpreterExpert",
+    "name": "CodeAndFileManagementInterpreterExpert",
     "alias": ["code-interpreter"],
-    "agent_description": "A chat based advanced command line agent with memory that can perform complex tasks and calculations with files, directories, images, code, and more. ",
+    "agent_description": "An ubiquos chat based command line agent with memory that can perform complex tasks and calculations with files, directories, images, code, and more. Use it for creating files, finding them, editing them, visualizing directories, and more.",
     "response_description": "Summary of the tasks performed or queries needed",
-    "use_case": "Use me to send command line codes or retrieve information that can be gathered faster via cmd, automatically generate complex codes, manage files, images, audios, etc.",
-    "welcome_message": "Please retrieve the information you consider relevant for the task (directory, filenames, etc) if any and then send me the task. You can also send me <reset> to erase my memory. Otherwise, I will remember our conversation. Ensure to warn to the user this can take some minutes.",
+    "use_case": "Use me to retrieve information that can be gathered faster via cmd, automatically generate complex codes, manage files, images, audios, etc.",
+    "welcome_message": "Please ensure to warn to the user this can take some minutes and the execution of commands will be confirmated when necessary. You can also send me <reset> to erase my memory. Otherwise, I will remember our conversation. ",
     "type": "agent",
     "packages": [],
     "server": server_loader,

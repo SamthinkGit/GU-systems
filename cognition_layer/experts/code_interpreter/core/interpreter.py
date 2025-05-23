@@ -1,5 +1,6 @@
 import builtins
 import os
+import time
 from contextlib import contextmanager
 from typing import Literal
 
@@ -24,6 +25,8 @@ class Interpreter:
         self._interpreter.verbose = verbose
         self._interpreter.highlight_active_line = False
         self._interpreter.disable_telemetry = True
+        self._interpreter.system_message += "Please ask me the information you need (directories, formats, etc.) before running."  # noqa
+        self.paused = False
 
     def invoke(self, query: str, animation: bool = True, auto_run: bool = False) -> str:
 
@@ -49,12 +52,20 @@ class Interpreter:
         if auto_run:
             self._interpreter.auto_run = True
 
-        app, win = start_app()
-        thread = WorkerThread(
-            self._interpreter.chat(query, display=False, stream=True), delay=0.1
+        def pause():
+            self.paused = True
+
+        def continue_():
+            self.paused = False
+
+        app, win = start_app(
+            on_pause=pause,
+            on_continue=continue_,
         )
+        thread = WorkerThread(self._stream(query), delay=0.1)
         thread.data_ready.connect(win.write_stream)
         thread.finished.connect(finish_app)
+        thread
         thread.ask_confirmation.connect(
             lambda: thread.confirmation_response.emit(self._request_confirmation(win))
         )
@@ -62,6 +73,12 @@ class Interpreter:
         app.exec_()
 
         return combine_messages(self._interpreter.messages)
+
+    def _stream(self, query: str):
+        for chunk in self._interpreter.chat(query, display=False, stream=True):
+            while self.paused:
+                time.sleep(0.1)
+            yield chunk
 
     def _request_confirmation(self, win):
         if self._yes_to_all:

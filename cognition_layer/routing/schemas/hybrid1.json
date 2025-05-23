@@ -30,7 +30,7 @@
             "workers": []
         },
         {
-            "name": "CodeInterpreterExpert",
+            "name": "CodeAndFileManagementExpert",
             "type": "agent",
             "model": "code-interpreter",
             "packages": [

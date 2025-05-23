@@ -12,6 +12,7 @@ from ecm.tools.item_registry_v2 import Storage
 
 PKG_NAME = "expert-calling"
 STORAGE_KEY = "EXPERT_CALLING"
+_last_expert = None
 
 
 @ItemRegistry.register(type="action", package=PKG_NAME, labels=["enforce-host"])
@@ -30,11 +31,16 @@ def call_expert(name: str, message: str) -> None:
 
 
 def _call_expert(name: str, message: str) -> None:
+    global _last_expert
     server, model = load_model(name)
     if message == "<start>":
+        _last_expert = name
         if "welcome_message" in model:
             return model["welcome_message"]
         return "This expert does not have a welcome message. Please send the first message."
+
+    if _last_expert != name and message != "<start>":
+        return "Please use <start> to initiate the conversation with a new agent."
 
     @traceable(run_type="chain", name=server.name)
     def execute_user_query(query: str):

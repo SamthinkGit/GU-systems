@@ -60,6 +60,19 @@
                                         "quality": 0.3
                                     },
                                     "workers": []
+                                },
+                                {
+                                    "name": "CodeAndFileManagementExpert",
+                                    "type": "agent",
+                                    "model": "code-interpreter",
+                                    "packages": [
+                                        "default"
+                                    ],
+                                    "config": {
+                                        "model": "gpt-4o-mini",
+                                        "auto_run": false
+                                    },
+                                    "workers": []
                                 }
                             ]
                         }
