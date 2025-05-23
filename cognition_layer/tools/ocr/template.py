@@ -29,10 +29,10 @@ class BoundingBox:
     information.
     """
 
-    top_left: int
-    top_right: int
-    bottom_left: int
-    bottom_right: int
+    top_left: tuple[int, int]
+    top_right: tuple[int, int]
+    bottom_left: tuple[int, int]
+    bottom_right: tuple[int, int]
     center: tuple[int, int]
 
     content: str

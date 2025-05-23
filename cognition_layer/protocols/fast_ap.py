@@ -11,6 +11,7 @@ your agent. Once the iterator is ready, you can connect it to the main
 application and start processing tasks.
 """
 from dataclasses import dataclass
+from operator import attrgetter
 from typing import Callable
 from typing import ClassVar
 from typing import Generator
@@ -155,3 +156,16 @@ def config_fast_ap(
     """
     _fast_ap_config["port"] = port
     _fast_ap_config["enable_api"] = enable_api
+
+
+def autoserver(cls, name: str):
+    def server_loader(*args, **kwargs):
+        instance = cls(*args, **kwargs)
+        return FastAgentProtocol(
+            name=name,
+            iterator=lambda input: instance.invoke(input),
+            step_name_getter=attrgetter("name"),
+            content_getter=attrgetter("content"),
+            is_last_getter=attrgetter("is_last"),
+        )
+    return server_loader
