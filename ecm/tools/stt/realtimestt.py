@@ -25,3 +25,6 @@ class SimpleRecorder:
 
     def stop(self):
         self.recorder.stop()
+
+    def clean(self):
+        self.recorder.shutdown()

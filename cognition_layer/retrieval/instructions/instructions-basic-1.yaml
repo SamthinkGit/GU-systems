@@ -1,0 +1,116 @@
+docs:
+  - title: Checking if an app is already installed
+    requires:
+      experts: [code-interpreter]
+      packages: [apps-management]
+    content: |
+      If the user asks about if an app is installed you can use the apps-management
+      package to try to find the application. If you can't find it, then you can ask
+      the user if they want you to install it or keep searching. Either way, you can
+      redirect this task to the CodeAndFileManagementExpert.
+
+  - title: File finding
+    requires:
+      experts: [code-interpreter]
+      packages: [mouse-simple]
+    content: |
+      If you have to find a document, generally it is a good idea to ask the user
+      about the information they know (content, name, suffix, etc.) and then
+      call the CodeAndFileManagementExpert to handle it.
+
+  - title: File handling, editing, creating, touching...
+    requires:
+      experts: [code-interpreter]
+      packages: []
+    content: |
+      If the user asks about creating, building, or editing one or multiple files,
+      it's generally a good idea to obtain information about the target directory,
+      files, and content, and then call the CodeAndFileManagementExpert directly.
+
+  - title: Opening App
+    requires:
+      experts: [code-interpreter]
+      packages: [apps-management]
+    content: |
+      If the user asks for opening an app, generally check if it is already open.
+      If so, activate it. If not, search among the installed apps and open it.
+      If that fails, you can call the CodeAndFileManagementExpert and give it a last try.
+
+  - title: Writing document
+    requires:
+      experts: []
+      packages: [simple-read-ocr, keyboard]
+    content: |
+      If the user asks for writing a document, you should first check in which application
+      you are. Then you should ask the user where they want to have the response written.
+      Open the target app/document and, when you are sure you focused it (ensure to click on it),
+      start writing. You can try first checking with OCR if you are writing correctly, and
+      then continue if successful.
+
+  - title: Shortcuts
+    requires:
+      experts: []
+      packages: [press_keys]
+    content: |
+      If the user asks about a shortcut, usually you just have to return it as a response.
+      If the user specifically asks for executing a shortcut, then you must use the press_keys
+      package to use it.
+
+  - title: Asking about the current screen
+    requires:
+      experts: []
+      packages: [moondream_vision_actions]
+    content: |
+      If the user asks or makes a query about the current screen, it usually is enough to just
+      use moondream_vision to obtain information about the screen and then return the appropriate response.
+
+  - title: Show something to the user (Spotlight)
+    requires:
+      experts: []
+      packages: [spotlight, simple-read-ocr, moondream_vision_actions]
+    content: |
+      If the user asks you to show, point, or indicate something, you must usually stay in the
+      same application (unless the user specifies otherwise) and use vision + OCR to analyze
+      the screen. Then, the spotlight package is a good tool for indicating what the user asks for
+      (for example, a button or an element).
+
+  - title: GUI helping (mails, apps, documents...)
+    requires:
+      experts: [small-vision-agent]
+      packages: [keyboard]
+    content: |
+      If the user asks you to help with a GUI task, you can use the small-vision-agent
+      to help you. You can ask him to find elements, buttons, or any other information
+      that you need. Then when the user confirmed you are in the right place, you can
+      use the keyboard package to interact with the GUI.
+
+  - title: Web browsing
+    requires:
+      experts: [planner-expert, code-interpreter]
+      packages: [simple-read-ocr, mouse-simple, apps-management]
+    content: |
+      If the user asks you to browse the web, you can use the apps-management package to open the browser.
+      If the user is already opened you can use it. However in both cases you will want to use the keyboard
+      or mouse to open a new tab and not think about the current tab. Then you must use the mouse to click on
+      the search bar. One trick: The search bar usually contains a message that can be found with OCR.
+      When you ensured you are in the search bar, write the query and then press enter. Then wait and check the
+      page loaded (vision, ocr), then check with ocr the page and select a tab, and then repeat until you dont find
+      a valid tab and use vision. If you reach the goal, then you can exit. Please ensure to check each page has been
+      clicked, a lot of icons can missguide you.
+
+  - title: Answering questions
+    requires:
+      experts: []
+      packages: []
+    content: |
+      If the user asks you a question that does not require any specific action,
+      please only return the feedback with the answer and do not call any other function.
+
+  - title: Giving the hour
+    requires:
+      experts: [code-interpreter]
+      packages: [simple-read-ocr]
+    content: |
+      If the user asks you for the hour, you can use the simple-read-ocr package to
+      read the time from the screen. If you are not sure about the time, you can
+      use the code-interpreter to check the time and return it.

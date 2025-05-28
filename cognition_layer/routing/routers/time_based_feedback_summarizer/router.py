@@ -37,7 +37,7 @@ class TimeBasedFeedbackSummarizer:
 
         assert (
             len(self.router.agents) == 1
-        ), "TimeBasedFeedbackSummarizer only one worker."
+        ), "TimeBasedFeedbackSummarizer supports one worker."
 
     def invoke(self, query: str) -> Generator[FastAPStep, None, None]:
         server = self.router.server(self.routered_agent, self.interpreter)

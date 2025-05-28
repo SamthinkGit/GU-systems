@@ -10,7 +10,7 @@ from ecm.tools.item_registry_v2 import ItemRegistry
 
 class SimpleRouter:
 
-    def __init__(self, schema: DeploySchema):
+    def __init__(self, schema: DeploySchema, *args, **kwargs):
         self.agents = {
             agent["name"]: (agent, get_deploy_model(agent["model"]))
             for agent in schema["workers"]

@@ -87,3 +87,9 @@ def pretty_print_schema(id: str = None, path: Optional[str] = None):
     _print_graph(graph)
     print("\n")
     print(f"{Style.BRIGHT}{'=' * (42 + len(id))}{Style.RESET_ALL}")
+
+
+def truncate_with_ellipsis(text: str, max_length: int) -> str:
+    if len(text) <= max_length:
+        return text
+    return text[: max_length - 3] + "..."

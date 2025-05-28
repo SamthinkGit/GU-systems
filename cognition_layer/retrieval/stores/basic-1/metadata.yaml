@@ -1,0 +1,13 @@
+description: Basic instructions for Hybrid1 Expected tasks
+experts:
+  - code-interpreter
+  - small-vision-agent
+  - planner-expert
+packages:
+  - press_keys
+  - moondream_vision_actions
+  - mouse-simple
+  - apps-management
+  - simple-read-ocr
+  - spotlight
+  - keyboard

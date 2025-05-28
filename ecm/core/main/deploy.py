@@ -13,7 +13,7 @@ from ecm.tools.item_registry_v2 import Storage
 from ecm.tools.prettify import pretty_print_schema
 from execution_layer.pyxcel.interpreter.pyxcel_interpreter import PyxcelInterpreter
 
-LATEST = "hybrid1"
+LATEST = "nova"
 
 
 def main():
@@ -129,6 +129,7 @@ def main():
 
                     query = stt.text
                     logger.info(f"Recognized: {query}")
+                    stt.clean()
 
                 else:
                     query = input("Request a Task: ")

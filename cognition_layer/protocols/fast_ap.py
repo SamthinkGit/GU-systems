@@ -20,6 +20,7 @@ from typing import Optional
 from typing import TypeVar
 
 from ecm.shared import get_logger
+from ecm.tools.prettify import truncate_with_ellipsis
 from ecm.tools.registry import Storage
 
 _StepType = TypeVar("_StepType")
@@ -118,7 +119,9 @@ class FastAgentProtocol(Generic[_StepType]):
             ...     print(step)
         """
 
-        self._logger.debug(f"New task started: `{input}` with server `{self.name}`")
+        self._logger.debug(
+            f"New task started: `{truncate_with_ellipsis(input, max_length=100)}` with server `{self.name}`"
+        )
         step_iter = self.iterator(input)
 
         done = False
@@ -168,4 +171,5 @@ def autoserver(cls, name: str):
             content_getter=attrgetter("content"),
             is_last_getter=attrgetter("is_last"),
         )
+
     return server_loader

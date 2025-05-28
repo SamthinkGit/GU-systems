@@ -1,46 +1,58 @@
 {
-    "name": "Hybrid1",
-    "type": "agent",
-    "model": "hybrid1",
-    "packages": [
-        "default",
-        "keyboard",
-        "mouse-simple",
-        "apps-management",
-        "spotlight",
-        "request-selection",
-        "molmo_element_finder_multiple_actions",
-        "simple-read-ocr",
-        "moondream_vision_actions"
-    ],
+    "name": "MonoRAG",
+    "type": "router",
+    "model": "mono-rag",
+    "packages": [],
     "config": {
-        "feedback_mode": true
+        "k": 3,
+        "store": "basic-1"
     },
     "workers": [
         {
-            "name": "PlannerExpert",
+            "name": "Hybrid1",
             "type": "agent",
-            "model": "planner-expert",
+            "model": "hybrid1",
             "packages": [
-                "default"
+                "default",
+                "keyboard",
+                "mouse-simple",
+                "apps-management",
+                "spotlight",
+                "request-selection",
+                "molmo_element_finder_multiple_actions",
+                "simple-read-ocr",
+                "moondream_vision_actions"
             ],
             "config": {
-                "quality": 0.3
+                "feedback_mode": true
             },
-            "workers": []
-        },
-        {
-            "name": "CodeAndFileManagementExpert",
-            "type": "agent",
-            "model": "code-interpreter",
-            "packages": [
-                "default"
-            ],
-            "config": {
-                "model": "gpt-4o-mini",
-                "auto_run": false
-            },
-            "workers": []
+            "workers": [
+                {
+                    "name": "PlannerExpert",
+                    "type": "agent",
+                    "model": "planner-expert",
+                    "packages": [
+                        "default"
+                    ],
+                    "config": {
+                        "quality": 0.3
+                    },
+                    "workers": []
+                },
+                {
+                    "name": "CodeAndFileManagementExpert",
+                    "type": "agent",
+                    "model": "code-interpreter",
+                    "packages": [
+                        "default"
+                    ],
+                    "config": {
+                        "model": "gpt-4o-mini",
+                        "auto_run": false
+                    },
+                    "workers": []
+                }
+            ]
         }
     ]
 }

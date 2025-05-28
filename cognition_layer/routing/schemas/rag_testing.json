@@ -1,0 +1,24 @@
+{
+    "name": "MonoRAG",
+    "type": "router",
+    "model": "mono-rag",
+    "packages": [],
+    "config": {
+        "k": 3,
+        "store": "basic-1"
+    },
+    "workers": [
+        {
+            "name": "PlannerExpert",
+            "type": "agent",
+            "model": "planner-expert",
+            "packages": [
+                "default"
+            ],
+            "config": {
+                "quality": 0.3
+            },
+            "workers": []
+        }
+    ]
+}
