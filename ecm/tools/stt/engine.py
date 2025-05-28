@@ -12,4 +12,4 @@ Do not try to import directly from the engine directory, so we can keep backward
 compatibility
 
 """
-from ecm.tools.stt.realtimestt import SimpleRecorder as STT  # noqa
+from ecm.tools.stt.elevenlabs_tts import SimpleRecorder as STT  # noqa
