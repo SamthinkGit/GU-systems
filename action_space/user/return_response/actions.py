@@ -10,7 +10,7 @@ PKG_NAME = "return-response"
 
 
 # ========================= ACTIONS ======================
-@ItemRegistry.register(type="action", package=PKG_NAME)
+@ItemRegistry.register(type="action", package=PKG_NAME, labels=["enforce-host"])
 def send_response_to_user(message: str) -> str:
     """
     Sends/returns a message response to the user.
