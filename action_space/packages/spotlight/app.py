@@ -1,9 +1,10 @@
 import math
-import sys
 
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
+
+from action_space.tools.pyqt_utils import get_app
 
 
 class AnimatedSpotlight(QtWidgets.QWidget):
@@ -79,7 +80,7 @@ class AnimatedSpotlight(QtWidgets.QWidget):
 
 
 def spotlight(x, y, target_radius, decay, duration):
-    app = QtWidgets.QApplication(sys.argv)
+    app = get_app()
     w = AnimatedSpotlight(
         x=x,
         y=y,

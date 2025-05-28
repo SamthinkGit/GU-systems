@@ -25,7 +25,7 @@ class Interpreter:
         self._interpreter.verbose = verbose
         self._interpreter.highlight_active_line = False
         self._interpreter.disable_telemetry = True
-        self._interpreter.system_message += "Please ask me the information you need (directories, formats, etc.) before running."  # noqa
+        self._interpreter.system_message # noqa
         self.paused = False
 
     def invoke(self, query: str, animation: bool = True, auto_run: bool = False) -> str:

@@ -1,4 +1,3 @@
-import sys
 import time
 from typing import Literal
 
@@ -12,6 +11,7 @@ from PyQt5.QtCore import QEventLoop
 from PyQt5.QtCore import QThread
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 
+from action_space.tools.pyqt_utils import get_app
 from ecm.shared import get_root_path
 
 # Highlight.js assets for code syntax highlighting (GitHub Dark Dimmed)
@@ -367,7 +367,7 @@ _window = None
 def start(on_pause=lambda: None, on_continue=lambda: None):
     global _app, _window
     if not QtWidgets.QApplication.instance():
-        _app = QtWidgets.QApplication(sys.argv)
+        _app = get_app()
     else:
         _app = QtWidgets.QApplication.instance()
 

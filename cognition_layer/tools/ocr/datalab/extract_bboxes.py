@@ -3,8 +3,8 @@ import time
 
 import requests
 from PIL import Image
-from PyQt5.QtWidgets import QApplication
 
+from action_space.tools.pyqt_utils import get_app
 from cognition_layer.tools.ocr.datalab.animation import BoxOverlay
 from cognition_layer.tools.ocr.template import BoundingBox
 from ecm.shared import get_logger
@@ -58,8 +58,10 @@ def read_image(image: Image.Image):
     return result_response.json()
 
 
-def animate_bboxes(bboxes: list[BoundingBox], animation_duration: float = ANIMATION_DURATION) -> None:
-    app = QApplication([])
+def animate_bboxes(
+    bboxes: list[BoundingBox], animation_duration: float = ANIMATION_DURATION
+) -> None:
+    app = get_app()
     overlay = BoxOverlay(
         bboxes,
         duration_total=animation_duration,

@@ -1,13 +1,12 @@
-from PyQt5.QtWidgets import (
-    QApplication,
-    QDialog,
-    QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QLineEdit,
-    QDialogButtonBox,
-)
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QVBoxLayout
+
+from action_space.tools.pyqt_utils import get_app
 
 
 class OptionSelector(QDialog):
@@ -123,6 +122,6 @@ def dark_style():
 
 
 def request_user_input(message: str, options: list[str]) -> str:
-    app = QApplication([])  # noqa
+    app = get_app()  # noqa
     selection = OptionSelector.get_selection(message, options)
     return selection

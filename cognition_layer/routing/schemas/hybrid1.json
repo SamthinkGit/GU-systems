@@ -21,7 +21,8 @@
                 "request-selection",
                 "molmo_element_finder_multiple_actions",
                 "simple-read-ocr",
-                "moondream_vision_actions"
+                "moondream_vision_actions",
+                "return-response"
             ],
             "config": {
                 "feedback_mode": true
