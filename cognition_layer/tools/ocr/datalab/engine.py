@@ -13,7 +13,8 @@ class DatalabEngine(OcrEngine):
 
     def invoke(self, image: Image.Image, *args, **kwargs) -> list[BoundingBox]:
         response_json = read_image(image)
-        return extract_bboxes(response_json, *args, **kwargs)
+        self.bboxes = extract_bboxes(response_json, *args, **kwargs, animate=False)
+        return self.bboxes
 
     def clean(self):
         return

@@ -1,7 +1,9 @@
+import pickle
 from functools import cache
 
 from action_space.tools.image import load_image
 from action_space.tools.wrappers import throttle
+from cognition_layer.tools.ocr.datalab.extract_bboxes import animate_bboxes
 from cognition_layer.tools.ocr.engine import TextOCR
 from ecm.tools.item_registry_v2 import ItemRegistry
 
@@ -14,7 +16,7 @@ def _get_ocr():
 
 
 # ========================= ACTIONS ======================
-@ItemRegistry.register(type="action", package=PKG_NAME)
+@ItemRegistry.register(type="action", package=PKG_NAME, labels=["enforce-host"])
 def read_screen():
     """
     IMPORTANT: Do not overuse this action/tool, extract the features you need and save
@@ -30,14 +32,27 @@ def read_screen():
 
 @throttle(min_interval_seconds=15)
 def _read_screen():
-    registry = ItemRegistry("DatalabOCR")
-    registry.autoload("screenshot")
+    # Obtain image on the client
+    registry = ItemRegistry()
     tool = registry.get("screenshot", type="tool")
     screenshot = load_image(tool.content())
 
+    # Perform OCR on the screenshot (on the host)
     ocr = _get_ocr()
     results = ocr.invoke(screenshot)
     response = [
         f"Text at coordinates {box.center}: ```{box.content}```" for box in results
     ]
-    return "\n".join(response) + "You can use the mouse to the given coordinates."
+
+    # Animate the bounding boxes on the client
+    animation = registry.get("_animate_ocr", type="tool").content
+    boxes_bytes = pickle.dumps(results)
+    animation(boxes_bytes)
+
+    return "\n".join(response) + "You can use the mouse with the given coordinates."
+
+
+@ItemRegistry.register(type="tool", package=PKG_NAME)
+def _animate_ocr(boxes_bytes: str):
+    boxes = pickle.loads(boxes_bytes)
+    animate_bboxes(boxes, animation_duration=2000)
