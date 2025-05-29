@@ -71,3 +71,8 @@ if __name__ == "__main__":
     ocr_result = action.content()
     logger.info(f"OCR Result: {ocr_result}")
     input("Press Enter to continue...")
+
+    logger.info("Testing Response")
+    action = ItemRegistry().get("send_response_to_user", type="action")
+    action.content("This is a test response to the user.")
+    input("Press Enter to finish testing actions...")

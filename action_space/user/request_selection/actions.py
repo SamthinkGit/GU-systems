@@ -7,7 +7,7 @@ PKG_NAME = "request-selection"
 
 
 # ========================= ACTIONS ======================
-@ItemRegistry.register(type="action", package=PKG_NAME)
+@ItemRegistry.register(type="action", package=PKG_NAME, labels=["enforce-host"])
 def request_user_input(message: str, options: list[str]) -> str:
     """
     Request user input with a message and options.
@@ -16,7 +16,21 @@ def request_user_input(message: str, options: list[str]) -> str:
     Your message must be short and concise, as it will sent to the user.
     Use me when you must do a choice in some selection.
     """
+
+    # This translation must be done in the host (Because it contains the llms)
     language = Storage("RETURN_RESPONSE_CONFIG").get("language", "english")
     translated_message = translate(message, target_language=language)
 
-    return request(translated_message, options)
+    # We use the item registry to ensure the gui is executed on the remote client.
+    _request = ItemRegistry().get(name="_request_user_input_with_gui", type="tool")
+
+    return _request.content(translated_message, options)
+
+
+@ItemRegistry.register(type="tool", package=PKG_NAME)
+def _request_user_input_with_gui(message: str, options: list[str]) -> str:
+    """
+    Internal tool to request user input.
+    This is used by the action `request_user_input`.
+    """
+    return request(message, options)
