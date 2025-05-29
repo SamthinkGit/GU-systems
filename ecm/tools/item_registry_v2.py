@@ -179,15 +179,17 @@ class ItemRegistry:
         :param identifier: The identifier for the package or item to load.
         :return: True if the package was loaded successfully
         """
+        static_mode = Storage("ITEM_REGISTRY_CONFIG").get("autoload-static", False)
+
         if "/" not in identifier:
             # This is a package
-            import_pkg(identifier)
+            import_pkg(identifier, static=static_mode)
             self.load_package(identifier)
 
         else:
             # Using action notation
-            packages = discover_packages()
-            import_pkg(identifier)
+            packages = discover_packages(static=static_mode)
+            import_pkg(identifier, static=static_mode)
             for pkg in packages:
                 if pkg["notation"] == identifier:
                     pkg_name = pkg["pkg_name"]

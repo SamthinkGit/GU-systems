@@ -6,7 +6,8 @@ OpenCV. It processes an image to identify contours and returns bounding boxes
 for the specified number of contours based on a sorting criterion.
 """
 import cv2
-from fusion.combination import BoundingBox
+
+BoundingBox = tuple[int, int, int, int]  # (x, y, width, height)
 
 
 # ======================= FUNCTIONS ============================

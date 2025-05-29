@@ -1,6 +1,8 @@
 import importlib
 import sys
 
+__import__("pkg_resources").declare_namespace(__name__)
+
 # Added to support backward compatibility for older versions of the package
 # This enables the imports:
 #
@@ -10,6 +12,7 @@ import sys
 #
 # from cognition_layer.agents.<agent_name>.<dir> import ...
 #
+
 submodules = [
     "visual_fast_react",
     "again",
@@ -17,7 +20,7 @@ submodules = [
     "fast_react",
     "planexv2",
     "xplore",
-    "RePlan"
+    "RePlan",
 ]
 for name in submodules:
     full = f"cognition_layer.agents.{name}"

@@ -1,0 +1,12 @@
+recursive-include action_space    *.py *.yaml *.yml *.json *.proto *.xml *.cfg *.toml \
+                                   *.lab  *.png *.jpg *.gif *.mp3 *.db *.dll *.exe \
+                                   *.sh *.ps1 *.bat *.env *.TAG  *.xlnt *.txt *.pkl
+recursive-include cognition_layer *.py *.yaml *.yml *.json *.proto *.xml *.cfg *.toml  \
+                                   *.lab  *.png *.jpg *.gif *.mp3 *.db *.dll *.exe \
+                                   *.sh *.ps1 *.bat *.env *.TAG  *.xlnt *.txt *.pkl
+recursive-include execution_layer *.py *.yaml *.yml *.json *.proto *.xml *.cfg *.toml  \
+                                   *.lab  *.png *.jpg *.gif *.mp3 *.db *.dll *.exe \
+                                   *.sh *.ps1 *.bat *.env *.TAG  *.xlnt *.txt *.pkl
+recursive-include ecm             *.py *.yaml *.yml *.json *.proto *.xml *.cfg *.toml  \
+                                   *.lab  *.png *.jpg *.gif *.mp3 *.db *.dll *.exe \
+                                   *.sh *.ps1 *.bat *.env *.TAG *.xlnt *.txt *.pkl

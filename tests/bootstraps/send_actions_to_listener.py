@@ -9,7 +9,7 @@ logger = get_logger("main")
 
 
 if __name__ == "__main__":
-    autodiscover(allow_localhost=True)
+    autodiscover(allow_localhost=False)
 
     ItemRegistry().autoload("screenshot")
     ItemRegistry().autoload("keyboard")
