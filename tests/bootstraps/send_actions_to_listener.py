@@ -1,15 +1,14 @@
-from ecm_communications.bootstraps.autodiscover import autodiscover
-from ecm_communications.tools.server import enable_server_mode
-
 from action_space.tools.image import load_image
 from ecm.shared import get_logger
 from ecm.tools.registry import ItemRegistry
+from ecm_communications.bootstraps.autodiscover_pair import autodiscover
+from ecm_communications.tools.server import enable_server_mode
 
 logger = get_logger("main")
 
 
 if __name__ == "__main__":
-    autodiscover(allow_localhost=False)
+    autodiscover(role="host", timeout=10)
 
     ItemRegistry().autoload("screenshot")
     ItemRegistry().autoload("keyboard")
@@ -22,6 +21,7 @@ if __name__ == "__main__":
 
     enable_server_mode()
 
+    input("Press Enter to start testing actions...")
     logger.info("Testing screenshot")
     action = ItemRegistry().get("screenshot", type="tool")
     screenshot = load_image(action.content())
