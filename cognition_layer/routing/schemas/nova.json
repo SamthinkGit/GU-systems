@@ -2,7 +2,9 @@
     "name": "NovaStartEndFeedback",
     "type": "router",
     "model": "start-end-voice-router",
-    "packages": [],
+    "packages": [
+        "screenshot"
+    ],
     "config": {
         "model": "gpt-4.1-nano",
         "disable": false

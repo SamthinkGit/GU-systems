@@ -2,9 +2,10 @@ import os
 import threading
 from functools import cache
 
+import pyaudio
 from elevenlabs import save
 from elevenlabs.client import ElevenLabs
-from playsound import playsound
+from pydub import AudioSegment
 
 from ecm.shared import get_root_path
 
@@ -48,6 +49,7 @@ def text2speech(
     ).as_posix()
     if os.path.exists(logging_path):
         os.remove(logging_path)
+
     save(audio, logging_path)
     return logging_path
 
@@ -56,7 +58,21 @@ def play(path: str):
     global _last_audio_thread
 
     def _play_audio():
-        playsound(path)
+        audio = AudioSegment.from_file(path)
+        p = pyaudio.PyAudio()
+
+        stream = p.open(
+            format=p.get_format_from_width(audio.sample_width),
+            channels=audio.channels,
+            rate=audio.frame_rate,
+            output=True,
+        )
+
+        stream.write(audio.raw_data)
+
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
 
     new_thread = threading.Thread(target=_play_audio)
 

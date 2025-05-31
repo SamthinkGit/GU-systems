@@ -16,6 +16,8 @@ DEPLOY_MODEL = {
     "use_case": "Use me to retrieve information that can be gathered faster via cmd, automatically generate complex codes, manage files, images, audios, etc.",
     "welcome_message": "Please ensure to warn to the user this can take some minutes and the execution of commands will be confirmated when necessary. You can also send me <reset> to erase my memory. Otherwise, I will remember our conversation. ",
     "type": "agent",
-    "packages": [],
+    "packages": [
+        "_private_interpreter-tools",
+    ],
     "server": server_loader,
 }

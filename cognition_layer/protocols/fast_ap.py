@@ -1,5 +1,4 @@
-"""
-FastAgentProtocol
+"""FastAgentProtocol
 ==============================
 This module provides the `FastAgentProtocol` class, a simplified and
 synchronous protocol for managing agent tasks. Unlike its predecessor
@@ -12,6 +11,8 @@ application and start processing tasks.
 """
 from dataclasses import dataclass
 from operator import attrgetter
+from queue import Queue
+from threading import Event
 from typing import Callable
 from typing import ClassVar
 from typing import Generator
@@ -22,6 +23,7 @@ from typing import TypeVar
 from ecm.shared import get_logger
 from ecm.tools.prettify import truncate_with_ellipsis
 from ecm.tools.registry import Storage
+
 
 _StepType = TypeVar("_StepType")
 
@@ -59,6 +61,9 @@ class FastAgentProtocol(Generic[_StepType]):
     """
 
     _logger: ClassVar = get_logger("FastAP")
+    _step_queue: Queue[FastAPStep] = Queue()
+    _step_continue_event: Event = Event()
+    _soft_stop_event: Event = Event()
 
     def __init__(
         self,
@@ -118,14 +123,32 @@ class FastAgentProtocol(Generic[_StepType]):
             >>> for step in protocol.send_task("this is my prompt to the agent"):
             ...     print(step)
         """
+        global FAST_AP_CONFIRMATION
 
         self._logger.debug(
             f"New task started: `{truncate_with_ellipsis(input, max_length=100)}` with server `{self.name}`"
         )
+
+        if _fast_ap_config.get("enable_listening", False):
+            FastAgentProtocol._step_queue.put("Starting task")
+            self._logger.debug("Waiting for confirmation to start a task")
+            FastAgentProtocol._step_continue_event.wait()
+            FastAgentProtocol._step_continue_event.clear()
+            self._logger.debug("Confirmation received, continuing...")
+
+        if FastAgentProtocol._soft_stop_event.is_set():
+            self._logger.info("Soft stop triggered after step created. Skipping yield.")
+            return
+
         step_iter = self.iterator(input)
 
         done = False
         while not done:
+
+            if FastAgentProtocol._soft_stop_event.is_set():
+                self._logger.info("Soft stop triggered. Exiting task loop.")
+                break
+
             try:
                 raw_step = next(step_iter)
             except StopIteration:
@@ -142,13 +165,40 @@ class FastAgentProtocol(Generic[_StepType]):
                 from cognition_layer.protocols.broadcaster import publish_step_to_api
 
                 publish_step_to_api(step, port=_fast_ap_config["port"])
+
+            if _fast_ap_config.get("enable_listening", False):
+                FastAgentProtocol._step_queue.put(step)
+                self._logger.debug("Waiting for confirmation to continue")
+                FastAgentProtocol._step_continue_event.wait()
+                FastAgentProtocol._step_continue_event.clear()
+                self._logger.debug("Confirmation received, continuing...")
+
+            if FastAgentProtocol._soft_stop_event.is_set():
+                self._logger.info(
+                    "Soft stop triggered after step created. Skipping yield."
+                )
+                break
+
             yield step
             done = step.is_last
+
+    @classmethod
+    def get_local_step_queue(cls) -> Queue[FastAPStep]:
+        return cls._step_queue
+
+    @classmethod
+    def confirm_step(cls) -> None:
+        cls._step_continue_event.set()
+
+    @classmethod
+    def soft_stop(cls) -> None:
+        cls._soft_stop_event.set()
 
 
 def config_fast_ap(
     port: int = 9301,
-    enable_api: bool = True,
+    enable_api: bool = False,
+    enable_listening: bool = False,
 ):
     """
     Configure the FastAgentProtocol settings.
@@ -159,6 +209,7 @@ def config_fast_ap(
     """
     _fast_ap_config["port"] = port
     _fast_ap_config["enable_api"] = enable_api
+    _fast_ap_config["enable_listening"] = enable_listening
 
 
 def autoserver(cls, name: str):

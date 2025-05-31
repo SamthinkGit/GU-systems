@@ -49,6 +49,7 @@ def listen_to_steps_from_api(port: int):
             if line.startswith("data: "):
                 payload = line.replace("data: ", "").strip()
                 _logger.debug(f"Received step: {payload}")
+                yield payload
 
 
 def exit_fast_ap(port: int):

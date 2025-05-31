@@ -32,6 +32,7 @@ def run_listener(peer_ip):
         "molmo_element_finder_multiple_actions",
         "simple-read-ocr",
         "return-response",
+        "_private_interpreter-tools",
     ):
         reg.autoload(item)
     reg.summary()
@@ -46,7 +47,7 @@ def start_callback():
     peer_ip = os.environ.get("ECM_PEER_IP")
     if not peer_ip:
         print("[Callback] Error: ECM_PEER_IP not set.")
-        return
+        return False
     # Con 'spawn' en Windows, freeze_support() ya evitó el re-arranque de la UI en el hijo
     listener_p = multiprocessing.Process(target=run_listener, args=(peer_ip,))
     listener_p.start()
@@ -61,10 +62,13 @@ def toggle_callback(state):
 def exit_callback():
     global listener_p
     print("[Callback] Exiting Nova...")
-    if listener_p and listener_p.is_alive():
-        listener_p.terminate()
-        listener_p.join()
-        print("[Callback] Listener stopped.")
+    try:
+        if listener_p and listener_p.is_alive():
+            listener_p.terminate()
+            listener_p.join()
+            print("[Callback] Listener stopped.")
+    except NameError:
+        print("[Callback] No listener process to stop.")
 
 
 def main():

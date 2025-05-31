@@ -5,6 +5,7 @@ from typing import Literal
 import markdown
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from PyQt5 import QtWebEngineWidgets  # noqa
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import pyqtSlot

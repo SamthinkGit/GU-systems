@@ -80,6 +80,7 @@ class AnimatedSpotlight(QtWidgets.QWidget):
 
 
 def spotlight(x, y, target_radius, decay, duration):
+
     app = get_app()
     w = AnimatedSpotlight(
         x=x,

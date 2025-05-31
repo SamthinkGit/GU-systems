@@ -1,6 +1,7 @@
 import sys
 from functools import cache
 
+from PyQt5 import QtWebEngineWidgets  # noqa
 from PyQt5.QtWidgets import QApplication
 
 

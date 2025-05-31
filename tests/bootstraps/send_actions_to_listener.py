@@ -1,6 +1,9 @@
+import os
+
 from action_space.tools.image import load_image
 from ecm.shared import get_logger
 from ecm.tools.registry import ItemRegistry
+from ecm.tools.registry import Storage
 from ecm_communications.bootstraps.autodiscover_pair import autodiscover
 from ecm_communications.tools.server import enable_server_mode
 
@@ -18,8 +21,11 @@ if __name__ == "__main__":
     ItemRegistry().autoload("request-selection")
     ItemRegistry().autoload("simple-read-ocr")
     ItemRegistry().autoload("return-response")
+    ItemRegistry().autoload("_private_interpreter-tools")
 
     enable_server_mode()
+
+    Storage("RETURN_RESPONSE_CONFIG")["voice"] = True
 
     input("Press Enter to start testing actions...")
     logger.info("Testing screenshot")
@@ -28,8 +34,15 @@ if __name__ == "__main__":
     screenshot.show()
     input("Press Enter to continue...")
 
-    action = ItemRegistry().get("write", type="action")
-    action.content("Hello World!")
+    input("Testing interpreter actions... Press Enter to continue...")
+    logger.info("Testing interpreter")
+    action = ItemRegistry().get("_invoke_interpreter_with_animation", type="tool")
+    action.content(
+        query="Check the hour",
+        openai_api_key=os.getenv("OPENAI_API_KEY"),
+        auto_run=False,
+        model="gpt-4o-mini",
+    )
     logger.info("Wrote 'Hello World!'")
     input("Press Enter to continue...")
 

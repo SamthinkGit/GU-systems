@@ -69,7 +69,12 @@ def load_package(
             break
     if not info:
         raise ValueError(
-            f"Package '{identifier}' not found. Current packages: {list(packages.keys())}"
+            f"""
+            Package '{identifier}' not found. Current packages: {list(packages)}.
+            Posible solutions:
+            - Generate a new static package index with `generate_static_package_index()` if using static mode.
+            - Ensure the package exists in the 'action_space' directory.
+            """
         )
 
     import_path = pkg_import_path + "." + info["module_path"]

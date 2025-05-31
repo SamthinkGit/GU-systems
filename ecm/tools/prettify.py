@@ -90,6 +90,7 @@ def pretty_print_schema(id: str = None, path: Optional[str] = None):
 
 
 def truncate_with_ellipsis(text: str, max_length: int) -> str:
+    text = str(text)
     if len(text) <= max_length:
         return text
     return text[: max_length - 3] + "..."

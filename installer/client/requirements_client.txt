@@ -16,3 +16,8 @@ opencv-python
 rapidocr
 elevenlabs
 playsound
+open-interpreter
+markdown
+PyQtWebEngine
+pydub
+pyaudio

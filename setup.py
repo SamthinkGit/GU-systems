@@ -35,11 +35,16 @@ setup(
         "pyautogui",
         "psutil",
         "pyqt5",
+        "pydub",
         "replicate",
         "opencv-python",
         "rapidocr",
         "elevenlabs",
         "playsound",
+        "open-interpreter"
+        "markdown"
+        "PyQtWebEngine"
+        "pyaudio"
         # "ecm_communications*", Private repo on /external
     ],
     python_requires=">=3.8",

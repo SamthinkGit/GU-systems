@@ -103,11 +103,10 @@ def main():
         ItemRegistry().invalidate(tools=False)
 
     # ----- Loading STT (if needed) ----
-    Storage("RETURN_RESPONSE_CONFIG")["voice"] = False
+    Storage("RETURN_RESPONSE_CONFIG")["voice"] = True
     Storage("RETURN_RESPONSE_CONFIG")["language"] = "spanish"
 
     if args.voice:
-        Storage("RETURN_RESPONSE_CONFIG")["voice"] = True
 
         logger.debug("Loading STT Engine...")
         from ecm.tools.stt.engine import STT

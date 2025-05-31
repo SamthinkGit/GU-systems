@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QCheckBox  # noqa
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QPushButton
@@ -36,11 +36,6 @@ class NovaUI(QWidget):
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setStyleSheet("font-size: 32px; font-weight: bold; margin: 20px;")
         self.layout.addWidget(self.title)
-
-        self.localhost_checkbox = QCheckBox("Modo localhost")
-        self.localhost_checkbox.setStyleSheet("font-size: 18px;")
-        self.localhost_checkbox.stateChanged.connect(self._on_toggle_localhost)
-        self.layout.addWidget(self.localhost_checkbox)
 
         self.sync_button = QPushButton("Sincronizar con Nova")
         self.sync_button.clicked.connect(self._on_sync_clicked)
@@ -81,19 +76,30 @@ class NovaUI(QWidget):
 
         def finish_start():
             # Ocultar todo
-            self.localhost_checkbox.hide()
             self.sync_button.hide()
             self.start_button.hide()
 
             # Callback
             if self.on_start_callback:
-                self.on_start_callback()
+                success = self.on_start_callback()
 
-            # Mostrar mensaje de espera
-            self.status_label = QLabel("Esperando instrucciones de Nova...")
-            self.status_label.setAlignment(Qt.AlignCenter)
-            self.status_label.setStyleSheet("font-size: 20px; margin-top: 40px;")
-            self.layout.addWidget(self.status_label)
+            if success:
+                self.status_label = QLabel("Esperando instrucciones de Nova...")
+                self.status_label.setAlignment(Qt.AlignCenter)
+                self.status_label.setStyleSheet("font-size: 20px; margin-top: 40px;")
+                self.layout.addWidget(self.status_label)
+            else:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    "No se pudo iniciar Nova. Primero realiza una sincronización.",
+                )
+                self.start_button.setEnabled(True)
+                self.start_button.setText("Iniciar")
+                self.start_button.setStyleSheet(
+                    "background-color: #3a3a3a; color: #ffffff; font-size: 18px; padding: 14px; border: none; border-radius: 10px;"  # noqa
+                )
+                return
 
         QTimer.singleShot(1000, finish_start)  # Simula carga
 
