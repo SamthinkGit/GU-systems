@@ -3,9 +3,12 @@ from typing import Callable
 
 
 class NovaState(Enum):
+
+    INITIAL_LOADING = "<initial_loading>"
+
     HOME = "<home>"
     LISTENING = "<listening>"
-    INITIAL_LOADING = "<initial_loading>"
+    WAITING_FOR_AUDIO = "<waiting_for_audio>"
     LOADING = "<loading>"
     SPEECH = "<speech>"
     PAUSED = "<paused>"
@@ -14,9 +17,7 @@ class NovaState(Enum):
 
 class NovaAction(Enum):
     NONE = "<none>"
-    START_STT = "<start_stt>"
-    FINISH_STT = "<finish_stt>"
-    START_TTS = "<start_tts>"
+    START_ECM = "<start_ecm>"
     PAUSE = "<pause>"
     RESUME = "<resume>"
     SOFT_STOP = "<soft_stop>"
@@ -27,7 +28,6 @@ class NovaEvent(Enum):
     NOVA_FEEDBACK = "<nova_feedback>"
     NOVA_FINISHED = "<nova_finished>"
     LOADING_FINISHED = "<loading_finished>"
-    FINISHED_TTS = "<finished_tts>"
 
 
 class Button(Enum):
@@ -51,7 +51,6 @@ _states = {}
 
 def state(state: NovaState):
 
-    @autoinvalidate
     def decorator(func):
         _states[state] = func
         return func
@@ -61,75 +60,92 @@ def state(state: NovaState):
 
 class StateManager:
 
-    def __init__(self, initial_state: NovaState = NovaState.INITIAL_LOADING):
+    def __init__(self, initial_state: NovaState = NovaState.HOME):
         self.state = initial_state
 
     def next_state(
-        self, button: Button = None, event: NovaEvent = None
+        self, button: Button = None, event: NovaEvent = None, extra: dict = None
     ) -> tuple[NovaState, NovaAction]:
 
-        if self.state not in _states:
-            return NovaState.INVALID, NovaAction.NONE
         next_state_func = _states[self.state]
+        return next_state_func(button, event, extra)
 
-        return next_state_func(button, event)
 
-    @state(NovaState.INITIAL_LOADING)
-    def _next_state_from_initial_loading(
-        self, button: Button = None, event: NovaEvent = None
-    ) -> tuple[NovaState, NovaAction]:
-        if event == NovaEvent.LOADING_FINISHED:
-            return NovaState.HOME, NovaAction.NONE
+@state(NovaState.INITIAL_LOADING)
+@autoinvalidate
+def _next_state_from_initial_loading(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
+    if event == NovaEvent.LOADING_FINISHED:
+        return NovaState.HOME, NovaAction.NONE
 
-        return NovaState.INVALID, NovaAction.NONE
+    return NovaState.INVALID, NovaAction.NONE
 
-    @state(NovaState.HOME)
-    def _next_state_from_home(
-        self, button: Button = None, event: NovaEvent = None
-    ) -> tuple[NovaState, NovaAction]:
-        if button == Button.NOVA:
-            return NovaState.LISTENING, NovaAction.START_STT
 
-    @state(NovaState.LISTENING)
-    def _next_state_from_listening(
-        self, button: Button = None, event: NovaEvent = None
-    ) -> tuple[NovaState, NovaAction]:
+@state(NovaState.HOME)
+@autoinvalidate
+def _next_state_from_home(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
+    if button == Button.NOVA:
+        return NovaState.LISTENING, NovaAction.NONE
 
-        if button == Button.NOVA:
-            return NovaState.LOADING, NovaAction.FINISH_STT
 
-    @state(NovaState.LOADING)
-    def _next_state_from_loading(
-        self, button: Button = None, event: NovaEvent = None
-    ) -> tuple[NovaState, NovaAction]:
-        if button == Button.NOVA:
-            return NovaState.PAUSED, NovaAction.PAUSE
+@state(NovaState.LISTENING)
+@autoinvalidate
+def _next_state_from_listening(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
 
-        if event == NovaEvent.NOVA_FEEDBACK:
-            return NovaState.SPEECH, NovaAction.NONE
+    if button == Button.NOVA:
+        return NovaState.WAITING_FOR_AUDIO, NovaAction.NONE
 
-        if event == NovaEvent.NOVA_FINISHED:
-            return NovaState.HOME, NovaAction.NONE
 
-    @state(NovaState.SPEECH)
-    def _next_state_from_speech(
-        self, button: Button = None, event: NovaEvent = None
-    ) -> tuple[NovaState, NovaAction]:
-        if event == NovaEvent.FINISHED_TTS:
-            return NovaState.LOADING, NovaAction.NONE
+@state(NovaState.WAITING_FOR_AUDIO)
+@autoinvalidate
+def _next_state_from_waiting_for_audio(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
+    return NovaState.LOADING, NovaAction.START_ECM
 
-        if button == Button.NOVA:
-            return NovaState.PAUSED, NovaAction.PAUSE
 
-    @state(NovaState.PAUSED)
-    def _next_state_from_paused(
-        self, button: Button = None, event: NovaEvent = None
-    ) -> tuple[NovaState, NovaAction]:
-        if button == Button.RESUME:
-            return NovaState.LOADING, NovaAction.RESUME
+@state(NovaState.LOADING)
+@autoinvalidate
+def _next_state_from_loading(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
+    if button == Button.NOVA:
+        return NovaState.PAUSED, NovaAction.PAUSE
 
-        if button == Button.EXIT:
-            return NovaState.HOME, NovaAction.SOFT_STOP
+    if event == NovaEvent.NOVA_FEEDBACK:
+        return NovaState.SPEECH, NovaAction.NONE
+
+    if event == NovaEvent.NOVA_FINISHED:
+        return NovaState.HOME, NovaAction.NONE
+
+
+@state(NovaState.SPEECH)
+@autoinvalidate
+def _next_state_from_speech(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
+
+    if button == Button.NOVA:
+        return NovaState.PAUSED, NovaAction.PAUSE
+
+    return NovaState.LOADING, NovaAction.NONE
+
+
+@state(NovaState.PAUSED)
+@autoinvalidate
+def _next_state_from_paused(
+    button: Button = None, event: NovaEvent = None, extra: dict = None
+) -> tuple[NovaState, NovaAction]:
+    if button == Button.RESUME:
+        return NovaState.LOADING, NovaAction.RESUME
+
+    if button == Button.EXIT:
+        return NovaState.HOME, NovaAction.SOFT_STOP
 
 
 # Endpoints

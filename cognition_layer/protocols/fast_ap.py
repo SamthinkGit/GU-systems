@@ -123,7 +123,6 @@ class FastAgentProtocol(Generic[_StepType]):
             >>> for step in protocol.send_task("this is my prompt to the agent"):
             ...     print(step)
         """
-        global FAST_AP_CONFIRMATION
 
         self._logger.debug(
             f"New task started: `{truncate_with_ellipsis(input, max_length=100)}` with server `{self.name}`"
