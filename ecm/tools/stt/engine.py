@@ -13,3 +13,4 @@ compatibility
 
 """
 from ecm.tools.stt.elevenlabs_tts import SimpleRecorder as STT  # noqa
+from ecm.tools.stt.elevenlabs_tts import speech_to_text as speech2text  # noqa

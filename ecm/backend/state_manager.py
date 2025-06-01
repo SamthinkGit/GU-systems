@@ -21,7 +21,6 @@ class NovaAction(Enum):
     PAUSE = "<pause>"
     RESUME = "<resume>"
     SOFT_STOP = "<soft_stop>"
-    HARD_STOP = "<hard_stop>"
 
 
 class NovaEvent(Enum):

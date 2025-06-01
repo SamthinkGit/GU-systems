@@ -69,3 +69,21 @@ class SimpleRecorder:
 
     def clean(self):
         pass
+
+
+def speech_to_text(audio_file: str):
+    elevenlabs = ElevenLabs(
+        api_key=os.getenv("ELEVENLABS_API_KEY"),
+    )
+
+    with open(audio_file, "rb") as f:
+        mp3_bytes = f.read()
+
+    audio_data = BytesIO(mp3_bytes)
+    transcription = elevenlabs.speech_to_text.convert(
+        file=audio_data,
+        model_id="scribe_v1",
+        tag_audio_events=False,
+        diarize=False,
+    )
+    return transcription.text

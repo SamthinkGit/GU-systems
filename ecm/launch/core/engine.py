@@ -6,6 +6,5 @@ the initialization, execution, and control of the core logic in a multiprocessin
 
 Please import the `Core` class from this module to use it in your application.
 """
-from ecm.launch.core.nova_core_1 import autorun as autorun  # noqa
-from ecm.launch.core.nova_core_1 import CoreConfig as CoreConfig  # noqa
-from ecm.launch.core.nova_core_1 import NovaCore1 as Core  # noqa
+from ecm.launch.core.nova_core_2 import CoreConfig as CoreConfig  # noqa
+from ecm.launch.core.nova_core_2 import NovaCore2 as NovaCore  # noqa
