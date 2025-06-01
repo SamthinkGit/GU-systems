@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from ecm.launch.core.engine import CoreConfig
 from ecm.launch.core.engine import NovaCore
 from ecm.shared import get_logger
+from ecm.tools.persistent_config import PersistentConfig
 
 app = FastAPI()
 
@@ -47,6 +48,7 @@ class Request(BaseModel):
 def config_endpoint(payload: ConfigRequest) -> bool:
     for k, v in payload.config.items():
         logger.debug(f"[API] Config received: {k} = {v}")
+        PersistentConfig.set(k, v)
     return True
 
 

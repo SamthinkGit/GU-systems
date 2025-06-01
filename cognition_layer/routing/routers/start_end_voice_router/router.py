@@ -84,6 +84,7 @@ class StartEndVoiceRouter:
         model: str = "gpt-4.1-nano",
         start_fx: str = "slow_button_trimmed.mp3",
         end_fx: str = "mellow_echo_success.mp3",
+        disable_fx: bool = False,
         disable: bool = False,
         **kwargs,
     ):
@@ -94,6 +95,7 @@ class StartEndVoiceRouter:
         self.router = SimpleRouter(schema)
         self.start_fx = (fx_path / start_fx).as_posix()
         self.end_fx = (fx_path / end_fx).as_posix()
+        self.disabled_fx = disable_fx
 
         assert (
             len(self.router.agents) == 1
@@ -102,7 +104,8 @@ class StartEndVoiceRouter:
         self.routered_agent = list(self.router.agents.keys())[0]
 
     def invoke(self, query: str) -> Generator[FastAPStep, None, None]:
-        play(self.start_fx)
+        if not self.disabled_fx:
+            play(self.start_fx)
         server = self.router.server(self.routered_agent, self.interpreter)
 
         if server is None:
@@ -142,5 +145,6 @@ class StartEndVoiceRouter:
             self._logger.debug(f"End Speech: {message}")
             speech = text2speech(message)
             play(speech)
-            play(self.end_fx)
+            if not self.disabled_fx:
+                play(self.end_fx)
         yield last_step

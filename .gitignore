@@ -245,3 +245,7 @@ cognition_layer/tools/ocr/rapidocr/ocr_debugging.jpg
 
 # Audios
 *.mp3
+
+# Configs
+.persistent_config.json
+.lock

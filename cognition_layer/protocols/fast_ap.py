@@ -165,10 +165,8 @@ class FastAgentProtocol(Generic[_StepType]):
 
             if _fast_ap_config.get("enable_listening", False):
                 FastAgentProtocol._step_queue.put(step)
-                self._logger.debug("Waiting for confirmation to continue")
                 FastAgentProtocol._step_continue_event.wait()
                 FastAgentProtocol._step_continue_event.clear()
-                self._logger.debug("Confirmation received, continuing...")
 
             if FastAgentProtocol._soft_stop_event.is_set():
                 self._logger.info(
